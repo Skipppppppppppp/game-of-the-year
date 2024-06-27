@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using UnityEditor.Build.Content;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class scwipt : MonoBehaviour
 {
@@ -15,11 +18,11 @@ public class scwipt : MonoBehaviour
     private AudioSource audioSource;
     private ParticleSystem particleSystem;
     private int hitNumber = 1;
-    private int chargeUpLeft = 20;
+    const int maxCharges = 20;
+    private int chargeUpLeft = maxCharges;
     private Rigidbody2D rb2d;
     private bool playerOnGround;
     private bool _tryingToJump;
-
     void Start()
     {
         directionIndicator.SetActive(false);
@@ -47,15 +50,18 @@ public class scwipt : MonoBehaviour
         if (Input.GetKey(KeyCode.E))
         {
             directionIndicator.SetActive(true);
+            var scaleProgress = ((float) chargeUpLeft) / maxCharges;
+            var f = 1-Mathf.Clamp01(scaleProgress);
+            directionIndicator.transform.localScale = new Vector3(f, f, 1);
         }
         if (chargeUpLeft > 0 && Input.GetKeyUp(KeyCode.E))
         {
             directionIndicator.SetActive(false);
-            chargeUpLeft = 20;
+            chargeUpLeft = maxCharges;
         }
         if (chargeUpLeft <= 0 && Input.GetKeyUp(KeyCode.E))
         {
-            chargeUpLeft = 20;
+            chargeUpLeft = maxCharges;
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2 direction = (mousePosition - transform.position).normalized;
             rb2d.velocity = direction * 60;
@@ -123,7 +129,6 @@ public class scwipt : MonoBehaviour
                 rb2d.AddForce(left * 4);
             }
         }
-
         _tryingToJump = false;
     }
 
