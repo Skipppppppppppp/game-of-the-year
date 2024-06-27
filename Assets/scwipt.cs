@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class scwipt : MonoBehaviour
 {
+    public GameObject directionIndicator;
     public AudioClip sound1;
     public AudioClip sound2;
     public AudioClip critSound;
@@ -17,9 +18,11 @@ public class scwipt : MonoBehaviour
     private int chargeUpLeft = 20;
     private Rigidbody2D rb2d;
     private bool playerOnGround;
+    private bool _tryingToJump;
 
     void Start()
     {
+        directionIndicator.SetActive(false);
         rb2d = GetComponent<Rigidbody2D>();
         audioSource = GetComponent<AudioSource>();
         particleSystem = GetComponent<ParticleSystem>();
@@ -43,36 +46,49 @@ public class scwipt : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.E))
         {
-            chargeUpLeft -= 1;
+            directionIndicator.SetActive(true);
+        }
+        if (chargeUpLeft > 0 && Input.GetKeyUp(KeyCode.E))
+        {
+            directionIndicator.SetActive(false);
+            chargeUpLeft = 20;
         }
         if (chargeUpLeft <= 0 && Input.GetKeyUp(KeyCode.E))
         {
+            chargeUpLeft = 20;
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2 direction = (mousePosition - transform.position).normalized;
             rb2d.velocity = direction * 60;
-            if (playerOnGround==true)
+            if (playerOnGround == true)
             {
                 StartCoroutine(EmitParticlesForDuration(0.1f));
             }
-            chargeUpLeft = 100000000; // making it so you can't hold to keep dashing and have to release, which sets the time to a sane amount of time
+            directionIndicator.SetActive(false); 
         }
-        if (Input.GetKeyUp(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            chargeUpLeft = 20;
+            _tryingToJump = true;
+        }
+    }
+    void FixedUpdate()
+    {
+        if (Input.GetKey(KeyCode.E))
+        {
+            chargeUpLeft -= 1;
         }
         if (playerOnGround) // player physics for when player is on the ground cause I want different physics from whn on ground and airborne
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (_tryingToJump)
             {
                 rb2d.AddForce(up * 1000);
             }
             if (Input.GetKey(KeyCode.D))
             {
-                rb2d.AddForce(right*50);
+                rb2d.AddForce(right * 50);
             }
-                if (Input.GetKey(KeyCode.A))
+            if (Input.GetKey(KeyCode.A))
             {
-                rb2d.AddForce(left*50);
+                rb2d.AddForce(left * 50);
             }
         }
         if (Input.GetMouseButtonDown(0))
@@ -84,9 +100,8 @@ public class scwipt : MonoBehaviour
             if (hit.collider != null)
             {
                 Destroy(hit.collider.gameObject);
-                Debug.Log("Object destroyed: " + hit.collider.name);
-            }   
-            if (hitNumber==3)
+            }
+            if (hitNumber == 3)
             {
                 audioSource.PlayOneShot(critSound, 1f);
                 hitNumber = 1;
@@ -97,17 +112,19 @@ public class scwipt : MonoBehaviour
                 hitNumber += 1;
             }
         }
-        if (playerOnGround==false) // player physics when airborne
+        if (playerOnGround == false) // player physics when airborne
         {
             if (Input.GetKey(KeyCode.D))
             {
                 rb2d.AddForce(right * 4);
             }
-                if (Input.GetKey(KeyCode.A))
+            if (Input.GetKey(KeyCode.A))
             {
                 rb2d.AddForce(left * 4);
             }
         }
+
+        _tryingToJump = false;
     }
 
     private IEnumerator EmitParticlesForDuration(float duration)
