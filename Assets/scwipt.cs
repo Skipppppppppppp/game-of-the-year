@@ -75,6 +75,27 @@ public class scwipt : MonoBehaviour
         {
             _tryingToJump = true;
         }
+        if (Input.GetMouseButtonDown(0))
+        {
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 direction = (mousePosition - transform.position).normalized;
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, 3, destroyableLayer);
+
+            if (hit.collider != null)
+            {
+                Destroy(hit.collider.gameObject);
+            }
+            if (hitNumber == 3)
+            {
+                audioSource.PlayOneShot(critSound, 1f);
+                hitNumber = 1;
+            }
+            else
+            {
+                PlayRandomSound();
+                hitNumber += 1;
+            }
+        }
     }
     void FixedUpdate()
     {
@@ -95,27 +116,6 @@ public class scwipt : MonoBehaviour
             if (Input.GetKey(KeyCode.A))
             {
                 rb2d.AddForce(left * 50);
-            }
-        }
-        if (Input.GetMouseButtonDown(0))
-        {
-            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 direction = (mousePosition - transform.position).normalized;
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, 3, destroyableLayer);
-
-            if (hit.collider != null)
-            {
-                Destroy(hit.collider.gameObject);
-            }
-            if (hitNumber == 3)
-            {
-                audioSource.PlayOneShot(critSound, 1f);
-                hitNumber = 1;
-            }
-            else
-            {
-                PlayRandomSound();
-                hitNumber += 1;
             }
         }
         if (playerOnGround == false) // player physics when airborne
