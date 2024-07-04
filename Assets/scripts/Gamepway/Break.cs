@@ -44,11 +44,38 @@ public class Break : MonoBehaviour
         public float c;
     }
 
-    private void VeryFunMeshThings()
+    public static Line EquidistantLineBetweenTwoPoints(Vector2 A, Vector2 B)
     {
-        Debug.Log("u brok the square :<");
+        Vector2 D = B - A;
+        Vector2 O = 0.5f * D + A;
+        Line line;
+        line.a = D.x;
+        line.b = D.y;
+        line.c = line.a * O.x + line.b * O.y;
+        return line;
+    }
+
+
+    public static bool ArePointsOnOneSide(Vector2 pointA, Line line, Vector2 pointB)
+    {
+        float FindPerpProjection(Vector2 point)
+        {
+            return (line.a * point.x + line.b * point.y + line.c);
+        }
+
+        float projectionToPoint = FindPerpProjection(pointA);
+        float projectionToIntersection = FindPerpProjection(pointB);
+        if (projectionToIntersection * projectionToPoint < 0)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    public void VeryFunMeshThings()
+    { 
         var mesh = GetComponent<MeshFilter>().mesh;
-        Vector2[] randomPoints = MakeRandomPoints(mesh, 4);
+        Vector2[] randomPoints = MakeRandomPoints(mesh, 3);
         Line[][] lineequations = new Line[randomPoints.Length][];
         for (int i = 0; i < randomPoints.Length; i++)
         {
@@ -60,14 +87,11 @@ public class Break : MonoBehaviour
                     continue;
                 }
 
+
                 Vector2 A = randomPoints[i];
                 Vector2 B = randomPoints[j];
-                Vector2 D = B - A;
-                Vector2 O = 0.5f * D + A;
-                Line line;
-                line.a = D.x;
-                line.b = D.y;
-                line.c = line.a * O.x + line.b * O.y;
+                Line line = EquidistantLineBetweenTwoPoints(A, B);
+                // lineequations.ForPoint(i).AndPoint(j) = line;
                 lineequations[i][j] = line;
             }
             for (int k = 0; k < 4; k++) // adding lines for mesh's walls so intersections are within mesh bounds
@@ -143,10 +167,6 @@ public class Break : MonoBehaviour
                     Vector2 intersection;
                     intersection.x = (line1.b * line2.c - line2.b * line1.c) / (line1.a * line2.b - line2.a * line1.b);
                     intersection.y = (line1.c * line2.a - line2.c * line1.a) / (line1.a * line2.b - line2.a * line1.b);
-                    if (intersection.x > mesh.bounds.size.x)
-                    {
-
-                    }
 
                     bool IsAllBeforeLine()
                     {
@@ -156,20 +176,9 @@ public class Break : MonoBehaviour
                             {
                                 continue;
                             }
-
                             Line otherLine = linesForPoint[otherLineIndex];
-
-                            float FindPerpProjection(Vector2 point)
-                            {
-                                return (otherLine.a * point.x + otherLine.b * point.y + otherLine.c);
-                            }
-
-                            float projectionToPoint = FindPerpProjection(randomPoints[i]);
-                            float projectionToIntersection = FindPerpProjection(intersection);
-                            if (projectionToIntersection * projectionToPoint < 0)
-                            {
-                                return false;
-                            }
+                            bool m = ArePointsOnOneSide(randomPoints[i],otherLine,intersection);
+                            return m;
                         }
                         return true;
                     }

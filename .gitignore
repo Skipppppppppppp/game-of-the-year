@@ -4,3 +4,4 @@ UserSettings
 Library
 *.csproj
 *.sln
+InitTestScene*
