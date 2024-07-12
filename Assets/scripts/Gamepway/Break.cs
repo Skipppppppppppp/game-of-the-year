@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Codice.Client.Common.GameUI;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -43,18 +44,46 @@ public class Break : MonoBehaviour
         public float b;
         public float c;
     }
+    
+    // public static Vector2[] FindMultipleIntersections(Line[] array)
+    // {
+    //     for (int i = 0; i <= array.Length; i++)
+    //     {
+    //         for (int j = 0; j < array.Length; j++)
+    //         {
+    //             if (i == j)
+    //             {
+    //                 continue;
+    //             }
+    //             Vector2[] intersectionArray;
+    //             Vector2 intewsection = FindIntersectionFromLines(array[i],array[j]);
 
+    //         }
+    //     }
+    // }
     public static Line EquidistantLineBetweenTwoPoints(Vector2 A, Vector2 B)
     {
-        Vector2 D = B - A;
-        Vector2 O = 0.5f * D + A;
+        // Vector2 D = B - A;
+        // Vector2 O = 0.5f * D + A;
+        // Line line;
+        // line.a = D.x;
+        // line.b = D.y;
+        // line.c = line.a * O.x + line.b * O.y;
+        // return line;
         Line line;
-        line.a = D.x;
-        line.b = D.y;
-        line.c = line.a * O.x + line.b * O.y;
-        return line;
+        line.a = B.y - A.y;
+        line.b = A.x - B.x;
+        line.c = line.a * A.x + line.b * A.y;
+        return line; 
     }
 
+    public static Vector2 FindIntersectionFromLines(Line line1, Line line2)
+    {
+        Vector2 intersection;
+        intersection.x = -(line1.b * line2.c - line2.b * line1.c) / (line1.a * line2.b - line2.a * line1.b);
+        intersection.y = -(line1.c * line2.a - line2.c * line1.a) / (line1.a * line2.b - line2.a * line1.b);
+        return intersection;
+    }
 
     public static bool ArePointsOnOneSide(Vector2 pointA, Line line, Vector2 pointB)
     {
@@ -75,7 +104,7 @@ public class Break : MonoBehaviour
     public void VeryFunMeshThings()
     { 
         var mesh = GetComponent<MeshFilter>().mesh;
-        Vector2[] randomPoints = MakeRandomPoints(mesh, 3);
+        Vector2[] randomPoints = MakeRandomPoints(mesh, 2);
         Line[][] lineequations = new Line[randomPoints.Length][];
         for (int i = 0; i < randomPoints.Length; i++)
         {
@@ -143,7 +172,7 @@ public class Break : MonoBehaviour
         }
 
 
-        List<Vector2>[] intersections = new List<Vector2>[randomPoints.Length];
+        List<Vector2>[] intersections = new List<Vector2>[randomPoints.Length]; 
         for (int i = 0; i < randomPoints.Length; i++)
         {
             Line[] linesForPoint = lineequations[i];
@@ -164,9 +193,7 @@ public class Break : MonoBehaviour
 
                     Line line1 = linesForPoint[line1Index];
                     Line line2 = linesForPoint[line2Index];
-                    Vector2 intersection;
-                    intersection.x = (line1.b * line2.c - line2.b * line1.c) / (line1.a * line2.b - line2.a * line1.b);
-                    intersection.y = (line1.c * line2.a - line2.c * line1.a) / (line1.a * line2.b - line2.a * line1.b);
+                    Vector2 intersection = FindIntersectionFromLines(line1, line2);
 
                     bool IsAllBeforeLine()
                     {
@@ -178,7 +205,10 @@ public class Break : MonoBehaviour
                             }
                             Line otherLine = linesForPoint[otherLineIndex];
                             bool m = ArePointsOnOneSide(randomPoints[i],otherLine,intersection);
-                            return m;
+                            if (m == false)
+                            {
+                                return m;
+                            }
                         }
                         return true;
                     }
@@ -192,6 +222,9 @@ public class Break : MonoBehaviour
         }
         points = randomPoints;
         this.intersections = intersections;
+        // Debug.Log(intersections.Length);
+        // Debug.Log(intersections[0].Count);
+        // Debug.Log(intersections[1].Count);
     }
     void OnDrawGizmos()
     {

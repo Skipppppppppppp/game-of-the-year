@@ -1,4 +1,4 @@
-using System.Collections;
+    using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NUnit.Framework;
@@ -9,7 +9,7 @@ namespace Assets.scripts.GamepwayTests
     public class GamepwayTests
     {
         [Test]
-        public void FoundPointsCorrectly()
+        public void FoundPointsCorrectly_yx()
         {
             // Arrange
             Break.Line line;
@@ -30,7 +30,7 @@ namespace Assets.scripts.GamepwayTests
             Assert.AreEqual(false, r);
         }
         [Test]
-        public void FoundPointsCorrectly2()
+        public void FoundPointsCorrectly_xx()
         {
             // Arrange
             Break.Line line;
@@ -51,7 +51,7 @@ namespace Assets.scripts.GamepwayTests
             Assert.AreEqual(true, r);
         }
         [Test]
-        public void FoundPointsCorrectly3()
+        public void FoundIfPointsAreOnOneSide_yy()
         {
             // Arrange
             Break.Line line;
@@ -72,7 +72,7 @@ namespace Assets.scripts.GamepwayTests
             Assert.AreEqual(true, r);
         }
         [Test]
-        public void LineMadeCorrectly()
+        public void LineEquationFoundCorrectly_OnAxes()
         {
             // Arrange
             Vector2 x;
@@ -86,9 +86,53 @@ namespace Assets.scripts.GamepwayTests
             Break.Line u = Break.EquidistantLineBetweenTwoPoints(x,y);
 
             // Assert
-            Assert.AreEqual(0, u.a);
+            Assert.AreEqual(1, u.a);
             Assert.AreEqual(-1, u.b);
             Assert.AreEqual(1, u.c);
+        }
+        [Test]
+        public void LineMadeCorrectly_OffAxes()
+        {
+            // Arrange
+            Vector2 x;
+            x.x = 0;
+            x.y = 5;
+            Vector2 y;
+            y.x = -2;
+            y.y = 0;
+            
+            // Act
+            Break.Line u = Break.EquidistantLineBetweenTwoPoints(x,y);
+
+            // Assert
+            Assert.AreEqual(-5, u.a);
+            Assert.AreEqual(2, u.b);
+            Assert.AreEqual(10, u.c);
+        }
+        [Test]
+
+        public void FoundLinesIntersectionCorrectly_NotOnOrigin()
+        {
+            // Arrange
+            Break.Line line1;
+            line1.a = -1;
+            line1.b = 2;
+            line1.c = 0;
+
+            Break.Line line2;
+            line2.a = 1;
+            line2.b = 1;
+            line2.c = 3;
+
+            void DoThings(Break.Line line1, Break.Line line2)
+            {
+                Vector2 u = Break.FindIntersectionFromLines(line1,line2);
+                Assert.AreEqual(2, u.x);
+                Assert.AreEqual(1, u.y);
+            }
+            
+            DoThings(line1, line2);
+            DoThings(line2,line1);
         }
     }
 }
