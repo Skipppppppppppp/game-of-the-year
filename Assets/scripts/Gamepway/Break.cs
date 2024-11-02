@@ -140,17 +140,8 @@ public class Break : MonoBehaviour
                 var angleB = Mathf.Atan2(vb.y, vb.x);
                 return angleA > angleB ? 1 : -1;
             });
-        }
-        foreach (Vector2 v in points)
-        {
-            // homogenous coordinates
-            var v1 = transform.localToWorldMatrix.MultiplyPoint3x4(v);
-            Gizmos.DrawSphere(v1, 0.1f);
-        }
-        for (int i = 0; i < intersections.Length; i++)
-        {
-            List<Vector2> x = intersections[i];
-            Color color = i switch
+
+            Color color = pointIndex switch
             {
                 0 => Color.red,
                 1 => new Color(0f,0f,0f),
@@ -158,11 +149,14 @@ public class Break : MonoBehaviour
                 3 => Color.green,
                 _ => Color.blue,
             };
-            foreach (Vector2 w in x)
-            {
-                var w1 = transform.localToWorldMatrix.MultiplyPoint3x4(w);
                 Gizmos.color = color;
-                Gizmos.DrawSphere(w1, 0.2f);
+
+
+            for (int vertexIndex = 0; vertexIndex < iters.Count; vertexIndex++)
+            {
+                var a = iters[vertexIndex];
+                var b = iters[(vertexIndex + 1) % iters.Count];
+                Gizmos.DrawLine(transform.localToWorldMatrix.MultiplyPoint3x4(a), transform.localToWorldMatrix.MultiplyPoint3x4(b));
             }
         }
     }
