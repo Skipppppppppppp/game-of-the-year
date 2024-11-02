@@ -1,5 +1,7 @@
 using UnityEngine;
 using NUnit.Framework;
+using System.Runtime.CompilerServices;
+using System.Collections.Generic;
 // using System.Numerics; уди нахуй
 
 namespace Assets.scripts.GamepwayTests
@@ -10,7 +12,7 @@ namespace Assets.scripts.GamepwayTests
         public void FoundPointsCorrectly_yx()
         {
             // Arrange
-            Break.Line line;
+            Line line;
             line.a = -1;
             line.b = 1;
             line.c = 0;
@@ -22,7 +24,7 @@ namespace Assets.scripts.GamepwayTests
             z.y = 0;
 
             // Act
-            var r = Break.ArePointsOnOneSide(x, line, z);
+            var r = Voronoi.ArePointsOnOneSide(x, line, z);
 
             // Assert
             Assert.AreEqual(false, r);
@@ -31,7 +33,7 @@ namespace Assets.scripts.GamepwayTests
         public void FoundPointsCorrectly_xx()
         {
             // Arrange
-            Break.Line line;
+            Line line;
             line.a = -1;
             line.b = 1;
             line.c = 0;
@@ -43,7 +45,7 @@ namespace Assets.scripts.GamepwayTests
             z.y = 0;
 
             // Act
-            var r = Break.ArePointsOnOneSide(x, line, z);
+            var r = Voronoi.ArePointsOnOneSide(x, line, z);
 
             // Assert
             Assert.AreEqual(true, r);
@@ -52,7 +54,7 @@ namespace Assets.scripts.GamepwayTests
         public void FoundIfPointsAreOnOneSide_yy()
         {
             // Arrange
-            Break.Line line;
+            Line line;
             line.a = -1;
             line.b = 1;
             line.c = 0;
@@ -64,11 +66,54 @@ namespace Assets.scripts.GamepwayTests
             z.y = 10;
 
             // Act
-            var r = Break.ArePointsOnOneSide(x, line, z);
+            var r = Voronoi.ArePointsOnOneSide(x, line, z);
 
             // Assert
             Assert.AreEqual(true, r);
         }
+        [Test]
+        public void FoundIfPointsAreOnOneSide_fucker()
+        {
+            // Arrange
+            Line line;
+            line.a = 1;
+            line.b = 9;
+            line.c = 35;
+            Vector2 x;
+            x.x = -2;
+            x.y = 3;
+            Vector2 z;
+            z.x = -2.66f;
+            z.y = 5.66f;
+
+            // Act
+            var r = Voronoi.ArePointsOnOneSide(x, line, z);
+
+            // Assert
+            Assert.AreEqual(false, r);
+        }
+
+        [Test]public void FoundIfPointsAreOnOneSide_donker()
+        {
+            // Arrange
+            Line line;
+            line.a = -3;
+            line.b = -3;
+            line.c = -9;
+            Vector2 x;
+            x.x = -2;
+            x.y = 3;
+            Vector2 z;
+            z.x = -10;
+            z.y = 5;
+
+            // Act
+            var r = Voronoi.ArePointsOnOneSide(x, line, z);
+
+            // Assert
+            Assert.AreEqual(true, r);
+        }
+
         [Test]
         public void LineEquationFoundCorrectly_OnAxes()
         {
@@ -81,7 +126,7 @@ namespace Assets.scripts.GamepwayTests
             y.y = 0;
             
             // Act
-            Break.Line u = Break.EquidistantLineBetweenTwoPoints(x,y);
+            Line u = Voronoi.EquidistantLineBetweenTwoPoints(x,y);
 
             // Assert
             Assert.AreEqual(1, u.a);
@@ -100,7 +145,7 @@ namespace Assets.scripts.GamepwayTests
             y.y = 0;
             
             // Act
-            Break.Line u = Break.EquidistantLineBetweenTwoPoints(x,y);
+            Line u = Voronoi.EquidistantLineBetweenTwoPoints(x,y);
 
             // Assert
             Assert.AreEqual(-2, u.a);
@@ -112,19 +157,19 @@ namespace Assets.scripts.GamepwayTests
         public void FoundLinesIntersectionCorrectly_NotOnOrigin()
         {
             // Arrange
-            Break.Line line1;
+            Line line1;
             line1.a = -1;
             line1.b = 2;
             line1.c = 0;
 
-            Break.Line line2;
+            Line line2;
             line2.a = 1;
             line2.b = 1;
             line2.c = 3;
 
-            void DoThings(Break.Line line1, Break.Line line2)
+            void DoThings(Line line1, Line line2)
             {
-                Vector2 u = Break.FindIntersectionFromLines(line1,line2);
+                Vector2 u = Voronoi.FindIntersectionFromLines(line1,line2);
                 Assert.AreEqual(2, u.x);
                 Assert.AreEqual(1, u.y);
             }
@@ -145,22 +190,101 @@ namespace Assets.scripts.GamepwayTests
 
             Vector2 centerPoint = new Vector2 (-2, 3);
 
-            var lines = new Break.Line[5];
-            lines[0] = new Break.Line();
-            lines[1] = Break.FindLineThroughTwoPoints(points[0],points[1]);
-            lines[2] = Break.FindLineThroughTwoPoints(points[1],points[2]);
-            lines[3] = Break.FindLineThroughTwoPoints(points[0],points[2]);
-            lines[4] = Break.FindLineThroughTwoPoints(points[3],points[4]);
+            var lines = new Line[5];
+            lines[0] = new Line();
+            lines[1] = Voronoi.FindLineThroughTwoPoints(points[0],points[1]);
+            lines[2] = Voronoi.FindLineThroughTwoPoints(points[1],points[2]);
+            lines[3] = Voronoi.FindLineThroughTwoPoints(points[0],points[2]);
+            lines[4] = Voronoi.FindLineThroughTwoPoints(points[3],points[4]);
 
             // Act
-            var u = Break.GetAreaVertices(centerPoint,lines,0);
+            var u = Voronoi.GetAreaVertices(centerPoint,lines,0);
 
             // Assert
-            for (int i = 0; i < u.Count; i++)
+            AssertContains(u, new(x: -4, y: 3));
+            AssertContains(u, new(x: -1, y: 4));
+            AssertContains(u, new(x: -3.37f, y: 4.26f));
+            AssertContains(u, new(x: 2, y: 1));
+            Assert.AreEqual(u.Count, 2*4);
+        }
+        [Test]
+        public void SkipsCorrectIndex()
+        {
+            // Arrange
+            var points = new Vector2[5];
+            points[0] = new Vector2 (-1,4);
+            points[1] = new Vector2 (-10,5);
+            points[2] = new Vector2 (2,1);
+            points[3] = new Vector2 (-4,3);
+            points[4] = new Vector2 (-3,5);
+
+            Vector2 centerPoint = new Vector2 (-2, 3);
+
+            var lines = new Line[5];
+            lines[0] = Voronoi.FindLineThroughTwoPoints(points[0],points[1]);
+            lines[1] = Voronoi.FindLineThroughTwoPoints(points[1],points[2]);
+            lines[2] = new Line();
+            lines[3] = Voronoi.FindLineThroughTwoPoints(points[0],points[2]);
+            lines[4] = Voronoi.FindLineThroughTwoPoints(points[3],points[4]);
+
+            // Act
+            var u = Voronoi.GetAreaVertices(centerPoint,lines,2);
+
+            // Assert
+            AssertContains(u, new(x: -4, y: 3));
+            AssertContains(u, new(x: -1, y: 4));
+            AssertContains(u, new(x: -3.37f, y: 4.26f));
+            AssertContains(u, new(x: 2, y: 1));
+            Assert.AreEqual(u.Count, 2*4);
+        }
+        [Test]
+        public void FoundAreaVerticesThatAreSameAsInputCorrectly()
+        {
+            // Arrange
+            var points = new Vector2[3];
+            points[0] = new Vector2 (-1.25f,-0.875f);
+            points[1] = new Vector2 (-0.4f,0.4f);
+            points[2] = new Vector2 (3,-3);
+
+            Vector2 centerPoint = new Vector2 (0, -1);
+
+            var lines = new Line[4];
+            lines[0] = new Line();
+            lines[1] = Voronoi.FindLineThroughTwoPoints(points[0],points[1]);
+            lines[2] = Voronoi.FindLineThroughTwoPoints(points[1],points[2]);
+            lines[3] = Voronoi.FindLineThroughTwoPoints(points[0],points[2]);
+
+            // Act
+            var u = Voronoi.GetAreaVertices(centerPoint,lines,0);
+
+            // Assert
+            
+            for (int i = 0; i < points.Length; i++)
             {
-                Vector2 x = u[i];
-                Debug.Log($"({x})");
+                AssertContains(u, points[i]);
             }
+        }
+
+        private static void AssertContains(List<Vector2> points, Vector2 point)
+        {
+            bool Contains()
+            {
+                const float epsilon = 0.01f;
+                foreach (var p in points)
+                {
+                    if (Mathf.Abs(p.x - point.x) > epsilon)
+                    {
+                        continue;
+                    }
+                    if (Mathf.Abs(p.y - point.y) > epsilon)
+                    {
+                        continue;
+                    }
+                    return true;
+                }
+                return false;
+            }
+            Assert.IsTrue(Contains(), "{0} is not contained in the array", point);
         }
     }
 }
