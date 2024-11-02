@@ -36,14 +36,14 @@ public class movingObject : MonoBehaviour
         if (isObjectMoving)
         {
             Vector2 direction = (mousePosition - transform.position).normalized;
-            rb2d.velocity = (direction*1);
+            rb2d.linearVelocity = (direction*1);
             if (distance <= 10)
             {
-                rb2d.velocity = (direction*40);
+                rb2d.linearVelocity = (direction*40);
             }
             if (distanceToMouse >=10 && distance <=11)
             {
-                rb2d.velocity = (direction*10);
+                rb2d.linearVelocity = (direction*10);
             }
         }
     }
