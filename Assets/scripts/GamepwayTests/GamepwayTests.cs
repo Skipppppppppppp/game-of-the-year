@@ -2,6 +2,8 @@ using UnityEngine;
 using NUnit.Framework;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
+using System.Net.WebSockets;
+using UnityEngine.Assertions.Must;
 // using System.Numerics; уди нахуй
 
 namespace Assets.scripts.GamepwayTests
@@ -264,6 +266,42 @@ namespace Assets.scripts.GamepwayTests
                 AssertContains(u, points[i]);
             }
         }
+        [Test]
+        public void FoundMeshBoundsLinesCorrectly()
+        {
+            var bounds = new Bounds(new Vector2(0, 1), new Vector2(6,8));
+            var u = Voronoi.GetBoundsLines(bounds);
+            AssertContains(u, new()
+            {
+                a = 0,
+                b = 1,
+                c = 5,
+            }
+            );
+            
+            AssertContains(u, new()
+            {
+                a = 0,
+                b = 1,
+                c = -3,
+            }
+            );
+            AssertContains(u, new()
+            {
+                a = 1,
+                b = 0,
+                c = 3,
+            }
+            );
+            AssertContains(u, new()
+            {
+
+                a = 1,
+                b = 0,
+                c = -3,
+            }
+            );
+        }
 
         private static void AssertContains(List<Vector2> points, Vector2 point)
         {
@@ -285,6 +323,35 @@ namespace Assets.scripts.GamepwayTests
                 return false;
             }
             Assert.IsTrue(Contains(), "{0} is not contained in the array", point);
+        }
+        private static void AssertContains(Line[] lines, Line line)
+        {
+            bool Contains()
+            {
+                const float epsilon = 0.01f;
+                foreach (var p in lines)
+                {
+                    bool NotEqual(float num1, float num2)
+                    {
+                        return Mathf.Abs(num1 - num2) > epsilon;
+                    }
+                    if (NotEqual(p.a, line.a))
+                    {
+                        continue;
+                    }
+                    if (NotEqual(p.b, line.b))
+                    {
+                        continue;
+                    }
+                    if (NotEqual(p.c, line.c))
+                    {
+                        continue;
+                    }
+                    return true;
+                }
+                return false;
+            }
+            Assert.IsTrue(Contains(), "{0} is not contained in the array", line);
         }
     }
 }

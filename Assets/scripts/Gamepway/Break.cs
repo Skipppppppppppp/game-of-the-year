@@ -19,6 +19,7 @@ public class Break : MonoBehaviour
     public float speedForBreak = 80;
     private Vector2[] points = Array.Empty<Vector2>();
     private List<Vector2>[] intersections = Array.Empty<List<Vector2>>();
+    Line[][] lineequations;
 
     private static Vector2[] MakeRandomPoints(Mesh mesh, int amount)
     {
@@ -58,16 +59,37 @@ public class Break : MonoBehaviour
     //     }
     // }
 
+    private static Vector2[] GetFixedPoints(Bounds bounds)
+    {
+        Vector2[] ret = new Vector2[]
+        {
+            new(1.0f/6, 1.0f/6),
+            new(1.0f/6, 5.0f/6),
+            new(5.0f/6, 1.0f/6),
+            new(5.0f/6, 5.0f/6),
+        };
+        foreach (ref var v in ret.AsSpan())
+        {
+            Vector2 size = bounds.size;
+            Vector2 leftTop = (Vector2)(bounds.center) - size / 2;
+            v *= size;
+            v += leftTop; 
+        }
+        return ret;
+    }
 
     public void VeryFunMeshThings()
     { 
         var mesh = GetComponent<MeshFilter>().mesh;
-        Vector2[] randomPoints = MakeRandomPoints(mesh, 2);
-        Line[][] lineequations = new Line[randomPoints.Length][];
-        for (int i = 0; i < randomPoints.Length; i++)
+        
+        Vector2[] points = MakeRandomPoints(mesh, 4);
+        // Vector2[] points = GetFixedPoints(mesh.bounds);
+
+        Line[][] lineequations = new Line[points.Length][];
+        for (int i = 0; i < points.Length; i++)
         {
-            lineequations[i] = new Line[randomPoints.Length + 4];
-            for (int j = 0; j < randomPoints.Length; j++)
+            lineequations[i] = new Line[points.Length + 4];
+            for (int j = 0; j < points.Length; j++)
             {
                 if (i == j)
                 {
@@ -75,36 +97,50 @@ public class Break : MonoBehaviour
                 }
 
 
-                Vector2 A = randomPoints[i];
-                Vector2 B = randomPoints[j];
+                Vector2 A = points[i];
+                Vector2 B = points[j];
                 Line line = Voronoi.EquidistantLineBetweenTwoPoints(A, B);
                 // lineequations.ForPoint(i).AndPoint(j) = line;
                 lineequations[i][j] = line;
             }
 
-            var boundLines = Voronoi.GetBoundLines(mesh.bounds);
+            var boundLines = Voronoi.GetBoundsLines(mesh.bounds);
             for (int k = 0; k < boundLines.Length; k++)
             {
-                int index = k + randomPoints.Length;
+                int index = k + points.Length;
                 lineequations[i][index] = boundLines[k];
             }          
         }
 
 
-        List<Vector2>[] intersections = new List<Vector2>[randomPoints.Length]; 
-        for (int i = 0; i < randomPoints.Length; i++)
+        List<Vector2>[] intersections = new List<Vector2>[points.Length]; 
+        for (int i = 0; i < points.Length; i++)
         {
             Line[] linesForPoint = lineequations[i];
-            intersections[i] = Voronoi.GetAreaVertices(randomPoints[i],linesForPoint,i);
+            intersections[i] = Voronoi.GetAreaVertices(points[i],linesForPoint,i);
         }
-        points = randomPoints;
+        this.points = points;
         this.intersections = intersections;
+        this.lineequations = lineequations;
         // Debug.Log(intersections.Length);
         // Debug.Log(intersections[0].Count);
         // Debug.Log(intersections[1].Count);
     }
     void OnDrawGizmos()
     {
+        for (int pointIndex = 0; pointIndex < points.Length; pointIndex++)
+        {
+            var iters = intersections[pointIndex];
+            var center = points[pointIndex];
+            iters.Sort((a, b) =>
+            {
+                var va = a - center;
+                var vb = b - center;
+                var angleA = Mathf.Atan2(va.y, va.x);
+                var angleB = Mathf.Atan2(vb.y, vb.x);
+                return angleA > angleB ? 1 : -1;
+            });
+        }
         foreach (Vector2 v in points)
         {
             // homogenous coordinates
@@ -117,7 +153,7 @@ public class Break : MonoBehaviour
             Color color = i switch
             {
                 0 => Color.red,
-                1 => new Color(255f,140f,0f),
+                1 => new Color(0f,0f,0f),
                 2 => Color.yellow,
                 3 => Color.green,
                 _ => Color.blue,

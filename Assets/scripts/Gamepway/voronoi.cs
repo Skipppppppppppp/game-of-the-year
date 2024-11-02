@@ -99,7 +99,7 @@ public static class Voronoi
         return intersections;
     }
 
-    public static Line[] GetBoundLines(Bounds bounds)
+    public static Line[] GetBoundsLines(Bounds bounds)
     {
         var ret = new Line[4];
         for (int k = 0; k < 4; k++) // adding lines for mesh's walls so intersections are within mesh bounds
