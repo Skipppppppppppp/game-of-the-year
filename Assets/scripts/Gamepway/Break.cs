@@ -61,20 +61,23 @@ public class Break : MonoBehaviour
     //         }
     //     }
     // }
-    public static Line EquidistantLineBetweenTwoPoints(Vector2 A, Vector2 B)
+    public static Line FindLineThroughTwoPoints(Vector2 A, Vector2 B)
     {
-        // Vector2 D = B - A;
-        // Vector2 O = 0.5f * D + A;
-        // Line line;
-        // line.a = D.x;
-        // line.b = D.y;
-        // line.c = line.a * O.x + line.b * O.y;
-        // return line;
         Line line;
         line.a = B.y - A.y;
         line.b = A.x - B.x;
         line.c = line.a * A.x + line.b * A.y;
         return line; 
+    }
+    public static Line EquidistantLineBetweenTwoPoints(Vector2 A, Vector2 B)
+    {
+        Vector2 D = B - A;
+        Vector2 O = 0.5f * D + A; 
+        Line line;
+        line.a = D.x;
+        line.b = D.y;
+        line.c = line.a * O.x + line.b * O.y;
+        return line;
     }
 
     public static Vector2 FindIntersectionFromLines(Line line1, Line line2)
@@ -99,6 +102,53 @@ public class Break : MonoBehaviour
             return false;
         }
         return true;
+    }
+    public static List<Vector2> GetAreaVertices(Vector2 point, Line[] lines, int ignoredLineIndex)
+    {
+        var intersections = new List<Vector2>();
+        for (int line1Index = 0; line1Index < lines.Length; line1Index++)
+        {
+            if (ignoredLineIndex == line1Index)
+            {
+                continue;
+            }
+
+            for (int line2Index = 0; line2Index < lines.Length; line2Index++)
+            {
+                if (line2Index == line1Index || line2Index == ignoredLineIndex)
+                {
+                    continue;
+                }
+
+                Line line1 = lines[line1Index];
+                Line line2 = lines[line2Index];
+                Vector2 intersection = FindIntersectionFromLines(line1, line2);
+
+                bool IsAllBeforeLine()
+                {
+                    for (int otherLineIndex = 0; otherLineIndex < lines.Length; otherLineIndex++)
+                    {
+                        if (otherLineIndex == line1Index || otherLineIndex == line2Index || otherLineIndex == ignoredLineIndex)
+                        {
+                            continue;
+                        }
+                        Line otherLine = lines[otherLineIndex];
+                        bool m = ArePointsOnOneSide(point,otherLine,intersection);
+                        if (m == false)
+                        {
+                            return m;
+                        }
+                    }
+                    return true;
+                }
+
+                if (IsAllBeforeLine())
+                {
+                    intersections.Add(intersection); 
+                }
+            }
+        }
+        return intersections;
     }
 
     public void VeryFunMeshThings()
@@ -176,49 +226,7 @@ public class Break : MonoBehaviour
         for (int i = 0; i < randomPoints.Length; i++)
         {
             Line[] linesForPoint = lineequations[i];
-            intersections[i] = new List<Vector2>();
-            for (int line1Index = 0; line1Index < linesForPoint.Length; line1Index++)
-            {
-                if (i == line1Index)
-                {
-                    continue;
-                }
-
-                for (int line2Index = 0; line2Index < linesForPoint.Length; line2Index++)
-                {
-                    if (line2Index == line1Index || line2Index == i)
-                    {
-                        continue;
-                    }
-
-                    Line line1 = linesForPoint[line1Index];
-                    Line line2 = linesForPoint[line2Index];
-                    Vector2 intersection = FindIntersectionFromLines(line1, line2);
-
-                    bool IsAllBeforeLine()
-                    {
-                        for (int otherLineIndex = 0; otherLineIndex < linesForPoint.Length; otherLineIndex++)
-                        {
-                            if (otherLineIndex == line1Index || otherLineIndex == line2Index || otherLineIndex == i)
-                            {
-                                continue;
-                            }
-                            Line otherLine = linesForPoint[otherLineIndex];
-                            bool m = ArePointsOnOneSide(randomPoints[i],otherLine,intersection);
-                            if (m == false)
-                            {
-                                return m;
-                            }
-                        }
-                        return true;
-                    }
-
-                    if (IsAllBeforeLine())
-                    {
-                        intersections[i].Add(intersection);
-                    }
-                }
-            }
+            intersections[i] = GetAreaVertices(randomPoints[i],linesForPoint,i);
         }
         points = randomPoints;
         this.intersections = intersections;

@@ -1,8 +1,6 @@
-    using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using NUnit.Framework;
-using System.Security.Cryptography.X509Certificates;
+// using System.Numerics; уди нахуй
 
 namespace Assets.scripts.GamepwayTests
 {
@@ -87,11 +85,11 @@ namespace Assets.scripts.GamepwayTests
 
             // Assert
             Assert.AreEqual(1, u.a);
-            Assert.AreEqual(-1, u.b);
-            Assert.AreEqual(1, u.c);
+            Assert.AreEqual(1, u.b);
+            Assert.AreEqual(0, u.c);
         }
         [Test]
-        public void LineMadeCorrectly_OffAxes()
+        public void LineequationFoundCorrectly_OffAxes()
         {
             // Arrange
             Vector2 x;
@@ -105,9 +103,9 @@ namespace Assets.scripts.GamepwayTests
             Break.Line u = Break.EquidistantLineBetweenTwoPoints(x,y);
 
             // Assert
-            Assert.AreEqual(-5, u.a);
-            Assert.AreEqual(2, u.b);
-            Assert.AreEqual(10, u.c);
+            Assert.AreEqual(-2, u.a);
+            Assert.AreEqual(-5, u.b);
+            Assert.AreEqual(-10.5, u.c);
         }
         [Test]
 
@@ -133,6 +131,36 @@ namespace Assets.scripts.GamepwayTests
             
             DoThings(line1, line2);
             DoThings(line2,line1);
+        }
+        [Test]
+        public void FoundAreaVerticesCorrectly()
+        {
+            // Arrange
+            var points = new Vector2[5];
+            points[0] = new Vector2 (-1,4);
+            points[1] = new Vector2 (-10,5);
+            points[2] = new Vector2 (2,1);
+            points[3] = new Vector2 (-4,3);
+            points[4] = new Vector2 (-3,5);
+
+            Vector2 centerPoint = new Vector2 (-2, 3);
+
+            var lines = new Break.Line[5];
+            lines[0] = new Break.Line();
+            lines[1] = Break.FindLineThroughTwoPoints(points[0],points[1]);
+            lines[2] = Break.FindLineThroughTwoPoints(points[1],points[2]);
+            lines[3] = Break.FindLineThroughTwoPoints(points[0],points[2]);
+            lines[4] = Break.FindLineThroughTwoPoints(points[3],points[4]);
+
+            // Act
+            var u = Break.GetAreaVertices(centerPoint,lines,0);
+
+            // Assert
+            for (int i = 0; i < u.Count; i++)
+            {
+                Vector2 x = u[i];
+                Debug.Log($"({x})");
+            }
         }
     }
 }
