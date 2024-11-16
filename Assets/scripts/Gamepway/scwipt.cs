@@ -32,17 +32,17 @@ public class scwipt : MonoBehaviour
     }
     void OnCollisionStay2D(Collision2D collision)
     {
-        rb2d.drag = 4;
+        rb2d.linearDamping = 4;
         playerOnGround = true;
         if (Input.GetKey(KeyCode.Space))
         {
-            rb2d.drag = 1;
+            rb2d.linearDamping = 1;
         }
     }
     void OnCollisionExit2D(Collision2D collision)
     {
         playerOnGround = false;
-        rb2d.drag = 1;
+        rb2d.linearDamping = 1;
     }
 
     void Update()
@@ -64,7 +64,7 @@ public class scwipt : MonoBehaviour
             chargeUpLeft = maxCharges;
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2 direction = (mousePosition - transform.position).normalized;
-            rb2d.velocity = direction * 60;
+            rb2d.linearVelocity = direction * 60;
             if (playerOnGround == true)
             {
                 StartCoroutine(EmitParticlesForDuration(0.1f));

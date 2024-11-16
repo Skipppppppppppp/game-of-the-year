@@ -5,6 +5,7 @@ using Codice.Client.Common.GameUI;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.VFX;
 using Random = UnityEngine.Random;
 
 public class Break : MonoBehaviour
@@ -18,6 +19,7 @@ public class Break : MonoBehaviour
     public float speedForBreak = 80;
     private Vector2[] points = Array.Empty<Vector2>();
     private List<Vector2>[] intersections = Array.Empty<List<Vector2>>();
+    Line[][] lineequations;
 
     private static Vector2[] MakeRandomPoints(Mesh mesh, int amount)
     {
@@ -38,12 +40,7 @@ public class Break : MonoBehaviour
         return ret;
     }
 
-    public struct Line
-    {
-        public float a;
-        public float b;
-        public float c;
-    }
+
     
     // public static Vector2[] FindMultipleIntersections(Line[] array)
     // {
@@ -61,105 +58,38 @@ public class Break : MonoBehaviour
     //         }
     //     }
     // }
-    public static Line FindLineThroughTwoPoints(Vector2 A, Vector2 B)
-    {
-        Line line;
-        line.a = B.y - A.y;
-        line.b = A.x - B.x;
-        line.c = line.a * A.x + line.b * A.y;
-        return line; 
-    }
-    public static Line EquidistantLineBetweenTwoPoints(Vector2 A, Vector2 B)
-    {
-        Vector2 D = B - A;
-        Vector2 O = 0.5f * D + A; 
-        Line line;
-        line.a = D.x;
-        line.b = D.y;
-        line.c = line.a * O.x + line.b * O.y;
-        return line;
-    }
 
-    public static Vector2 FindIntersectionFromLines(Line line1, Line line2)
+    private static Vector2[] GetFixedPoints(Bounds bounds)
     {
-        Vector2 intersection;
-        intersection.x = -(line1.b * line2.c - line2.b * line1.c) / (line1.a * line2.b - line2.a * line1.b);
-        intersection.y = -(line1.c * line2.a - line2.c * line1.a) / (line1.a * line2.b - line2.a * line1.b);
-        return intersection;
-    }
-
-    public static bool ArePointsOnOneSide(Vector2 pointA, Line line, Vector2 pointB)
-    {
-        float FindPerpProjection(Vector2 point)
+        Vector2[] ret = new Vector2[]
         {
-            return (line.a * point.x + line.b * point.y + line.c);
-        }
-
-        float projectionToPoint = FindPerpProjection(pointA);
-        float projectionToIntersection = FindPerpProjection(pointB);
-        if (projectionToIntersection * projectionToPoint < 0)
+            new(1.0f/6, 1.0f/6),
+            new(1.0f/6, 5.0f/6),
+            new(5.0f/6, 1.0f/6),
+            new(5.0f/6, 5.0f/6),
+        };
+        foreach (ref var v in ret.AsSpan())
         {
-            return false;
+            Vector2 size = bounds.size;
+            Vector2 leftTop = (Vector2)(bounds.center) - size / 2;
+            v *= size;
+            v += leftTop; 
         }
-        return true;
-    }
-    public static List<Vector2> GetAreaVertices(Vector2 point, Line[] lines, int ignoredLineIndex)
-    {
-        var intersections = new List<Vector2>();
-        for (int line1Index = 0; line1Index < lines.Length; line1Index++)
-        {
-            if (ignoredLineIndex == line1Index)
-            {
-                continue;
-            }
-
-            for (int line2Index = 0; line2Index < lines.Length; line2Index++)
-            {
-                if (line2Index == line1Index || line2Index == ignoredLineIndex)
-                {
-                    continue;
-                }
-
-                Line line1 = lines[line1Index];
-                Line line2 = lines[line2Index];
-                Vector2 intersection = FindIntersectionFromLines(line1, line2);
-
-                bool IsAllBeforeLine()
-                {
-                    for (int otherLineIndex = 0; otherLineIndex < lines.Length; otherLineIndex++)
-                    {
-                        if (otherLineIndex == line1Index || otherLineIndex == line2Index || otherLineIndex == ignoredLineIndex)
-                        {
-                            continue;
-                        }
-                        Line otherLine = lines[otherLineIndex];
-                        bool m = ArePointsOnOneSide(point,otherLine,intersection);
-                        if (m == false)
-                        {
-                            return m;
-                        }
-                    }
-                    return true;
-                }
-
-                if (IsAllBeforeLine())
-                {
-                    intersections.Add(intersection); 
-                }
-            }
-        }
-        return intersections;
+        return ret;
     }
 
     public void VeryFunMeshThings()
     { 
         var mesh = GetComponent<MeshFilter>().mesh;
-        Vector2[] randomPoints = MakeRandomPoints(mesh, 2);
-        Line[][] lineequations = new Line[randomPoints.Length][];
-        for (int i = 0; i < randomPoints.Length; i++)
+        
+        Vector2[] points = MakeRandomPoints(mesh, 4);
+        // Vector2[] points = GetFixedPoints(mesh.bounds);
+
+        Line[][] lineequations = new Line[points.Length][];
+        for (int i = 0; i < points.Length; i++)
         {
-            lineequations[i] = new Line[randomPoints.Length + 4];
-            for (int j = 0; j < randomPoints.Length; j++)
+            lineequations[i] = new Line[points.Length + 4];
+            for (int j = 0; j < points.Length; j++)
             {
                 if (i == j)
                 {
@@ -167,97 +97,66 @@ public class Break : MonoBehaviour
                 }
 
 
-                Vector2 A = randomPoints[i];
-                Vector2 B = randomPoints[j];
-                Line line = EquidistantLineBetweenTwoPoints(A, B);
+                Vector2 A = points[i];
+                Vector2 B = points[j];
+                Line line = Voronoi.EquidistantLineBetweenTwoPoints(A, B);
                 // lineequations.ForPoint(i).AndPoint(j) = line;
                 lineequations[i][j] = line;
             }
-            for (int k = 0; k < 4; k++) // adding lines for mesh's walls so intersections are within mesh bounds
+
+            var boundLines = Voronoi.GetBoundsLines(mesh.bounds);
+            for (int k = 0; k < boundLines.Length; k++)
             {
-                var bounds = mesh.bounds;
-                var size = bounds.size;
-                Vector2 offset = bounds.center;
-                Vector2 halfsize = size / 2;
-                int index = k + randomPoints.Length;
-                Line line;
-                switch (k)
-                {
-                    case 0: // left
-                    {
-                        line.a = 1;
-                        line.b = 0;
-                        line.c = offset.x - halfsize.x;
-                        break;
-                    }
-                    case 1: // top
-                    {
-                        line.a = 0;
-                        line.b = 1;
-                        line.c = offset.y - halfsize.y;
-                        break;
-                    }
-                    case 2: // right
-                    {
-                        line.a = 1;
-                        line.b = 0;
-                        line.c = offset.x + halfsize.x;
-                        break;
-                    }
-                    case 3: // bottom
-                    {
-                        line.a = 0;
-                        line.b = 1;
-                        line.c = offset.y + halfsize.y;
-                        break;
-                    }
-                    default:
-                    {
-                        System.Diagnostics.Debug.Fail("Unreachable");
-                        return;
-                    }
-                }
-                lineequations[i][index] = line;
-            }
+                int index = k + points.Length;
+                lineequations[i][index] = boundLines[k];
+            }          
         }
 
 
-        List<Vector2>[] intersections = new List<Vector2>[randomPoints.Length]; 
-        for (int i = 0; i < randomPoints.Length; i++)
+        List<Vector2>[] intersections = new List<Vector2>[points.Length]; 
+        for (int i = 0; i < points.Length; i++)
         {
             Line[] linesForPoint = lineequations[i];
-            intersections[i] = GetAreaVertices(randomPoints[i],linesForPoint,i);
+            intersections[i] = Voronoi.GetAreaVertices(points[i],linesForPoint,i);
         }
-        points = randomPoints;
+        this.points = points;
         this.intersections = intersections;
+        this.lineequations = lineequations;
         // Debug.Log(intersections.Length);
         // Debug.Log(intersections[0].Count);
         // Debug.Log(intersections[1].Count);
     }
     void OnDrawGizmos()
     {
-        foreach (Vector2 v in points)
+        for (int pointIndex = 0; pointIndex < points.Length; pointIndex++)
         {
-            // homogenous coordinates
-            var v1 = transform.localToWorldMatrix.MultiplyPoint3x4(v);
-            Gizmos.DrawSphere(v1, 0.1f);
-        }
-        for (int i = 0; i < intersections.Length; i++)
-        {
-            List<Vector2> x = intersections[i];
-            Color color = i switch
+            var iters = intersections[pointIndex];
+            var center = points[pointIndex];
+            iters.Sort((a, b) =>
+            {
+                var va = a - center;
+                var vb = b - center;
+                var angleA = Mathf.Atan2(va.y, va.x);
+                var angleB = Mathf.Atan2(vb.y, vb.x);
+                return angleA > angleB ? 1 : -1;
+            });
+
+            Color color = pointIndex switch
             {
                 0 => Color.red,
-                1 => new Color(255f,140f,0f),
+                1 => new Color(0f,0f,0f),
                 2 => Color.yellow,
                 3 => Color.green,
                 _ => Color.blue,
             };
-            foreach (Vector2 w in x)
-            {
-                var w1 = transform.localToWorldMatrix.MultiplyPoint3x4(w);
                 Gizmos.color = color;
-                Gizmos.DrawSphere(w1, 0.2f);
+
+
+            for (int vertexIndex = 0; vertexIndex < iters.Count; vertexIndex++)
+            {
+                var a = iters[vertexIndex];
+                var b = iters[(vertexIndex + 1) % iters.Count];
+                Gizmos.DrawLine(transform.localToWorldMatrix.MultiplyPoint3x4(a), transform.localToWorldMatrix.MultiplyPoint3x4(b));
             }
         }
     }
