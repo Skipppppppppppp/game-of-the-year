@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 #nullable enable
@@ -10,6 +11,7 @@ public sealed class MovingObjects : MonoBehaviour
     public float maxForInterp;
     public float minForDistance;
     public float maxForDistance;
+    private const float maxForInterpCoeff = 1;
     private Rigidbody2D? movingObject;
     private float initialGravityScale;
 
@@ -40,7 +42,6 @@ public sealed class MovingObjects : MonoBehaviour
             {
                 return;
             }
-            movingObject.gravityScale = initialGravityScale;
             movingObject = null;
             return;
         }
@@ -54,31 +55,58 @@ public sealed class MovingObjects : MonoBehaviour
             }
             movingObject = raycasted;
             initialGravityScale = movingObject.gravityScale;
-            movingObject.gravityScale = 0;
         }
+    }
+    void FixedUpdate()
+    {
+        if (!Input.GetMouseButton(1) || movingObject == null)
+        {
+            return;
+        }
+        bool isObjectMovingX = false;
+        bool isObjectMovingY = false;
         var trans = movingObject.transform;
         var rb2d = movingObject;
         Vector2 objectPosition = trans.position;
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector2 mousePosition2D = new Vector2(mousePosition.x, mousePosition.y);
-        float distanceFromObjToMouse = (mousePosition2D - objectPosition).magnitude;
-        float distanceToObject = Vector2.Distance(player.transform.position, trans.position);
-        float distanceToMouse = Vector2.Distance(player.transform.position, mousePosition2D);
-        bool isObjectMoving = true;
-        if (distanceToObject >= 12 && distanceToMouse >= distanceToObject)
+        float distanceFromObjToMouseX = Mathf.Abs(mousePosition2D.x - objectPosition.x);
+        float distanceFromObjToMouseY = Mathf.Abs(mousePosition2D.y - objectPosition.y);
+        float distanceToObjectX = Mathf.Abs(player.transform.position.x - trans.position.x);
+        float distanceToMouseX =  Mathf.Abs(player.transform.position.x - mousePosition2D.x);
+        float distanceToObjectY = Mathf.Abs(player.transform.position.y - trans.position.y);
+        float distanceToMouseY =  Mathf.Abs(player.transform.position.y - mousePosition2D.y);
+        isObjectMovingX = true;
+        isObjectMovingY = true;
+        if (distanceToObjectX >= 12 && distanceToMouseX >= distanceToObjectX)
         {
-            isObjectMoving = false;
+            isObjectMovingX = false;
         }
-        if (isObjectMoving)
+        if (distanceToObjectY >= 12 && distanceToMouseY >= distanceToObjectY)
         {
-            Vector2 direction = (mousePosition2D - objectPosition).normalized;
-            float p = (distanceFromObjToMouse - minForDistance) / (maxForDistance - minForDistance);
-            rb2d.linearVelocity = (direction*Mathf.Lerp(minForInterp, maxForInterp, p));
+            isObjectMovingY = false;
+        }
+        if (isObjectMovingX)
+        {
+            float directionX = mousePosition2D.x - objectPosition.x;
+            float p = (distanceFromObjToMouseX - minForDistance) / (maxForDistance - minForDistance);
+            float maxForInterp = maxForInterpCoeff/initialGravityScale;
+            rb2d.linearVelocityX = (directionX*Mathf.Lerp(minForInterp, maxForInterp, p));
         }
         else
         {
-            movingObject.linearVelocity = new Vector2 (0f,0f);
-            movingObject.angularVelocity = 0;
+            movingObject.linearVelocityX = 0f;
+        }
+        if (isObjectMovingY)
+        {
+            float directionY = mousePosition2D.y - objectPosition.y;
+            float p = (distanceFromObjToMouseY - minForDistance) / (maxForDistance - minForDistance);
+            float maxForInterp = maxForInterpCoeff/initialGravityScale;
+            rb2d.linearVelocityY = (directionY*Mathf.Lerp(minForInterp, maxForInterp, p));
+        }
+        else
+        {
+            movingObject.linearVelocityY = 0f;
         }
     }
 }
