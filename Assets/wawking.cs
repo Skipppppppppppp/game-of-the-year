@@ -16,9 +16,17 @@ public class wawking : MonoBehaviour
 
     void SelectDestination(float minX, float maxX, float currentY)
     {
-        float newX = Random.Range(minX+guyCollider.bounds.size.x, maxX-guyCollider.bounds.size.x);
+        float newMinX = minX;
+        float newMaxX = maxX;
+        float newX = Random.Range(newMinX, newMaxX);
         Vector2 newDestination = new Vector2(newX, currentY);
         destination = newDestination;
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.DrawRay(new Vector2 (winX,rb2d.transform.position.y),Vector2.up);
+        Gizmos.DrawRay(new Vector2 (waxX,rb2d.transform.position.y),Vector2.up);
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -46,8 +54,8 @@ public class wawking : MonoBehaviour
         var winY = boxCollider.bounds.min.y;
         var worldPositionTopLeft = new Vector2(winX, winY);
         var worldPositionTopRight = new Vector2(waxX, winY);
-        this.winX = worldPositionTopLeft.x;
-        this.waxX = worldPositionTopRight.x;
+        this.winX = worldPositionTopLeft.x + guyCollider.bounds.extents.x;
+        this.waxX = worldPositionTopRight.x - guyCollider.bounds.extents.x;
         guyFoundCollider = true;
         destination = transform.position;
     }
