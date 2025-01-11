@@ -171,7 +171,7 @@ namespace Assets.scripts.GamepwayTests
 
             void DoThings(Line line1, Line line2)
             {
-                Vector2 u = Voronoi.FindIntersectionFromLines(line1,line2);
+                Vector2 u = Voronoi.FindIntersectionFromLines(line1,line2).Value;
                 Assert.AreEqual(2, u.x);
                 Assert.AreEqual(1, u.y);
             }

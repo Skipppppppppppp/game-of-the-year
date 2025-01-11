@@ -42,7 +42,8 @@ RenderSettings:
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 12
+  serializedVersion: 13
+  m_BakeOnSceneLoad: 0
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -816,7 +817,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1273a2ffb762847468f31f88e3185b79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  platformCollider: {fileID: 1435388251}
   speed: 0.01
 --- !u!50 &1471277471
 Rigidbody2D:

@@ -19,6 +19,8 @@ public class Break : MonoBehaviour
     public float speedForBreak = 80;
     private Vector2[] points = Array.Empty<Vector2>();
     private List<Vector2>[] intersections = Array.Empty<List<Vector2>>();
+    public CreateTriangle createTriangle;
+
     Line[][] lineequations;
 
     private static Vector2[] MakeRandomPoints(Mesh mesh, int amount)
@@ -82,7 +84,7 @@ public class Break : MonoBehaviour
     { 
         var mesh = GetComponent<MeshFilter>().mesh;
         
-        Vector2[] points = MakeRandomPoints(mesh, 4);
+        Vector2[] points = MakeRandomPoints(mesh, 10);
         // Vector2[] points = GetFixedPoints(mesh.bounds);
 
         Line[][] lineequations = new Line[points.Length][];
@@ -118,10 +120,18 @@ public class Break : MonoBehaviour
         {
             Line[] linesForPoint = lineequations[i];
             intersections[i] = Voronoi.GetAreaVertices(points[i],linesForPoint,i);
+            var newMesh = createTriangle.CreateMesh(intersections[i], points[i]);
+            var myTransform = this.transform;
+            var meshTransform = newMesh.transform;
+            myTransform.GetPositionAndRotation(out var position, out var rotation);
+            meshTransform.SetPositionAndRotation(position, rotation);
+            meshTransform.localScale = myTransform.localScale;
+            meshTransform.SetParent(myTransform.parent, worldPositionStays:true);
         }
         this.points = points;
         this.intersections = intersections;
         this.lineequations = lineequations;
+        Destroy(this.gameObject);
         // Debug.Log(intersections.Length);
         // Debug.Log(intersections[0].Count);
         // Debug.Log(intersections[1].Count);
@@ -173,8 +183,6 @@ public class Break : MonoBehaviour
             collider.offset = meshBounds.center;
             collider.size = meshBounds.size;
         }
-
-        VeryFunMeshThings();
     }
 
     // Update is called once per frame

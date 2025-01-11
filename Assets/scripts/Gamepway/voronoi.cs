@@ -28,8 +28,12 @@ public static class Voronoi
         return line;
     }
 
-    public static Vector2 FindIntersectionFromLines(Line line1, Line line2)
+    public static Vector2? FindIntersectionFromLines(Line line1, Line line2)
     {
+        if ((line1.a * line2.b - line2.a * line1.b) == 0)
+        {
+            return null;
+        }
         Vector2 intersection;
         intersection.x = -(line1.b * line2.c - line2.b * line1.c) / (line1.a * line2.b - line2.a * line1.b);
         intersection.y = -(line1.c * line2.a - line2.c * line1.a) / (line1.a * line2.b - line2.a * line1.b);
@@ -70,7 +74,10 @@ public static class Voronoi
 
                 Line line1 = lines[line1Index];
                 Line line2 = lines[line2Index];
-                Vector2 intersection = FindIntersectionFromLines(line1, line2);
+                if (FindIntersectionFromLines(line1, line2) is not { } intersection)
+                {
+                    continue;
+                }
 
                 bool IsAllBeforeLine()
                 {

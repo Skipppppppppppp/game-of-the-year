@@ -129,6 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 19969394}
   - component: {fileID: 19969393}
+  - component: {fileID: 19969395}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -148,7 +149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbb3e8440df44654386d2cbf5fc58506, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
+  player: {fileID: 1528664118}
   minForInterp: 3
   maxForInterp: 0
   minForDistance: 1
@@ -168,6 +169,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &19969395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 19969392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ec379c48c5edfb499e509cd80c2ba2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  material: {fileID: 2100000, guid: 738e1cd86c8b9104fbf45f574ab72a46, type: 2}
 --- !u!1 &21430708
 GameObject:
   m_ObjectHideFlags: 0
@@ -3661,7 +3675,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 36.13, y: 7.37, z: -10}
+  m_LocalPosition: {x: -7.8, y: -2.5, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7886,8 +7900,6 @@ GameObject:
   - component: {fileID: 984633770}
   - component: {fileID: 984633769}
   - component: {fileID: 984633772}
-  - component: {fileID: 984633774}
-  - component: {fileID: 984633773}
   m_Layer: 0
   m_Name: Square
   m_TagString: Untagged
@@ -7988,6 +8000,7 @@ MonoBehaviour:
   newTriangles: 000000000100000003000000000000000300000002000000
   player: {fileID: 1098937542}
   speedForBreak: 80
+  createTriangle: {fileID: 19969395}
 --- !u!61 &984633772
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -8034,31 +8047,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &984633773
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 984633767}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a97ecdec8431e9643998c93dbc38e029, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 2
---- !u!114 &984633774
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 984633767}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e80f3b1f1eee3444b35066b9025c1f9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &987455568
 GameObject:
   m_ObjectHideFlags: 0
@@ -8390,11 +8378,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 87253921141670963, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 36.13
+      value: -7.8
       objectReference: {fileID: 0}
     - target: {fileID: 87253921141670963, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 7.37
+      value: -2.5
       objectReference: {fileID: 0}
     - target: {fileID: 87253921141670963, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -10761,6 +10749,11 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!1 &1528664118 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 177420437408471312, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
+  m_PrefabInstance: {fileID: 1163749576}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1534038348
 GameObject:
   m_ObjectHideFlags: 0
