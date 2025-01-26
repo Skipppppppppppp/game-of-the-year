@@ -11,9 +11,7 @@ using Random = UnityEngine.Random;
 public class Break : MonoBehaviour
 {
     // Start is called before the first frame update
-    public Vector3[] newVertices;
-    public Vector2[] newUV;
-    public int[] newTriangles;
+    public int amountOfPoints;
     public Transform player;
     private Vector2? prevMousePos;
     public float speedForBreak = 80;
@@ -27,15 +25,47 @@ public class Break : MonoBehaviour
     {
         var bounds = mesh.bounds;
         var size = bounds.size;
+        float maxDistBetweenPoints = size.y*0.51f;
         Vector2 offset = bounds.center;
         Vector2 halfsize = size / 2;
         var ret = new Vector2[amount];
+        // t * a * t * 1/a = count = t^2
+        // t * a = x
+        // t * 1/a = y
+        // size.y/size.x
+
+        // count = 15
+        // size.x = 1
+        // size.y = 2
+        // a = sqrt(2/1) = 1.4
+        // t = 3.9
+        // col = 3.9 / a = 3.9 / 1.4 = 2.8
+        // row = 3.9 * a = 5.5
+        
+        // Vector2 prevPoint = default;
 
         for (int i = 0; i < ret.Length; i++)
         {
             ref var v = ref ret[i];
-            v.x = Random.Range(0, size.x);
-            v.y = Random.Range(0, size.y);
+            // v.x = Random.Range(0, size.x);
+            // v.y = Random.Range(0, size.y);
+            
+            // if (i > 0)
+            // {
+            //     while (true)
+            //     {
+            //         var p = prevPoint;
+            //         v.x = Random.Range(p.x - maxDistBetweenPoints, p.x + maxDistBetweenPoints);
+            //         v.y = Random.Range(p.y - maxDistBetweenPoints, p.y + maxDistBetweenPoints);
+            //         if (v.y <= size.y && v.y >= 0 && v.x <= size.x && v.x >=0)
+            //         {
+            //             break;
+            //         }
+            //     }
+            // }
+
+            // prevPoint = v;
+            
             v -= halfsize;
             v += offset;
         }
@@ -84,7 +114,7 @@ public class Break : MonoBehaviour
     { 
         var mesh = GetComponent<MeshFilter>().mesh;
         
-        Vector2[] points = MakeRandomPoints(mesh, 10);
+        Vector2[] points = MakeRandomPoints(mesh, amountOfPoints);
         // Vector2[] points = GetFixedPoints(mesh.bounds);
 
         Line[][] lineequations = new Line[points.Length][];
@@ -127,6 +157,13 @@ public class Break : MonoBehaviour
             meshTransform.SetPositionAndRotation(position, rotation);
             meshTransform.localScale = myTransform.localScale;
             meshTransform.SetParent(myTransform.parent, worldPositionStays:true);
+            var rb2d = newMesh.GetComponent<Rigidbody2D>();
+            var prevMousePos2d = prevMousePos.Value;
+            // Camera.main.ScreenToWorldPoint;
+            var mousePosition = Input.mousePosition;
+            var mousePosition2d = (Vector2)(mousePosition);
+            var mouseMotionVector = mousePosition2d - prevMousePos2d;
+            var mouseSpeed = mouseMotionVector.magnitude;
         }
         this.points = points;
         this.intersections = intersections;
@@ -172,17 +209,7 @@ public class Break : MonoBehaviour
     }
     void Start()
     {
-        Mesh mesh = new Mesh();
-        GetComponent<MeshFilter>().mesh = mesh;
-        mesh.vertices = newVertices;
-        mesh.uv = newUV;
-        mesh.triangles = newTriangles;
-        var meshBounds = mesh.bounds;
-        var collider = this.GetComponent<BoxCollider2D>();
-        {
-            collider.offset = meshBounds.center;
-            collider.size = meshBounds.size;
-        }
+
     }
 
     // Update is called once per frame

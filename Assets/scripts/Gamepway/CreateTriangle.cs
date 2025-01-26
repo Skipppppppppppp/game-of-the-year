@@ -46,6 +46,7 @@ public class CreateTriangle : MonoBehaviour
     {
         vertices = SortAndRemoveRepeatingVertices(center,vertices);
         var triangle = new GameObject("Triangle");
+        triangle.layer = 3;
         var meshFilter = triangle.AddComponent<MeshFilter>();
         var meshRenderer = triangle.AddComponent<MeshRenderer>();
         var mesh = new Mesh();
@@ -78,7 +79,8 @@ public class CreateTriangle : MonoBehaviour
         mesh.vertices = Vertices();
         mesh.triangles = VerticeIndexes(); // if you complain about grammar you're gay
         meshRenderer.sharedMaterial = material;
-        triangle.AddComponent<Rigidbody2D>();
+        var rb2d = triangle.AddComponent<Rigidbody2D>();
+        rb2d.excludeLayers = 1<<6;
         var polygonCollider = triangle.AddComponent<PolygonCollider2D>();
         polygonCollider.points = vertices.ToArray();
         return triangle;
