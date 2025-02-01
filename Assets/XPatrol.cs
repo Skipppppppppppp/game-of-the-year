@@ -36,7 +36,7 @@ public class XPatrol : MonoBehaviour
             if (Mathf.Abs(destination.x - transform.position.x) <= 0.1f)
             {
                 SelectDestination();
-                float waitingTime = UnityEngine.Random.Range(0f,1f);
+                float waitingTime = UnityEngine.Random.Range(3f,5f);
                 yield return new WaitForSeconds(waitingTime);
                 continue;
             }

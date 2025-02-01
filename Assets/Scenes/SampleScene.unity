@@ -6484,7 +6484,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 220707030774536075, guid: 045ff602a6dbff349ac5246977859b8e, type: 3}
       propertyPath: speed
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 936127469518054326, guid: 045ff602a6dbff349ac5246977859b8e, type: 3}
       propertyPath: m_Name
@@ -6493,6 +6493,18 @@ PrefabInstance:
     - target: {fileID: 936127469518054326, guid: 045ff602a6dbff349ac5246977859b8e, type: 3}
       propertyPath: m_Layer
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1019864397377113445, guid: 045ff602a6dbff349ac5246977859b8e, type: 3}
+      propertyPath: m_GravityScale
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1019864397377113445, guid: 045ff602a6dbff349ac5246977859b8e, type: 3}
+      propertyPath: m_LinearDamping
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1019864397377113445, guid: 045ff602a6dbff349ac5246977859b8e, type: 3}
+      propertyPath: m_AngularDamping
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1076884710391363694, guid: 045ff602a6dbff349ac5246977859b8e, type: 3}
       propertyPath: m_Layer
