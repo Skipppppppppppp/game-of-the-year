@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.U2D;
+using UnityEngine.UIElements;
 
 public class WawkingDestinationSelection : DestinationSelection
 {
@@ -26,6 +28,7 @@ public class WawkingDestinationSelection : DestinationSelection
     void OnCollisionEnter2D(Collision2D collision)
     {
         Collider2D collider = collision.collider;
+        var guyPosition = guyCollider.transform.position;
 
         // cast
         // BoxCollider2D boxCollider = (BoxCollider2D) collider;
@@ -51,7 +54,6 @@ public class WawkingDestinationSelection : DestinationSelection
         for (int i = 0; i < collision.contactCount; i++)
         {
             Vector2 collisionPoint = collision.GetContact(i).point;
-            Vector2 guyPosition = guyCollider.transform.position;
             float guyBottomY = guyPosition.y - guyCollider.bounds.extents.y;
             float error = Mathf.Abs(collisionPoint.y - guyBottomY);
             float maxError = 0.1f;
@@ -68,6 +70,43 @@ public class WawkingDestinationSelection : DestinationSelection
         var worldPositionTopRight = new Vector2(waxX, winY);
         this.winX = worldPositionTopLeft.x + guyCollider.bounds.extents.x;
         this.waxX = worldPositionTopRight.x - guyCollider.bounds.extents.x;
+
+        {
+            float distanceFromGuyToRightEdge = waxX - guyPosition.x;
+            float distanceFromGuyToLeftEdge = guyPosition.x - winX;
+
+
+            RaycastHit2D rightObstacle = Physics2D.BoxCast(
+                origin: guyPosition,
+                size: guyCollider.bounds.size,
+                angle: 0,
+                direction: Vector2.right,
+                distance: distanceFromGuyToRightEdge,
+                layerMask: LayerMask.GetMask("Default"));
+
+
+            var leftObstacle = Physics2D.BoxCast(
+                origin: guyPosition,
+                size: guyCollider.bounds.size,
+                angle: 0,
+                direction: Vector2.left,
+                distance: distanceFromGuyToLeftEdge,
+                layerMask: LayerMask.GetMask("Default"));
+                
+            if (rightObstacle.transform != null)
+            {
+                float rightBorderX = rightObstacle.transform.position.x - rightObstacle.collider.bounds.extents.x;
+                this.waxX = rightBorderX - guyCollider.bounds.extents.x;
+            }
+            if (leftObstacle.transform != null)
+            {
+                float leftBorderX = leftObstacle.transform.position.x + leftObstacle.collider.bounds.extents.x;
+                this.winX = leftBorderX + guyCollider.bounds.extents.x;
+            }
+
+        }
+
+
         guyFoundCollider = true;
         OnContextChanged();
     }
