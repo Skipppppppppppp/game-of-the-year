@@ -15,6 +15,7 @@ public class WawkingDestinationSelection : DestinationSelection
 
     public override Vector2 SelectDestination(float currentY)
     {
+
         float newMinX = winX;
         float newMaxX = waxX;
         float newX = Random.Range(newMinX, newMaxX);
@@ -36,10 +37,28 @@ public class WawkingDestinationSelection : DestinationSelection
         //     // 
         // }
 
+        if (collider.gameObject.layer != 0)
+        {
+            return;
+        }
+
         if (collider is not BoxCollider2D boxCollider)
         {
             Debug.Log("guy trying to walk on wrong collider");
             return;
+        }
+
+        for (int i = 0; i < collision.contactCount; i++)
+        {
+            Vector2 collisionPoint = collision.GetContact(i).point;
+            Vector2 guyPosition = guyCollider.transform.position;
+            float guyBottomY = guyPosition.y - guyCollider.bounds.extents.y;
+            float error = Mathf.Abs(collisionPoint.y - guyBottomY);
+            float maxError = 0.1f;
+            if(error > maxError)
+            {
+                return;
+            }
         }
 
         var winX = boxCollider.bounds.min.x;
@@ -52,6 +71,11 @@ public class WawkingDestinationSelection : DestinationSelection
         guyFoundCollider = true;
         OnContextChanged();
     }
+
+void OnCollisionExit2D()
+{
+    guyFoundCollider = false;
+}
 
     void OnDrawGizmos()
     {

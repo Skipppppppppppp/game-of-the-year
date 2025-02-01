@@ -5,7 +5,7 @@ using UnityEngine;
 
 public sealed class MovingObjects : MonoBehaviour
 {
-    private int Layer;
+    private int LayerMask;
     public GameObject player;
     public float minForInterp;
     public float maxForInterp;
@@ -18,13 +18,21 @@ public sealed class MovingObjects : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        Layer = LayerMask.NameToLayer("Moveable Stuff");
+        foreach (var x in new[]
+        {
+            "Peopwe",
+            "Moveable Stuff",
+        })
+        {
+            var layer = UnityEngine.LayerMask.NameToLayer(x);
+            LayerMask |= 1 << layer;
+        }
     }
 
     private Rigidbody2D? RaycastForObject()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit2D rayHit = Physics2D.GetRayIntersection(ray,float.PositiveInfinity,1<<Layer);
+        RaycastHit2D rayHit = Physics2D.GetRayIntersection(ray,float.PositiveInfinity,LayerMask);
         var trans = rayHit.transform;
         if (trans == null)
         {
