@@ -7904,7 +7904,8 @@ GameObject:
   - component: {fileID: 984633770}
   - component: {fileID: 984633769}
   - component: {fileID: 984633772}
-  m_Layer: 0
+  - component: {fileID: 984633773}
+  m_Layer: 3
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7920,8 +7921,8 @@ Transform:
   m_GameObject: {fileID: 984633767}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8.97, y: -1.6, z: 0}
-  m_LocalScale: {x: 6, y: 2, z: 1}
+  m_LocalPosition: {x: -8.7794, y: -1.6293, z: 0}
+  m_LocalScale: {x: 1.5737845, y: 5.400408, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1582152318}
@@ -7991,9 +7992,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f740731aabe6514a989ca6e3359806e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  amountOfPoints: 20
+  amountOfPoints: 15
+  distanceBetweenPointCoeff: 0.31
   player: {fileID: 1098937542}
-  speedForBreak: 80
+  speedForBreak: 160
   createTriangle: {fileID: 19969395}
 --- !u!61 &984633772
 BoxCollider2D:
@@ -8041,6 +8043,33 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!50 &984633773
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 984633767}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &987455568
 GameObject:
   m_ObjectHideFlags: 0

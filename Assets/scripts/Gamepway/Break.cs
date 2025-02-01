@@ -1,10 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using Codice.Client.Common.EventTracking;
 using Codice.Client.Common.GameUI;
+using JetBrains.Annotations;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.UIElements;
 using UnityEngine.VFX;
 using Random = UnityEngine.Random;
 
@@ -12,6 +16,7 @@ public class Break : MonoBehaviour
 {
     // Start is called before the first frame update
     public int amountOfPoints;
+    [Range(0,1)] public float distanceBetweenPointCoeff = 0.5f;
     public Transform player;
     private Vector2? prevMousePos;
     public float speedForBreak = 80;
@@ -21,17 +26,16 @@ public class Break : MonoBehaviour
 
     Line[][] lineequations;
 
-    private static Vector2[] MakeRandomPoints(Mesh mesh, int amount)
+    private Vector2[] MakeRandomPoints(Mesh mesh, int amount)
     {
         var bounds = mesh.bounds;
         var size = bounds.size;
-        float maxDistBetweenPoints = size.y*0.51f;
         Vector2 offset = bounds.center;
         Vector2 halfsize = size / 2;
-        var ret = new Vector2[amount];
-        // t * a * t * 1/a = count = t^2
+
+        // t * a * t = count = t^2 * a
         // t * a = x
-        // t * 1/a = y
+        // t = y
         // size.y/size.x
 
         // count = 15
@@ -41,33 +45,48 @@ public class Break : MonoBehaviour
         // t = 3.9
         // col = 3.9 / a = 3.9 / 1.4 = 2.8
         // row = 3.9 * a = 5.5
-        
-        // Vector2 prevPoint = default;
 
-        for (int i = 0; i < ret.Length; i++)
+        Vector2 ComponentMult(Vector2 a, Vector2 b)
         {
-            ref var v = ref ret[i];
-            // v.x = Random.Range(0, size.x);
-            // v.y = Random.Range(0, size.y);
-            
-            // if (i > 0)
-            // {
-            //     while (true)
-            //     {
-            //         var p = prevPoint;
-            //         v.x = Random.Range(p.x - maxDistBetweenPoints, p.x + maxDistBetweenPoints);
-            //         v.y = Random.Range(p.y - maxDistBetweenPoints, p.y + maxDistBetweenPoints);
-            //         if (v.y <= size.y && v.y >= 0 && v.x <= size.x && v.x >=0)
-            //         {
-            //             break;
-            //         }
-            //     }
-            // }
+            return new(a.x * b.x, a.y * b.y);
+        }
+        
+        Vector2 ComponentDiv(Vector2 a, Vector2 b)
+        {
+            return new(a.x * b.x, a.y * b.y);
+        }
 
-            // prevPoint = v;
-            
-            v -= halfsize;
-            v += offset;
+        var sizea = ComponentMult(size, this.transform.localScale);
+
+        var aspectRatio = sizea.y/sizea.x;
+        var t = Mathf.Sqrt(amount / aspectRatio);
+        var col = Mathf.RoundToInt(t);
+        var row = Mathf.RoundToInt(t * aspectRatio);
+        var ret = new Vector2[col * row];
+        float stepX = size.x/(col+1);
+        float stepY = size.y/(row+1);
+        float maxShiftDistanceX = distanceBetweenPointCoeff * stepX;
+        float maxShiftDistanceY = distanceBetweenPointCoeff * stepY;
+
+        for (int colIndex = 0; colIndex < col; colIndex++)
+        {
+            float xPos = stepX * (colIndex+1);
+
+            for (int rowIndex = 0; rowIndex < row; rowIndex++)
+            {
+                ref var v = ref ret[colIndex*row+rowIndex];
+                float yPos = stepY * (rowIndex+1);
+
+                float shiftX = Random.Range(-maxShiftDistanceX, maxShiftDistanceX);
+                float shiftY = Random.Range(-maxShiftDistanceY, maxShiftDistanceY);
+
+                v.x = xPos + shiftX;
+                v.y = yPos + shiftY;
+
+                v -= halfsize;
+                v += offset;
+            }
+
         }
         return ret;
     }
