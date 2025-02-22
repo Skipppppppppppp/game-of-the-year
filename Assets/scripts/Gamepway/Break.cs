@@ -1,15 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using Codice.Client.Common.EventTracking;
-using Codice.Client.Common.GameUI;
-using JetBrains.Annotations;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Assertions;
-using UnityEngine.UIElements;
-using UnityEngine.VFX;
 using Random = UnityEngine.Random;
 
 public class Break : MonoBehaviour
@@ -164,6 +155,22 @@ public class Break : MonoBehaviour
         }
 
 
+        ShardForce BaseForce()
+        {
+            var prevMousePos2d = prevMousePos.Value;
+            var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            var mousePosition2d = (Vector2)(mousePosition);
+            var mouseMotionVector = mousePosition2d - prevMousePos2d;
+            var mouseSpeed = mouseMotionVector.magnitude/Time.deltaTime;
+            var mouseMotionDirection = mouseMotionVector.normalized;
+            float clampedMouseSpeed = Mathf.Clamp(mouseSpeed, 0, 1000);
+            clampedMouseSpeed *= 3;
+            var ret = new ShardForce(mouseMotionDirection, clampedMouseSpeed);
+            return ret;
+        }
+
+        var force = BaseForce();
+
         List<Vector2>[] intersections = new List<Vector2>[points.Length]; 
         for (int i = 0; i < points.Length; i++)
         {
@@ -177,12 +184,12 @@ public class Break : MonoBehaviour
             meshTransform.localScale = myTransform.localScale;
             meshTransform.SetParent(myTransform.parent, worldPositionStays:true);
             var rb2d = newMesh.GetComponent<Rigidbody2D>();
-            var prevMousePos2d = prevMousePos.Value;
-            // Camera.main.ScreenToWorldPoint;
-            var mousePosition = Input.mousePosition;
-            var mousePosition2d = (Vector2)(mousePosition);
-            var mouseMotionVector = mousePosition2d - prevMousePos2d;
-            var mouseSpeed = mouseMotionVector.magnitude;
+            rb2d.AddForce(force.Force);
+            
+            float randomForceX = Random.Range(100,500);
+            float randomForceY = Random.Range(100,500);
+            Vector2 randomForceVector = new Vector2 (randomForceX, randomForceY);
+            rb2d.AddForce(randomForceVector); 
         }
         this.points = points;
         this.intersections = intersections;
@@ -226,50 +233,89 @@ public class Break : MonoBehaviour
             }
         }
     }
-    void Start()
-    {
 
+    private Vector2 GetNewMousePosition()
+    {
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 mousePosition2D = new Vector2(mousePosition.x, mousePosition.y);
+        return mousePosition2D;
     }
 
     // Update is called once per frame
     void Update()
     {
-        float distance = Vector2.Distance(player.position, this.transform.position);
-        if (distance > 8.0f)
+        var newMousePos = GetNewMousePosition();
+        MaybeMeshThings();
+        this.prevMousePos = newMousePos;
+        return;
+        
+        void MaybeMeshThings()
         {
-            return;
-        }
-        if (!Input.GetMouseButton(1))
-        {
-            return;
-        }
-
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 mousePosition2D = new Vector2(mousePosition.x, mousePosition.y);
-        if (!prevMousePos.HasValue)
-        {
-            prevMousePos = mousePosition2D;
-            return;
-        }
-
-        Vector2 savedPreviousMousePosition = prevMousePos.Value;
-        prevMousePos = mousePosition2D;
-
-
-        {
-            RaycastHit2D hit = Physics2D.Raycast(savedPreviousMousePosition, Vector2.zero);
-            if (hit.collider == null || hit.collider.transform != transform)
+            if (this.prevMousePos is not { } prevMousePos)
             {
                 return;
             }
-        }
+            if (!ShouldBreakObject(prevMousePos))
+            {
+                return;
+            }
 
-        float mouseDistanceTraveled = Vector2.Distance(savedPreviousMousePosition, prevMousePos.Value);
-        float mouseVelocity = mouseDistanceTraveled / Time.deltaTime;
-        if (mouseVelocity <= speedForBreak)
-        {
+            VeryFunMeshThings();
             return;
         }
-        VeryFunMeshThings();
+
+        bool ShouldBreakObject(Vector2 prevMousePos)
+        {
+            // float distance = Vector2.Distance(player.position, this.transform.position);
+            // if (distance > 8.0f)
+            // {
+            //     return false;
+            // }
+
+            if (!Input.GetMouseButton(1))
+            {
+                return false;
+            }
+
+            if (WasHoveringOverOtherObjectThanSelf(prevMousePos))
+            {
+                return false;
+            }            
+            
+            float mouseDistanceTraveled = Vector2.Distance(prevMousePos, newMousePos);
+            float mouseVelocity = mouseDistanceTraveled / Time.deltaTime;
+            if (mouseVelocity <= speedForBreak)
+            {
+                return false;
+            }
+            return true;
+        
+            bool WasHoveringOverOtherObjectThanSelf(Vector2 prevMousePos)
+            {
+                RaycastHit2D hit = Physics2D.Raycast(prevMousePos, Vector2.zero);
+                if (hit.collider == null)
+                {
+                    return false;
+                }
+                if (hit.collider.transform != transform)
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
+    }
+}
+
+public readonly struct ShardForce
+{
+    public readonly Vector2 Direction;
+    public readonly float Magnitude;
+    public readonly Vector2 Force => Direction * Magnitude;
+
+    public ShardForce(Vector2 direction, float magnitude)
+    {
+        Direction = direction;
+        Magnitude = magnitude;
     }
 }
