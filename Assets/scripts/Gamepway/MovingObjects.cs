@@ -1,3 +1,4 @@
+using System;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -13,7 +14,8 @@ public sealed class MovingObjects : MonoBehaviour
     public float maxForDistance;
     private const float maxForInterpCoeff = 1;
     private Rigidbody2D? movingObject;
-    private float initialGravityScale;
+    private RememberInitialProperties? rememberedInitialProperties;
+    [Range(0,20)] public float linearDampingScale;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -50,6 +52,17 @@ public sealed class MovingObjects : MonoBehaviour
             {
                 return;
             }
+            var r = rememberedInitialProperties!;
+            var b = movingObject.GetComponent<IObjectSelectedHandler>();
+            if (b != null)
+            {
+                b.Deselected();
+            }
+
+            movingObject.gravityScale = r.GravityScale;
+            movingObject.linearDamping = r.LinearDamping;
+            Destroy(r);
+
             movingObject = null;
             return;
         }
@@ -61,8 +74,15 @@ public sealed class MovingObjects : MonoBehaviour
             {
                 return;
             }
+            if (raycasted.gameObject.GetComponent<RememberInitialProperties>() != null)
+            {
+                return;
+            }
             movingObject = raycasted;
-            initialGravityScale = movingObject.gravityScale;
+            var r = movingObject.gameObject.AddComponent<RememberInitialProperties>();
+            rememberedInitialProperties = r;
+            r.Props = raycasted.GetPropertiesForRemember();
+            movingObject.gravityScale = 0;
         }
     }
     static Vector2 ObjectPosition(Rigidbody2D rb2d)
@@ -94,6 +114,7 @@ public sealed class MovingObjects : MonoBehaviour
         {
             return;
         }
+        movingObject.linearDamping = rememberedInitialProperties!.LinearDamping * linearDampingScale;
         var rb2d = movingObject;
         Vector2 objectPosition = ObjectPosition(rb2d);
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -117,9 +138,10 @@ public sealed class MovingObjects : MonoBehaviour
         if (isObjectMovingX)
         {
             float directionX = mousePosition2D.x - objectPosition.x;
+            float maxForInterp = this.maxForInterp/rememberedInitialProperties.GravityScale;
             float p = (distanceFromObjToMouseX - minForDistance) / (maxForDistance - minForDistance);
-            float maxForInterp = maxForInterpCoeff/initialGravityScale;
-            rb2d.linearVelocityX = (directionX*Mathf.Lerp(minForInterp, maxForInterp, p));
+            Vector2 forceForAddingX = new Vector2 (directionX*Mathf.Lerp(minForInterp, maxForInterp, p),0);
+            rb2d.AddForce(forceForAddingX);
         }
         else
         {
@@ -128,13 +150,26 @@ public sealed class MovingObjects : MonoBehaviour
         if (isObjectMovingY)
         {
             float directionY = mousePosition2D.y - objectPosition.y;
+            float maxForInterp = this.maxForInterp/rememberedInitialProperties.GravityScale;
             float p = (distanceFromObjToMouseY - minForDistance) / (maxForDistance - minForDistance);
-            float maxForInterp = maxForInterpCoeff/initialGravityScale;
-            rb2d.linearVelocityY = (directionY*Mathf.Lerp(minForInterp, maxForInterp, p));
+            Vector2 forceForAddingY = new Vector2 (0,directionY*Mathf.Lerp(minForInterp, maxForInterp, p));
+            rb2d.AddForce(forceForAddingY);
         }
         else
         {
             movingObject.linearVelocityY = 0f;
         }
+
+        var b = movingObject.GetComponent<IObjectSelectedHandler>();
+        if (b != null)
+        {
+            b.ProcessBeingSelected();
+        }
     }
+}
+
+public interface IObjectSelectedHandler
+{
+    void ProcessBeingSelected();
+    void Deselected();
 }

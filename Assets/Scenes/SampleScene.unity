@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 19969394}
   - component: {fileID: 19969393}
   - component: {fileID: 19969395}
+  - component: {fileID: 19969396}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -150,10 +151,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1528664118}
-  minForInterp: 3
-  maxForInterp: 0
-  minForDistance: 1
+  minForInterp: 15
+  maxForInterp: 50
+  minForDistance: 0
   maxForDistance: 100
+  linearDampingScale: 7.5
 --- !u!4 &19969394
 Transform:
   m_ObjectHideFlags: 0
@@ -182,6 +184,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   material: {fileID: 2100000, guid: 738e1cd86c8b9104fbf45f574ab72a46, type: 2}
+--- !u!114 &19969396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 19969392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 774589cd34228584aa651dea74dc277d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gridSize: 100
 --- !u!1 &21430708
 GameObject:
   m_ObjectHideFlags: 0
@@ -391,7 +406,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0.5
+  m_LinearDamping: 1
   m_AngularDamping: 1
   m_GravityScale: 2
   m_Material: {fileID: 0}
@@ -1529,7 +1544,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0.5
+  m_LinearDamping: 1
   m_AngularDamping: 1
   m_GravityScale: 2
   m_Material: {fileID: 0}
@@ -2015,7 +2030,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0.5
+  m_LinearDamping: 1
   m_AngularDamping: 1
   m_GravityScale: 2
   m_Material: {fileID: 0}
@@ -2501,7 +2516,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0.5
+  m_LinearDamping: 1
   m_AngularDamping: 1
   m_GravityScale: 2
   m_Material: {fileID: 0}
@@ -3139,7 +3154,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0.5
+  m_LinearDamping: 1
   m_AngularDamping: 1
   m_GravityScale: 2
   m_Material: {fileID: 0}
@@ -3767,7 +3782,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0.5
+  m_LinearDamping: 1
   m_AngularDamping: 1
   m_GravityScale: 2
   m_Material: {fileID: 0}
@@ -4340,7 +4355,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0.5
+  m_LinearDamping: 1
   m_AngularDamping: 1
   m_GravityScale: 2
   m_Material: {fileID: 0}
@@ -4502,7 +4517,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0.5
+  m_LinearDamping: 1
   m_AngularDamping: 1
   m_GravityScale: 2
   m_Material: {fileID: 0}
@@ -5155,7 +5170,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0.5
+  m_LinearDamping: 1
   m_AngularDamping: 1
   m_GravityScale: 2
   m_Material: {fileID: 0}
@@ -6127,7 +6142,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0.5
+  m_LinearDamping: 1
   m_AngularDamping: 1
   m_GravityScale: 2
   m_Material: {fileID: 0}
@@ -7046,7 +7061,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0.5
+  m_LinearDamping: 1
   m_AngularDamping: 1
   m_GravityScale: 2
   m_Material: {fileID: 0}
@@ -7565,7 +7580,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0.5
+  m_LinearDamping: 1
   m_AngularDamping: 1
   m_GravityScale: 2
   m_Material: {fileID: 0}
@@ -8108,7 +8123,7 @@ MonoBehaviour:
   amountOfPoints: 15
   distanceBetweenPointCoeff: 0.31
   player: {fileID: 1098937542}
-  speedForBreak: 160
+  speedForBreak: 500
   createTriangle: {fileID: 19969395}
 --- !u!61 &984633772
 BoxCollider2D:
@@ -8169,7 +8184,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0
+  m_LinearDamping: 1
   m_AngularDamping: 0.05
   m_GravityScale: 1
   m_Material: {fileID: 0}
@@ -8770,7 +8785,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0.5
+  m_LinearDamping: 1
   m_AngularDamping: 1
   m_GravityScale: 2
   m_Material: {fileID: 0}
@@ -8932,7 +8947,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0.5
+  m_LinearDamping: 1
   m_AngularDamping: 1
   m_GravityScale: 2
   m_Material: {fileID: 0}
@@ -9581,7 +9596,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0.5
+  m_LinearDamping: 1
   m_AngularDamping: 1
   m_GravityScale: 2
   m_Material: {fileID: 0}
@@ -10877,7 +10892,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0.5
+  m_LinearDamping: 1
   m_AngularDamping: 1
   m_GravityScale: 2
   m_Material: {fileID: 0}
@@ -11372,7 +11387,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0.5
+  m_LinearDamping: 1
   m_AngularDamping: 1
   m_GravityScale: 2
   m_Material: {fileID: 0}
@@ -11890,7 +11905,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0.5
+  m_LinearDamping: 1
   m_AngularDamping: 1
   m_GravityScale: 2
   m_Material: {fileID: 0}
@@ -12052,7 +12067,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0.5
+  m_LinearDamping: 1
   m_AngularDamping: 1
   m_GravityScale: 2
   m_Material: {fileID: 0}
@@ -12214,7 +12229,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0.5
+  m_LinearDamping: 1
   m_AngularDamping: 1
   m_GravityScale: 2
   m_Material: {fileID: 0}
@@ -12376,7 +12391,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0.5
+  m_LinearDamping: 1
   m_AngularDamping: 1
   m_GravityScale: 2
   m_Material: {fileID: 0}
@@ -13258,7 +13273,7 @@ Transform:
   m_GameObject: {fileID: 1818033135}
   serializedVersion: 2
   m_LocalRotation: {x: -0.013951193, y: 0.01283921, z: -0.00037406504, w: 0.9998202}
-  m_LocalPosition: {x: 75.74, y: 1.8641, z: -0.9472737}
+  m_LocalPosition: {x: 75.74, y: 1.721, z: -0.943}
   m_LocalScale: {x: 1.1026117, y: 1.9735842, z: 2.1031003}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -13548,8 +13563,8 @@ Transform:
   m_GameObject: {fileID: 1830455908}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.0765, y: -7.1921, z: 0}
-  m_LocalScale: {x: 44.082592, y: 5.644283, z: 1}
+  m_LocalPosition: {x: -0.0765, y: -7, z: 0}
+  m_LocalScale: {x: 44.082592, y: 6, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -13925,7 +13940,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0.5
+  m_LinearDamping: 1
   m_AngularDamping: 1
   m_GravityScale: 2
   m_Material: {fileID: 0}
@@ -14573,7 +14588,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0.5
+  m_LinearDamping: 1
   m_AngularDamping: 1
   m_GravityScale: 2
   m_Material: {fileID: 0}
@@ -14735,7 +14750,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0.5
+  m_LinearDamping: 1
   m_AngularDamping: 1
   m_GravityScale: 2
   m_Material: {fileID: 0}
