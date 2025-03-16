@@ -7,8 +7,9 @@ public class WawkingDestinationSelection : DestinationSelection
     private float waxX;
     private float winX;
     private BoxCollider2D guyCollider;
-    private bool guyFoundCollider;
-    public override bool IsInitializedForDestinationSelection => guyFoundCollider;
+    public bool guyCanWalk;
+    public override bool IsInitializedForDestinationSelection => guyCanWalk;
+    public float guyBoxCastYOffset = 0.1f;
 
     void Start()
     {
@@ -75,9 +76,10 @@ public class WawkingDestinationSelection : DestinationSelection
             float distanceFromGuyToRightEdge = waxX - guyPosition.x;
             float distanceFromGuyToLeftEdge = guyPosition.x - winX;
 
+            Vector2 rayOrigin = new Vector2 (guyPosition.x, guyPosition.y + guyBoxCastYOffset);
 
             RaycastHit2D rightObstacle = Physics2D.BoxCast(
-                origin: guyPosition,
+                origin: rayOrigin,
                 size: guyCollider.bounds.size,
                 angle: 0,
                 direction: Vector2.right,
@@ -86,7 +88,7 @@ public class WawkingDestinationSelection : DestinationSelection
 
 
             var leftObstacle = Physics2D.BoxCast(
-                origin: guyPosition,
+                origin: rayOrigin,
                 size: guyCollider.bounds.size,
                 angle: 0,
                 direction: Vector2.left,
@@ -107,13 +109,13 @@ public class WawkingDestinationSelection : DestinationSelection
         }
 
 
-        guyFoundCollider = true;
+        guyCanWalk = true;
         OnContextChanged();
     }
 
 void OnCollisionExit2D()
 {
-    guyFoundCollider = false;
+    guyCanWalk = false;
 }
 
     void OnDrawGizmos()

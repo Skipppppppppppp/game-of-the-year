@@ -14,6 +14,16 @@ public class XPatrol : MonoBehaviour
     void SelectDestination()
     {
         destination = selectDestination.SelectDestination(transform.position.y);
+        var imageTransform = rb2d.transform.GetChild(0);
+        if (destination.x <= transform.position.x && imageTransform.localScale.x > 0)
+        {
+            imageTransform.localScale= new Vector2 (-imageTransform.localScale.x, imageTransform.localScale.y);
+        }
+        else
+        if (destination.x > transform.position.x && imageTransform.localScale.x < 0)
+        {
+            imageTransform.localScale= new Vector2 (-imageTransform.localScale.x, imageTransform.localScale.y);
+        }
     }
     
     void Start()
