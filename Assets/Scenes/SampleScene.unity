@@ -152,10 +152,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1528664118}
   minForInterp: 15
-  maxForInterp: 50
+  maxForInterp: 100
   minForDistance: 0
-  maxForDistance: 100
-  linearDampingScale: 7.5
+  maxForDistance: 50
+  movingObject: {fileID: 0}
+  linearDampingScale: 6
 --- !u!4 &19969394
 Transform:
   m_ObjectHideFlags: 0
@@ -4061,6 +4062,11 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!212 &530230839 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 2195727154149104360, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
+  m_PrefabInstance: {fileID: 1163749576}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &548948187
 GameObject:
   m_ObjectHideFlags: 0
@@ -4884,7 +4890,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad9f5b03286f4154eb3bef23c6816636, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hp: 0
+  hp: 100
 --- !u!1 &660936886
 GameObject:
   m_ObjectHideFlags: 0
@@ -9075,6 +9081,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: pwayer
       objectReference: {fileID: 0}
+    - target: {fileID: 2195727154149104360, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073055604604797506, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
+      propertyPath: movingObjectsScript
+      value: 
+      objectReference: {fileID: 19969393}
+    - target: {fileID: 4367764646144137377, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
+      propertyPath: movingObjectScript
+      value: 
+      objectReference: {fileID: 19969393}
+    - target: {fileID: 7270852384445855172, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
+      propertyPath: spriteRenderer
+      value: 
+      objectReference: {fileID: 530230839}
+    - target: {fileID: 7270852384445855172, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
+      propertyPath: movingObjectsScript
+      value: 
+      objectReference: {fileID: 19969393}
+    - target: {fileID: 8939328485766013885, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
+      propertyPath: movingObjectsScript
+      value: 
+      objectReference: {fileID: 19969393}
     - target: {fileID: 9071895693073252656, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -9083,7 +9113,9 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3073055604604797506, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
+    - {fileID: 8939328485766013885, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

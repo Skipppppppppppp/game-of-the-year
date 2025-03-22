@@ -13,7 +13,7 @@ public sealed class MovingObjects : MonoBehaviour
     public float minForDistance;
     public float maxForDistance;
     private const float maxForInterpCoeff = 1;
-    private Rigidbody2D? movingObject;
+    public Rigidbody2D? movingObject;
     private RememberInitialProperties? rememberedInitialProperties;
     [Range(0,20)] public float linearDampingScale;
 
