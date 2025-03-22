@@ -1,10 +1,10 @@
+using TMPro;
 using UnityEngine;
 
 public class RotateAsObject : Rotation
 {
     private Transform transform;
     public MovingObjects movingObjectScript;
-    private Transform objectTransform;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -21,8 +21,8 @@ public class RotateAsObject : Rotation
             Rotate (mousePosition, transform);
             return;
         }
-        objectTransform = movingObjectScript.movingObject.transform;
-        Vector3 itemPosition = objectTransform.position;
+        var objectRb2d = movingObjectScript.movingObject;
+        Vector3 itemPosition = CenterOfMassFinder.FindObjectPosition(objectRb2d);
         Rotate(itemPosition, transform);
     }
 }

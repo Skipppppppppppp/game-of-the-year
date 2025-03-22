@@ -9081,12 +9081,24 @@ PrefabInstance:
       propertyPath: m_Name
       value: pwayer
       objectReference: {fileID: 0}
+    - target: {fileID: 336603814436929759, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
+      propertyPath: movingObjectScript
+      value: 
+      objectReference: {fileID: 19969393}
+    - target: {fileID: 1154533571026568517, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
+      propertyPath: movingObjectScript
+      value: 
+      objectReference: {fileID: 19969393}
     - target: {fileID: 2195727154149104360, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3073055604604797506, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
       propertyPath: movingObjectsScript
+      value: 
+      objectReference: {fileID: 19969393}
+    - target: {fileID: 4216736500408817807, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
+      propertyPath: movingObjectScript
       value: 
       objectReference: {fileID: 19969393}
     - target: {fileID: 4367764646144137377, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
@@ -9103,6 +9115,14 @@ PrefabInstance:
       objectReference: {fileID: 19969393}
     - target: {fileID: 8939328485766013885, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
       propertyPath: movingObjectsScript
+      value: 
+      objectReference: {fileID: 19969393}
+    - target: {fileID: 8968587427396318758, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8968587427396318758, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
+      propertyPath: movingObjectScript
       value: 
       objectReference: {fileID: 19969393}
     - target: {fileID: 9071895693073252656, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}

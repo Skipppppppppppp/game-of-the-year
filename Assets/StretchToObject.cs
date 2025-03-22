@@ -5,7 +5,6 @@ public class StretchToMouse : MonoBehaviour
 {
         private Transform transform;
         private Transform pwayerTransform;
-        private Transform itemTransform;
         public MovingObjects movingObjectsScript;
         private SpriteRenderer spriteRenderer;
 
@@ -35,9 +34,8 @@ public class StretchToMouse : MonoBehaviour
             ScaleTo(transform, pwayerPosition, mousePosition);
             return;
         }
-
-        itemTransform = movingObjectsScript.movingObject.transform;
-        Vector2 itemPosition = itemTransform.position;
-        ScaleTo(transform, pwayerPosition, itemPosition);
+        Rigidbody2D objectRb2d = movingObjectsScript.movingObject;
+        Vector2 objectCOM = CenterOfMassFinder.FindObjectPosition(objectRb2d);
+        ScaleTo(transform, pwayerPosition, objectCOM);
     }
 }

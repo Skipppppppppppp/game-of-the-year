@@ -85,17 +85,6 @@ public sealed class MovingObjects : MonoBehaviour
             movingObject.gravityScale = 0;
         }
     }
-    static Vector2 ObjectPosition(Rigidbody2D rb2d)
-    {
-        Transform trans = rb2d.transform;
-        var localPositionWithScale = rb2d.centerOfMass;
-        var localPositionWithoutScale = localPositionWithScale;
-        var scale = trans.localScale;
-        localPositionWithoutScale.x /= scale.x;
-        localPositionWithoutScale.y /= scale.y;
-        var ret = trans.localToWorldMatrix.MultiplyPoint3x4(localPositionWithoutScale);
-        return ret;
-    }
 
     void OnDrawGizmos()
     {
@@ -104,7 +93,7 @@ public sealed class MovingObjects : MonoBehaviour
             return;
         }
         var rb2d = movingObject;
-        Vector2 objectPosition = ObjectPosition(rb2d);
+        Vector2 objectPosition = CenterOfMassFinder.FindObjectPosition(rb2d);
         Gizmos.DrawCube(objectPosition,new Vector3 (1,1,1));
     }
 
@@ -116,7 +105,7 @@ public sealed class MovingObjects : MonoBehaviour
         }
         movingObject.linearDamping = rememberedInitialProperties!.LinearDamping * linearDampingScale;
         var rb2d = movingObject;
-        Vector2 objectPosition = ObjectPosition(rb2d);
+        Vector2 objectPosition = CenterOfMassFinder.FindObjectPosition(rb2d);
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector2 mousePosition2D = new Vector2(mousePosition.x, mousePosition.y);
         float distanceFromObjToMouseX = Mathf.Abs(mousePosition2D.x - objectPosition.x);

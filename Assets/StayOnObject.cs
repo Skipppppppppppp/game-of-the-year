@@ -4,7 +4,6 @@ public class StayOnObject : MonoBehaviour
 {
     private Transform transform;
     public MovingObjects movingObjectScript;
-    private Transform objectTransform;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -21,8 +20,8 @@ public class StayOnObject : MonoBehaviour
             transform.position = mousePosition;
             return;
         }
-        objectTransform = movingObjectScript.movingObject.transform;
-        Vector3 itemPosition = objectTransform.position;
+        var objectRb2d = movingObjectScript.movingObject;
+        Vector3 itemPosition = CenterOfMassFinder.FindObjectPosition(objectRb2d);
         transform.position = itemPosition;
     }
 }
