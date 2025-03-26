@@ -1,12 +1,20 @@
+using System;
 using UnityEngine;
 
 public class watchplayer : MonoBehaviour
 {
 
     public bool awareOfPlayer = false;
-    private bool previousAwarenessState = false;
-    private WawkingDestinationSelection destinationSelectionScript;
+    public bool playerInSight = false;
+    protected bool previousAwarenessState = false;
+    protected WawkingDestinationSelection destinationSelectionScript;
 
+    public static event Action DealDamage;
+
+    public void InvokeDamageEvent()
+    {
+        DealDamage?.Invoke();
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -17,18 +25,21 @@ public class watchplayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (awareOfPlayer == false && previousAwarenessState == true)
+        if (awareOfPlayer == false)
         {
-            destinationSelectionScript.guyCanWalk = true;
+            if (previousAwarenessState == true)
+            {
+                destinationSelectionScript.guyCanWalk = true;
+            }
+            previousAwarenessState = awareOfPlayer;
+            return;
         }
 
-        if (awareOfPlayer == true && destinationSelectionScript.guyCanWalk == true)
+        if (destinationSelectionScript.guyCanWalk == true)
         {
             destinationSelectionScript.guyCanWalk = false;
-            previousAwarenessState = awareOfPlayer; {}
         }
 
-        
-
+        previousAwarenessState = awareOfPlayer;
     }
 }

@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 5886083112816307690}
   - component: {fileID: 4927789416213412757}
   - component: {fileID: -425955916463401063}
+  - component: {fileID: 705169052020359960}
   m_Layer: 6
   m_Name: pwayer
   m_TagString: Untagged
@@ -184,6 +185,8 @@ MonoBehaviour:
   destroyableLayer:
     serializedVersion: 2
     m_Bits: 8
+  initialHp: 100
+  hp: 100
 --- !u!198 &5886083112816307690
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -5056,6 +5059,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   detectionRadius: 1
   differenceBetweenRadii: 1
+--- !u!114 &705169052020359960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 177420437408471312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc65f0489e1a66942ac59c473597bad3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hpBarScript: {fileID: 0}
+  uiDamageOverlay: {fileID: 0}
+  damageToGive: 5
+  heal: 10
 --- !u!1 &3087659455126530342
 GameObject:
   m_ObjectHideFlags: 0
@@ -5199,7 +5218,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5765806979355141899}
-  - component: {fileID: 1154533571026568517}
   - component: {fileID: 726225036630104844}
   m_Layer: 6
   m_Name: GrabbedObjectIndicator
@@ -5225,19 +5243,6 @@ Transform:
   - {fileID: 5110563315764443051}
   m_Father: {fileID: 87253921141670963}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1154533571026568517
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3635224843909974283}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3cf47f1ef329eee4e8f41020f020e1ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  movingObjectScript: {fileID: 0}
 --- !u!114 &726225036630104844
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5462,6 +5467,7 @@ GameObject:
   - component: {fileID: 8688386986641690343}
   - component: {fileID: 2195727154149104360}
   - component: {fileID: 7270852384445855172}
+  - component: {fileID: 3836641355919007421}
   m_Layer: 0
   m_Name: Arm
   m_TagString: Untagged
@@ -5552,6 +5558,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movingObjectsScript: {fileID: 0}
+--- !u!114 &3836641355919007421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7053412499302149902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cf47f1ef329eee4e8f41020f020e1ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movingObjectScript: {fileID: 0}
 --- !u!1 &8026114729539928503
 GameObject:
   m_ObjectHideFlags: 0
@@ -5608,6 +5627,7 @@ GameObject:
   - component: {fileID: 5110563315764443051}
   - component: {fileID: 3807862517359419139}
   - component: {fileID: 336603814436929759}
+  - component: {fileID: 1770089786857723183}
   m_Layer: 6
   m_Name: Hand
   m_TagString: Untagged
@@ -5695,6 +5715,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 35ac1427498f17e40a95ac3726eba686, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movingObjectScript: {fileID: 0}
+--- !u!114 &1770089786857723183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8448722930915663084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cf47f1ef329eee4e8f41020f020e1ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   movingObjectScript: {fileID: 0}

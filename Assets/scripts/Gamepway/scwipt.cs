@@ -23,8 +23,12 @@ public class scwipt : MonoBehaviour
     private Rigidbody2D rb2d;
     private bool playerOnGround;
     private bool _tryingToJump;
+    public float initialHp = 100;
+    public float hp;
+
     void Start()
     {
+        hp = initialHp;
         directionIndicator.SetActive(false);
         rb2d = GetComponent<Rigidbody2D>();
         audioSource = GetComponent<AudioSource>();

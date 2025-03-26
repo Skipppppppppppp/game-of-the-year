@@ -16,6 +16,8 @@ public sealed class MovingObjects : MonoBehaviour
     public Rigidbody2D? movingObject;
     private RememberInitialProperties? rememberedInitialProperties;
     [Range(0,20)] public float linearDampingScale;
+    public float distanceToEat = 1;
+    public static event Action Heal;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -114,6 +116,7 @@ public sealed class MovingObjects : MonoBehaviour
         float distanceToMouseX =  Mathf.Abs(player.transform.position.x - mousePosition2D.x);
         float distanceToObjectY = Mathf.Abs(player.transform.position.y - objectPosition.y);
         float distanceToMouseY =  Mathf.Abs(player.transform.position.y - mousePosition2D.y);
+        float totalDistanceToObject = distanceToObjectX + distanceToObjectY;
         bool isObjectMovingX = true;
         bool isObjectMovingY = true;
         if (distanceToObjectX >= 12 && distanceToMouseX >= distanceToObjectX)
@@ -126,6 +129,13 @@ public sealed class MovingObjects : MonoBehaviour
         }
         if (isObjectMovingX)
         {
+            if (totalDistanceToObject <= distanceToEat)
+            {
+                Heal?.Invoke();
+                Destroy(movingObject.gameObject);
+                movingObject = null;
+                return;
+            }
             float directionX = mousePosition2D.x - objectPosition.x;
             float maxForInterp = this.maxForInterp/rememberedInitialProperties.GravityScale;
             float p = (distanceFromObjToMouseX - minForDistance) / (maxForDistance - minForDistance);

@@ -30,23 +30,27 @@ public class alertGuys : MonoBehaviour
             var guyTrans = i.transform.parent;
 
             float distanceToGuy = (trans.position - guyTrans.position).magnitude;
+
+            var guy = guyTrans.gameObject;
+            var guyWatchPlayerScript = guy.GetComponent<watchplayer>();
+
             if (distanceToGuy > detectionRadius)
             {
-                var guyObject = guyTrans.gameObject;
-                var guyWatchPlayerScriptLocal = guyObject.GetComponent<watchplayer>();
-                guyWatchPlayerScriptLocal.awareOfPlayer = false;
+                guyWatchPlayerScript.awareOfPlayer = false;
                 continue;
             }
+
             Vector2 direction = (guyTrans.position - trans.position).normalized;
             RaycastHit2D wall = Physics2D.Raycast(trans.position, direction, distanceToGuy, wallLayerMask);
+
             if (wall.collider != null)
             {
+                guyWatchPlayerScript.playerInSight = false;
                 continue;
             }
             
-            var guy = guyTrans.gameObject;
-            var guyWatchPlayerScript = guy.GetComponent<watchplayer>();
             guyWatchPlayerScript.awareOfPlayer = true;
+            guyWatchPlayerScript.playerInSight = true;
             var facePlayerScript = guy.GetComponentInChildren<FacePlayer>();
             facePlayerScript.pwayerTrans = trans;
         }
