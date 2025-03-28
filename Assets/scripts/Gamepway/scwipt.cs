@@ -25,6 +25,8 @@ public class scwipt : MonoBehaviour
     private bool _tryingToJump;
     public float initialHp = 100;
     public float hp;
+    public float speedCoeffGround = 50;
+    public float speedCoeffAir = 4;
 
     void Start()
     {
@@ -115,22 +117,22 @@ public class scwipt : MonoBehaviour
             }
             if (Input.GetKey(KeyCode.D))
             {
-                rb2d.AddForce(right * 50);
+                rb2d.AddForce(right * speedCoeffGround);
             }
             if (Input.GetKey(KeyCode.A))
             {
-                rb2d.AddForce(left * 50);
+                rb2d.AddForce(left * speedCoeffGround);
             }
         }
         if (playerOnGround == false) // player physics when airborne
         {
             if (Input.GetKey(KeyCode.D))
             {
-                rb2d.AddForce(right * 4);
+                rb2d.AddForce(right * speedCoeffAir);
             }
             if (Input.GetKey(KeyCode.A))
             {
-                rb2d.AddForce(left * 4);
+                rb2d.AddForce(left * speedCoeffAir);
             }
         }
         _tryingToJump = false;

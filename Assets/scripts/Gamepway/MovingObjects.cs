@@ -18,10 +18,12 @@ public sealed class MovingObjects : MonoBehaviour
     [Range(0,20)] public float linearDampingScale;
     public float distanceToEat = 1;
     public static event Action Heal;
+    private int edibleLayer;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        edibleLayer = 1 << UnityEngine.LayerMask.NameToLayer("Peopwe");
         foreach (var x in new[]
         {
             "Peopwe",
@@ -129,7 +131,7 @@ public sealed class MovingObjects : MonoBehaviour
         }
         if (isObjectMovingX)
         {
-            if (totalDistanceToObject <= distanceToEat)
+            if (totalDistanceToObject <= distanceToEat && 1 << movingObject.gameObject.layer == edibleLayer)
             {
                 Heal?.Invoke();
                 Destroy(movingObject.gameObject);

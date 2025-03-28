@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class RenderOnClick : MonoBehaviour
 {
+    public bool canGrabThings;
     private SpriteRenderer[] spriteRenderers;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -16,6 +17,10 @@ public class RenderOnClick : MonoBehaviour
     {
      if (Input.GetMouseButtonDown(1))
      {
+        if (canGrabThings == false)
+        {
+            return;
+        }
         foreach (SpriteRenderer spriteRenderer in spriteRenderers)
         {
             spriteRenderer.enabled = true;
