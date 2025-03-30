@@ -27,10 +27,10 @@ public class scwipt : MonoBehaviour
     public float hp;
     public float speedCoeffGround = 50;
     public float speedCoeffAir = 4;
+    public float jumpForceCoeff = 1000;
 
     void Start()
     {
-        hp = initialHp;
         directionIndicator.SetActive(false);
         rb2d = GetComponent<Rigidbody2D>();
         audioSource = GetComponent<AudioSource>();
@@ -113,7 +113,7 @@ public class scwipt : MonoBehaviour
         {
             if (_tryingToJump)
             {
-                rb2d.AddForce(up * 1000);
+                rb2d.AddForce(up * jumpForceCoeff);
             }
             if (Input.GetKey(KeyCode.D))
             {

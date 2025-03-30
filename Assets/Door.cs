@@ -89,19 +89,22 @@ public class Door : MonoBehaviour
             return;
         }
 
+        if (Mathf.Abs(neededScaleX - initialScale.x) <= 0.1)
+        {
+            neededScaleX = initialScale.x;
+        }
         var newScale = new Vector2(neededScaleX, initialScale.y);
         trans.localScale = newScale;
 
         trans.position = newPos;
-        if (collider.enabled == true && newScale.x != initialScale.x)
+        if (collider.isTrigger == false && newScale.x != initialScale.x)
         {
-            collider.enabled = false;
+            collider.isTrigger = true;
             return;
         }
-        if (collider.excludeLayers == 1)
+        if (collider.isTrigger == true && Mathf.Abs(newScale.x - initialScale.x) <= 0.1)
         {
-            collider.enabled = true;
+            collider.isTrigger = false;
         }
-        Debug.Log(collider.excludeLayers.value);
     }
 }

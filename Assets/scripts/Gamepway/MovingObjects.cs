@@ -17,8 +17,9 @@ public sealed class MovingObjects : MonoBehaviour
     private RememberInitialProperties? rememberedInitialProperties;
     [Range(0,20)] public float linearDampingScale;
     public float distanceToEat = 1;
-    public static event Action Heal;
+    private ManageDamage healthScript;
     private int edibleLayer;
+    public float healthToGive = 15;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -33,6 +34,7 @@ public sealed class MovingObjects : MonoBehaviour
             var layer = UnityEngine.LayerMask.NameToLayer(x);
             LayerMask |= 1 << layer;
         }
+        healthScript = player.GetComponent<ManageDamage>();
     }
 
     private Rigidbody2D? RaycastForObject()
@@ -133,7 +135,7 @@ public sealed class MovingObjects : MonoBehaviour
         {
             if (totalDistanceToObject <= distanceToEat && 1 << movingObject.gameObject.layer == edibleLayer)
             {
-                Heal?.Invoke();
+                healthScript.AddHealth(healthToGive);
                 Destroy(movingObject.gameObject);
                 movingObject = null;
                 return;
