@@ -28,6 +28,9 @@ public class scwipt : MonoBehaviour
     public float speedCoeffGround = 50;
     public float speedCoeffAir = 4;
     public float jumpForceCoeff = 1000;
+    private Transform trans;
+    private int portalLayerMask;
+    private float pwayerZ;
 
     void Start()
     {
@@ -35,7 +38,11 @@ public class scwipt : MonoBehaviour
         rb2d = GetComponent<Rigidbody2D>();
         audioSource = GetComponent<AudioSource>();
         particleSystem = GetComponent<ParticleSystem>();
+        trans = GetComponent<Transform>();
+        portalLayerMask |= 1 << LayerMask.NameToLayer("Portals");
+        pwayerZ = trans.position.z;
     }
+
     void OnCollisionStay2D(Collision2D collision)
     {
         rb2d.linearDamping = 4;
@@ -53,6 +60,26 @@ public class scwipt : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            var portalCollider = Physics2D.OverlapCircle(trans.position, .1f, portalLayerMask);
+
+            if (portalCollider == null)
+            {
+                return;
+            }
+        
+            GameObject portalObj = portalCollider.gameObject;
+            Portal portalScript = portalObj.GetComponent<Portal>();
+
+            if (portalScript == null)
+            {
+                return;
+            }
+
+            trans.position = new Vector3 (portalScript.otherEnd.position.x, portalScript.otherEnd.position.y, pwayerZ);
+        }
+
         if (Input.GetKey(KeyCode.E))
         {
             directionIndicator.SetActive(true);
@@ -85,7 +112,7 @@ public class scwipt : MonoBehaviour
         {
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2 direction = (mousePosition - transform.position).normalized;
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, 3, destroyableLayer);
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, 5, destroyableLayer);
 
             if (hit.collider != null)
             {
