@@ -12,6 +12,7 @@ public class Door : MonoBehaviour
     private float initialBoundsX;
     private Vector2 initialScale;
     private BoxCollider2D collider;
+    private GameObject colliderObj;
     public float maxScaleX;
     public bool opensToTheLeft;
 
@@ -36,6 +37,18 @@ public class Door : MonoBehaviour
         rb2d = GetComponent<Rigidbody2D>();
         layerMask |= 1 << UnityEngine.LayerMask.NameToLayer("Moveable Stuff");
         collider = GetComponent<BoxCollider2D>();
+        var cols = GetComponentsInChildren<BoxCollider2D>();
+        int i = 0;
+        foreach (BoxCollider2D col in cols)
+        {
+            if (i == 0)
+            {
+                i++;
+                continue;
+            }
+            colliderObj = col.gameObject;
+            i++;
+        }
         initialBoundsX = collider.bounds.extents.x;
         initialScale = transform.localScale;
     }
@@ -44,7 +57,7 @@ public class Door : MonoBehaviour
     void Update()
     {
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButton(1))
         {
             if (RaycastForObject() == rb2d)
             {
@@ -65,19 +78,19 @@ public class Door : MonoBehaviour
             return;
         }
         var distanceToMouseX = mousePosition.x - initialPos.x;
-        var neededScaleX = distanceToMouseX/initialBoundsX;
+        var neededScaleX = distanceToMouseX/initialScale.x;
         Vector2 newPos = trans.position;
         
         bool shouldChangeScale = false;
 
-        if (opensToTheLeft == false && neededScaleX > 0)
+        if (opensToTheLeft == false)
         {
             neededScaleX = Mathf.Clamp(neededScaleX, initialScale.x, maxScaleX);
             newPos = new Vector2(neededScaleX/2 + initialPos.x - initialScale.x/2, initialPos.y);
             shouldChangeScale = true;
         }
 
-        if (opensToTheLeft == true && neededScaleX < 0)
+        if (opensToTheLeft == true)
         {
             neededScaleX = Mathf.Clamp(neededScaleX, -maxScaleX, -initialScale.x);
             newPos = new Vector2(neededScaleX/2 + initialPos.x + initialScale.x/2, initialPos.y);
@@ -97,14 +110,14 @@ public class Door : MonoBehaviour
         trans.localScale = newScale;
 
         trans.position = newPos;
-        if (collider.isTrigger == false && newScale.x != initialScale.x)
+        if (colliderObj.activeInHierarchy == true && newScale.x != initialScale.x)
         {
-            collider.isTrigger = true;
+            colliderObj.SetActive(false);
             return;
         }
-        if (collider.isTrigger == true && Mathf.Abs(newScale.x - initialScale.x) <= 0.1)
+        if (colliderObj.activeInHierarchy == false && Mathf.Abs(newScale.x - initialScale.x) <= 1)
         {
-            collider.isTrigger = false;
+            colliderObj.SetActive(true);
         }
     }
 }
