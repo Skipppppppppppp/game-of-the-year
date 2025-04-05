@@ -1,3 +1,5 @@
+using Unity.Collections;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class Door : MonoBehaviour
@@ -14,7 +16,10 @@ public class Door : MonoBehaviour
     private BoxCollider2D collider;
     private GameObject colliderObj;
     public float maxScaleX;
-    public bool opensToTheLeft;
+    public float maxScaleY;
+    public string axis;
+    public bool isDirectionPositive;
+    // doors don't break properly if they can be opened to the left?? like they just disappear????? hi???
 
     #nullable enable annotations
     private Rigidbody2D? RaycastForObject()
@@ -27,6 +32,56 @@ public class Door : MonoBehaviour
             return null;
         }
         return rayHit.rigidbody;
+    }
+
+    float FindScale(string axis, bool positiveOrNegative, float initialScaleOnAxis, float maxScale)
+    {
+        Vector2 currentScale = trans.localScale;
+        Vector2 newPos;
+        float neededScale = 0;
+
+        if (axis.ToLower() == "x")
+        {
+            var distanceToMouseX = mousePosition.x - initialPos.x;
+            neededScale = distanceToMouseX/initialScale.x;
+        }
+
+        if (axis.ToLower() == "y")
+        {
+            var distanceToMouseY = mousePosition.y - initialPos.y;
+            neededScale = distanceToMouseY/initialScale.y;
+        }
+
+        if (positiveOrNegative)
+        {
+            neededScale = Mathf.Clamp(neededScale, initialScaleOnAxis, maxScale);
+        }
+
+        if (!positiveOrNegative)
+        {
+            neededScale = Mathf.Clamp(neededScale, -maxScale, -initialScale.x);
+        }
+
+        if (Mathf.Abs(neededScale - initialScaleOnAxis) <= 0.1)
+        {
+            neededScale = initialScaleOnAxis;
+        }
+
+        return neededScale;
+    }
+
+    float FindPosition(float scaleOnAxis, float initialCoord, float initialScaleOnAxis)
+    {
+        float newCoord = 0;
+
+        if (scaleOnAxis > 0)
+        {
+            newCoord = scaleOnAxis/2 + initialCoord - initialScaleOnAxis/2;
+            return newCoord;
+        }
+        
+        newCoord = scaleOnAxis/2 + initialCoord + initialScaleOnAxis/2;
+        return newCoord;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -77,45 +132,31 @@ public class Door : MonoBehaviour
         {
             return;
         }
-        var distanceToMouseX = mousePosition.x - initialPos.x;
-        var neededScaleX = distanceToMouseX/initialScale.x;
-        Vector2 newPos = trans.position;
-        
-        bool shouldChangeScale = false;
 
-        if (opensToTheLeft == false)
+        Vector2 newScale = new Vector2();
+        Vector2 newPos = new Vector2();
+
+        if (axis == "x")
         {
-            neededScaleX = Mathf.Clamp(neededScaleX, initialScale.x, maxScaleX);
-            newPos = new Vector2(neededScaleX/2 + initialPos.x - initialScale.x/2, initialPos.y);
-            shouldChangeScale = true;
+            newScale = new Vector2(FindScale("x", isDirectionPositive, initialScale.x, maxScaleX), initialScale.y);
+            newPos = new Vector2(FindPosition(newScale.x, initialPos.x, initialScale.x), initialPos.y);
         }
 
-        if (opensToTheLeft == true)
+        if (axis == "y")
         {
-            neededScaleX = Mathf.Clamp(neededScaleX, -maxScaleX, -initialScale.x);
-            newPos = new Vector2(neededScaleX/2 + initialPos.x + initialScale.x/2, initialPos.y);
-            shouldChangeScale = true;
+            newScale = new Vector2(initialScale.x, FindScale("y", isDirectionPositive, initialScale.y, maxScaleY));
+            newPos = new Vector2(initialPos.x, FindPosition(newScale.y, initialPos.y, initialScale.y));
         }
 
-        if (shouldChangeScale == false)
-        {
-            return;
-        }
-
-        if (Mathf.Abs(neededScaleX - initialScale.x) <= 0.1)
-        {
-            neededScaleX = initialScale.x;
-        }
-        var newScale = new Vector2(neededScaleX, initialScale.y);
         trans.localScale = newScale;
-
         trans.position = newPos;
-        if (colliderObj.activeInHierarchy == true && newScale.x != initialScale.x)
+
+        if (colliderObj.activeInHierarchy == true && newScale != initialScale)
         {
             colliderObj.SetActive(false);
             return;
         }
-        if (colliderObj.activeInHierarchy == false && Mathf.Abs(newScale.x - initialScale.x) <= 1)
+        if (colliderObj.activeInHierarchy == false && (newScale - initialScale).magnitude <= 1)
         {
             colliderObj.SetActive(true);
         }

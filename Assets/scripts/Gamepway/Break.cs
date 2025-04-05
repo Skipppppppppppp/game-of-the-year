@@ -244,11 +244,11 @@ public class Break : MonoBehaviour, IObjectSelectedHandler
 
         bool ShouldBreakObject(Vector2 prevMousePos)
         {
-            // float distance = Vector2.Distance(player.position, this.transform.position);
-            // if (distance > 8.0f)
-            // {
-            //     return false;
-            // }
+            float distance = Vector2.Distance(player.position, this.transform.position);
+            if (distance > 12.0f)
+            {
+                return false;
+            }
 
             if (!Input.GetMouseButton(1))
             {

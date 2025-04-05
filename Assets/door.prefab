@@ -78,7 +78,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxScaleX: 2
-  opensToTheLeft: 1
+  maxScaleY: 0
+  axis: x
+  isDirectionPositive: 0
 --- !u!114 &2437772790007510986
 MonoBehaviour:
   m_ObjectHideFlags: 0

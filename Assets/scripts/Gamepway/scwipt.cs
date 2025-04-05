@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEditor.Build.Content;
 using UnityEngine;
+using TMPro;
 using UnityEngine.UIElements;
 
 public class scwipt : MonoBehaviour
@@ -31,6 +32,7 @@ public class scwipt : MonoBehaviour
     private Transform trans;
     private int portalLayerMask;
     private float pwayerZ;
+    public TextMeshProUGUI announcementText;
 
     void Start()
     {
@@ -60,14 +62,18 @@ public class scwipt : MonoBehaviour
 
     void Update()
     {
+        if (announcementText.text != "")
+        {
+            announcementText.text = "";
+        }
+
+        var portalCollider = Physics2D.OverlapCircle(trans.position, .1f, portalLayerMask);
+        if (portalCollider != null)
+        {
+            announcementText.text = "Press F to enter";
+        }
         if (Input.GetKeyDown(KeyCode.F))
         {
-            var portalCollider = Physics2D.OverlapCircle(trans.position, .1f, portalLayerMask);
-
-            if (portalCollider == null)
-            {
-                return;
-            }
         
             GameObject portalObj = portalCollider.gameObject;
             Portal portalScript = portalObj.GetComponent<Portal>();
