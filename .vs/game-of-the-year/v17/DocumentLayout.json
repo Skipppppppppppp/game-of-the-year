@@ -1,0 +1,41 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Student\\game-of-the-year\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{0AFDD33F-03DD-F3E3-A6E8-FB4D9F846FDC}|Assembly-CSharp.csproj|c:\\users\\student\\game-of-the-year\\assets\\door.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0AFDD33F-03DD-F3E3-A6E8-FB4D9F846FDC}|Assembly-CSharp.csproj|solutionrelative:assets\\door.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Door.cs",
+              "DocumentMoniker": "C:\\Users\\Student\\game-of-the-year\\Assets\\Door.cs",
+              "RelativeDocumentMoniker": "Assets\\Door.cs",
+              "ToolTip": "C:\\Users\\Student\\game-of-the-year\\Assets\\Door.cs",
+              "RelativeToolTip": "Assets\\Door.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-12T13:22:30.222Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
