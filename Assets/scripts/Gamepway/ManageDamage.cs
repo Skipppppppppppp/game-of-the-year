@@ -20,6 +20,14 @@ public class ManageDamage : MonoBehaviour
     public MovingObjects movingObjectsScript;
     public RenderOnClick renderOnClickScript;
 
+    private struct Phase
+    {
+        public GameObject phaseObject;
+        public float speedCoeffAir;
+        public float speedCoeffGround;
+        public float jumpForceCoeff;
+    }
+
     private void Die()
     {
         playerScript.hp = playerScript.initialHp;

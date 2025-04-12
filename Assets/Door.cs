@@ -37,7 +37,6 @@ public class Door : MonoBehaviour
     float FindScale(string axis, bool positiveOrNegative, float initialScaleOnAxis, float maxScale)
     {
         Vector2 currentScale = trans.localScale;
-        Vector2 newPos;
         float neededScale = 0;
 
         if (axis.ToLower() == "x")

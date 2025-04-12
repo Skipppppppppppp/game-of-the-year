@@ -5,6 +5,7 @@ using UnityEditor.Build.Content;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class scwipt : MonoBehaviour
 {
@@ -33,6 +34,25 @@ public class scwipt : MonoBehaviour
     private int portalLayerMask;
     private float pwayerZ;
     public TextMeshProUGUI announcementText;
+
+    static void CheckForPortals(Vector2 pos, int portalLayerMask, TextMeshProUGUI textToChange, float currentZ)
+    {
+        var portalCollider = Physics2D.OverlapCircle(pos, .1f, portalLayerMask);
+
+        if (portalCollider == null)
+        {
+            return;
+        }
+
+        Portal portalScript = portalCollider.GetComponent<Portal>();
+
+        textToChange.text = "Press F to enter";
+
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            pos = new Vector3 (portalScript.otherEnd.position.x, portalScript.otherEnd.position.y, currentZ);
+        }
+    }
 
     void Start()
     {
@@ -67,24 +87,7 @@ public class scwipt : MonoBehaviour
             announcementText.text = "";
         }
 
-        var portalCollider = Physics2D.OverlapCircle(trans.position, .1f, portalLayerMask);
-        if (portalCollider != null)
-        {
-            announcementText.text = "Press F to enter";
-        }
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-        
-            GameObject portalObj = portalCollider.gameObject;
-            Portal portalScript = portalObj.GetComponent<Portal>();
-
-            if (portalScript == null)
-            {
-                return;
-            }
-
-            trans.position = new Vector3 (portalScript.otherEnd.position.x, portalScript.otherEnd.position.y, pwayerZ);
-        }
+        CheckForPortals(trans.position, portalLayerMask, announcementText, pwayerZ);
 
         if (Input.GetKey(KeyCode.E))
         {
