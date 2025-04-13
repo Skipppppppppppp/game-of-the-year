@@ -2,6 +2,8 @@ using Unity.Collections;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
+public enum Axis{x, y}
+
 public class Door : MonoBehaviour
 {
     private Transform trans;
@@ -17,7 +19,7 @@ public class Door : MonoBehaviour
     private GameObject colliderObj;
     public float maxScaleX;
     public float maxScaleY;
-    public string axis;
+    public Axis axis;
     public bool isDirectionPositive;
     // doors don't break properly if they can be opened to the left?? like they just disappear????? hi???
 
@@ -34,32 +36,24 @@ public class Door : MonoBehaviour
         return rayHit.rigidbody;
     }
 
-    float FindScale(string axis, bool positiveOrNegative, float initialScaleOnAxis, float maxScale)
+    float FindScale(Axis axis, float initialScaleOnAxis, float maxScale)
     {
         Vector2 currentScale = trans.localScale;
         float neededScale = 0;
 
-        if (axis.ToLower() == "x")
+        if (axis == Axis.x)
         {
             var distanceToMouseX = mousePosition.x - initialPos.x;
             neededScale = distanceToMouseX/initialScale.x;
         }
 
-        if (axis.ToLower() == "y")
+        if (axis == Axis.y)
         {
             var distanceToMouseY = mousePosition.y - initialPos.y;
             neededScale = distanceToMouseY/initialScale.y;
         }
 
-        if (positiveOrNegative)
-        {
-            neededScale = Mathf.Clamp(neededScale, initialScaleOnAxis, maxScale);
-        }
-
-        if (!positiveOrNegative)
-        {
-            neededScale = Mathf.Clamp(neededScale, -maxScale, -initialScale.x);
-        }
+        neededScale = Mathf.Clamp(neededScale, initialScaleOnAxis, maxScale);
 
         if (Mathf.Abs(neededScale - initialScaleOnAxis) <= 0.1)
         {
@@ -69,14 +63,13 @@ public class Door : MonoBehaviour
         return neededScale;
     }
 
-    float FindPosition(float scaleOnAxis, float initialCoord, float initialScaleOnAxis)
+    float FindPosition(float scaleOnAxis, float initialCoord, float initialScaleOnAxis, bool positive)
     {
-        float newCoord = 0;
+        float newCoord;
 
-        if (scaleOnAxis > 0)
+        if (positive)
         {
-            newCoord = scaleOnAxis/2 + initialCoord - initialScaleOnAxis/2;
-            return newCoord;
+            initialScaleOnAxis = -initialScaleOnAxis;
         }
         
         newCoord = scaleOnAxis/2 + initialCoord + initialScaleOnAxis/2;
@@ -132,18 +125,25 @@ public class Door : MonoBehaviour
             return;
         }
 
-        Vector2 newScale = new Vector2();
-        Vector2 newPos = new Vector2();
+        Vector2 newScale = initialScale;
+        Vector2 newPos = initialPos;
 
-        if (axis == "x")
+        if (axis == Axis.x)
         {
-            newScale = new Vector2(FindScale("x", isDirectionPositive, initialScale.x, maxScaleX), initialScale.y);
-            newPos = new Vector2(FindPosition(newScale.x, initialPos.x, initialScale.x), initialPos.y);
+            var s = FindScale(
+                axis: Axis.x,
+                initialScaleOnAxis: initialScale.x,
+                maxScale: maxScaleX
+                );
+            newScale.x = s;
+            
+            var p = FindPosition(newScale.x, initialPos.x, initialScale.x);
+            newPos = new Vector2(, initialPos.y);
         }
 
-        if (axis == "y")
+        else // if (axis == Axis.y)
         {
-            newScale = new Vector2(initialScale.x, FindScale("y", isDirectionPositive, initialScale.y, maxScaleY));
+            newScale = new Vector2(initialScale.x, FindScale(Axis.y, isDirectionPositive, initialScale.y, maxScaleY));
             newPos = new Vector2(initialPos.x, FindPosition(newScale.y, initialPos.y, initialScale.y));
         }
 
