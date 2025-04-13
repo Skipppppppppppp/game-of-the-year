@@ -35,7 +35,7 @@ public class scwipt : MonoBehaviour
     private float pwayerZ;
     public TextMeshProUGUI announcementText;
 
-    static void CheckForPortals(Vector2 pos, int portalLayerMask, TextMeshProUGUI textToChange, float currentZ)
+    static void CheckForPortals(Vector2 pos, int portalLayerMask, TextMeshProUGUI textToChange, float currentZ, Transform pwayerTrans)
     {
         var portalCollider = Physics2D.OverlapCircle(pos, .1f, portalLayerMask);
 
@@ -51,6 +51,7 @@ public class scwipt : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F))
         {
             pos = new Vector3 (portalScript.otherEnd.position.x, portalScript.otherEnd.position.y, currentZ);
+            pwayerTrans.position = pos;
         }
     }
 
@@ -87,7 +88,7 @@ public class scwipt : MonoBehaviour
             announcementText.text = "";
         }
 
-        CheckForPortals(trans.position, portalLayerMask, announcementText, pwayerZ);
+        CheckForPortals(trans.position, portalLayerMask, announcementText, pwayerZ, trans);
 
         if (Input.GetKey(KeyCode.E))
         {

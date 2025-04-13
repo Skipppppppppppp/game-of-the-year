@@ -21,6 +21,7 @@ public class Door : MonoBehaviour
     public float maxScaleY;
     public Axis axis;
     public bool isDirectionPositive;
+    private Break breakScript;
 
     #nullable enable annotations
     private Rigidbody2D? RaycastForObject()
@@ -57,6 +58,15 @@ public class Door : MonoBehaviour
             neededScale = initialScaleOnAxis;
         }
 
+        if (neededScale == maxScale || neededScale == initialScaleOnAxis)
+        {
+            breakScript.canBeBroken = true;
+        }
+        else
+        {
+            breakScript.canBeBroken = false;
+        }
+
         return neededScale;
     }
 
@@ -67,9 +77,10 @@ public class Door : MonoBehaviour
         if (!positive)
         {
             scaleOnAxis = -scaleOnAxis;
+            initialScaleOnAxis = -initialScaleOnAxis;
         }
         
-        newCoord = scaleOnAxis/2 + initialCoord;
+        newCoord = scaleOnAxis/2 + initialCoord - initialScaleOnAxis/2;
         return newCoord;
     }
 
@@ -95,6 +106,7 @@ public class Door : MonoBehaviour
         }
         initialBoundsX = collider.bounds.extents.x;
         initialScale = transform.localScale;
+        breakScript = this.GetComponent<Break>();
     }
 
     // Update is called once per frame

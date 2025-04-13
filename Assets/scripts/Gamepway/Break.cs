@@ -14,6 +14,7 @@ public class Break : MonoBehaviour, IObjectSelectedHandler
     private List<Vector2>[] intersections = Array.Empty<List<Vector2>>();
     public CreateTriangle createTriangle;
     Line[][] lineequations;
+    public bool canBeBroken = true;
 
     private Vector2[] MakeRandomPoints(Mesh mesh, int amount)
     {
@@ -219,9 +220,12 @@ public class Break : MonoBehaviour, IObjectSelectedHandler
         return mousePosition2D;
     }
 
-    // Update is called once per frame
     public void ProcessBeingSelected()
     {
+        if (!canBeBroken)
+        {
+            return;
+        }
         var newMousePos = GetNewMousePosition();
         MaybeMeshThings();
         this.prevMousePos = newMousePos;
