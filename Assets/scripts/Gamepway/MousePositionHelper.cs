@@ -1,17 +1,15 @@
-using System;
-using Unity.VisualScripting;
 using UnityEngine;
 
 #nullable enable
 
 public class MousePositionHelper : MonoBehaviour
 {
-    public static Vector2 FindDistancesToMouse(Transform trans)
+    public static Vector2 FindDistancesToMouse(Vector2 objectPos)
     {
         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 objectPos = trans.position;
-        float distanceToMouseX = Mathf.Abs(mousePosition.x - objectPosition.x);
-        float distanceToMouseY = Mathf.Abs(mousePosition.y - objectPosition.y);
+
+        float distanceToMouseX = mousePosition.x - objectPos.x;
+        float distanceToMouseY = mousePosition.y - objectPos.y;
 
         return new Vector2(distanceToMouseX, distanceToMouseY);
     }

@@ -112,13 +112,19 @@ public sealed class MovingObjects : MonoBehaviour
         movingObject.linearDamping = rememberedInitialProperties!.LinearDamping * linearDampingScale;
         var rb2d = movingObject;
         Vector2 objectPosition = CenterOfMassFinder.FindObjectPosition(rb2d);
+        Vector2 distancesToMouse = MousePositionHelper.FindDistancesToMouse(objectPosition);
+
         float distanceToObjectX = Mathf.Abs(player.transform.position.x - objectPosition.x);
-        float distanceToMouseX =  Mathf.Abs(player.transform.position.x - mousePosition.x); 
+        float distanceToMouseX =  distancesToMouse.x;
+
         float distanceToObjectY = Mathf.Abs(player.transform.position.y - objectPosition.y);
-        float distanceToMouseY =  Mathf.Abs(player.transform.position.y - mousePosition.y);
+        float distanceToMouseY =  distancesToMouse.y;
+
         float totalDistanceToObject = distanceToObjectX + distanceToObjectY;
+
         bool isObjectMovingX = true;
         bool isObjectMovingY = true;
+
         if (distanceToObjectX >= 12 && distanceToMouseX >= distanceToObjectX)
         {
             isObjectMovingX = false;
@@ -136,10 +142,9 @@ public sealed class MovingObjects : MonoBehaviour
                 movingObject = null;
                 return;
             }
-            float directionX = mousePosition.x - objectPosition.x;
             float maxForInterp = this.maxForInterp/rememberedInitialProperties.GravityScale;
-            float p = (distanceFromObjToMouseX - minForDistance) / (maxForDistance - minForDistance);
-            Vector2 forceForAddingX = new Vector2 (directionX*Mathf.Lerp(minForInterp, maxForInterp, p),0);
+            float p = (distanceToMouseX - minForDistance) / (maxForDistance - minForDistance);
+            Vector2 forceForAddingX = new Vector2 (distanceToMouseX*Mathf.Lerp(minForInterp, maxForInterp, p),0);
             rb2d.AddForce(forceForAddingX);
         }
         else
@@ -148,10 +153,9 @@ public sealed class MovingObjects : MonoBehaviour
         }
         if (isObjectMovingY)
         {
-            float directionY = mousePosition.y - objectPosition.y;
             float maxForInterp = this.maxForInterp/rememberedInitialProperties.GravityScale;
-            float p = (distanceFromObjToMouseY - minForDistance) / (maxForDistance - minForDistance);
-            Vector2 forceForAddingY = new Vector2 (0,directionY*Mathf.Lerp(minForInterp, maxForInterp, p));
+            float p = (distanceToMouseY - minForDistance) / (maxForDistance - minForDistance);
+            Vector2 forceForAddingY = new Vector2 (0,distanceToMouseY*Mathf.Lerp(minForInterp, maxForInterp, p));
             rb2d.AddForce(forceForAddingY);
         }
         else

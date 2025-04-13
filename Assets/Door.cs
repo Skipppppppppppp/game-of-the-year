@@ -21,7 +21,6 @@ public class Door : MonoBehaviour
     public float maxScaleY;
     public Axis axis;
     public bool isDirectionPositive;
-    // doors don't break properly if they can be opened to the left?? like they just disappear????? hi???
 
     #nullable enable annotations
     private Rigidbody2D? RaycastForObject()
@@ -36,21 +35,19 @@ public class Door : MonoBehaviour
         return rayHit.rigidbody;
     }
 
-    float FindScale(Axis axis, float initialScaleOnAxis, float maxScale)
+    float FindScale(Axis axis, float initialScaleOnAxis, float maxScale, float distanceToMouse)
     {
         Vector2 currentScale = trans.localScale;
         float neededScale = 0;
 
         if (axis == Axis.x)
         {
-            var distanceToMouseX = mousePosition.x - initialPos.x;
-            neededScale = distanceToMouseX/initialScale.x;
+            neededScale = distanceToMouse/initialScale.x;
         }
 
         if (axis == Axis.y)
         {
-            var distanceToMouseY = mousePosition.y - initialPos.y;
-            neededScale = distanceToMouseY/initialScale.y;
+            neededScale = distanceToMouse/initialScale.y;
         }
 
         neededScale = Mathf.Clamp(neededScale, initialScaleOnAxis, maxScale);
@@ -67,12 +64,12 @@ public class Door : MonoBehaviour
     {
         float newCoord;
 
-        if (positive)
+        if (!positive)
         {
-            initialScaleOnAxis = -initialScaleOnAxis;
+            scaleOnAxis = -scaleOnAxis;
         }
         
-        newCoord = scaleOnAxis/2 + initialCoord + initialScaleOnAxis/2;
+        newCoord = scaleOnAxis/2 + initialCoord;
         return newCoord;
     }
 
@@ -128,23 +125,48 @@ public class Door : MonoBehaviour
         Vector2 newScale = initialScale;
         Vector2 newPos = initialPos;
 
+        var distancesFromObjToMouse = MousePositionHelper.FindDistancesToMouse(initialPos);
+
+        if (!isDirectionPositive)
+        {
+            distancesFromObjToMouse = -distancesFromObjToMouse;
+        }
+
         if (axis == Axis.x)
         {
             var s = FindScale(
                 axis: Axis.x,
                 initialScaleOnAxis: initialScale.x,
-                maxScale: maxScaleX
+                maxScale: maxScaleX,
+                distanceToMouse: distancesFromObjToMouse.x
                 );
             newScale.x = s;
             
-            var p = FindPosition(newScale.x, initialPos.x, initialScale.x);
-            newPos = new Vector2(, initialPos.y);
+            var p = FindPosition(newScale.x, initialPos.x, initialScale.x, true);
+            
+            if (distancesFromObjToMouse.x > 0 && isDirectionPositive)
+            {
+                newPos.x = FindPosition(newScale.x, initialPos.x, initialScale.x, true);
+            }
+            else
+            {
+                newPos.x = FindPosition(newScale.x, initialPos.x, initialScale.x, false);
+            }
+
         }
 
-        else // if (axis == Axis.y)
+        else
         {
-            newScale = new Vector2(initialScale.x, FindScale(Axis.y, isDirectionPositive, initialScale.y, maxScaleY));
-            newPos = new Vector2(initialPos.x, FindPosition(newScale.y, initialPos.y, initialScale.y));
+            newScale = new Vector2(initialScale.x, FindScale(Axis.y, initialScale.y, maxScaleY, distancesFromObjToMouse.y));
+
+            if (distancesFromObjToMouse.y > 0 && isDirectionPositive)
+            {
+                newPos.y = FindPosition(newScale.y, initialPos.y, initialScale.y, true);
+            }
+            else
+            {
+                newPos.y = FindPosition(newScale.y, initialPos.y, initialScale.y, false);
+            }
         }
 
         trans.localScale = newScale;
