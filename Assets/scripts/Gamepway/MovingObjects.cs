@@ -40,7 +40,7 @@ public sealed class MovingObjects : MonoBehaviour
     private Rigidbody2D? RaycastForObject()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit2D rayHit = Physics2D.GetRayIntersection(ray,float.PositiveInfinity,LayerMask);
+        RaycastHit2D rayHit = Physics2D.GetRayIntersection(ray, float.PositiveInfinity, LayerMask);
         var trans = rayHit.transform;
         if (trans == null)
         {
