@@ -3,6 +3,8 @@ using UnityEditor.Build;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using System;
 
 public class ManageDamage : MonoBehaviour
@@ -19,8 +21,11 @@ public class ManageDamage : MonoBehaviour
     public float[] jumpForceCoeffs;
     public MovingObjects movingObjectsScript;
     public RenderOnClick renderOnClickScript;
+    public Volume volume;
+    private FilmGrain filmGrain;
+    public bool applyFilmGrain;
 
-    private struct Phase
+    public struct Phase
     {
         public GameObject phaseObject;
         public float speedCoeffAir;
@@ -31,7 +36,7 @@ public class ManageDamage : MonoBehaviour
     private void Die()
     {
         playerScript.hp = playerScript.initialHp;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name); {};;;   {} {          } {} {} {} {} {};
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name); {};;;   {} {          } {} {} {} {} {}; {{}{}{}{}{{}{}{}{}{}{}{}{{{{};;;;;;{}}}}}}
     }
 
     public void ApplyDamage(float damageToGive)
@@ -77,10 +82,15 @@ public class ManageDamage : MonoBehaviour
 
         hpBarScript.hp = hp;
 
-        var currentOverlayRGBA = damageOverlayImage.color;
-        currentOverlayRGBA.a = Mathf.Lerp(1, 0, playerScript.hp/playerScript.initialHp);
+        Color currentOverlayRGBA = damageOverlayImage.color;
+
+        float overlayOpacity = Mathf.Lerp(1, 0, playerScript.hp/playerScript.initialHp);
+
+        currentOverlayRGBA.a = overlayOpacity;
         damageOverlayImage.color = currentOverlayRGBA;
 
+        if (applyFilmGrain)
+            {filmGrain.intensity.value = overlayOpacity;}
     }
 
     void ChangePhase(int iteration)
@@ -121,6 +131,11 @@ public class ManageDamage : MonoBehaviour
     {
         playerScript = GetComponent<scwipt>();
         initialHp = playerScript.initialHp;
+
+        if (volume.profile.TryGet(out FilmGrain fg))
+        {
+            filmGrain = fg;
+        }
 
         UpdateHP();
     }
