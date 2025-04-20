@@ -3,13 +3,13 @@ using UnityEditor.Build;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System;
 
 public class ManageDamage : MonoBehaviour
 {
     private scwipt playerScript;
     public hp_bar hpBarScript;
-    public GameObject uiDamageOverlay;
-    private Image damageOverlayImage;
+    public Image damageOverlayImage;
     public float[] phaseHPs;
     private int phase;
     public GameObject[] phaseObjects;
@@ -78,7 +78,7 @@ public class ManageDamage : MonoBehaviour
         hpBarScript.hp = hp;
 
         var currentOverlayRGBA = damageOverlayImage.color;
-        currentOverlayRGBA.a = Mathf.Lerp(1, 0, hp/initialHp);
+        currentOverlayRGBA.a = Mathf.Lerp(1, 0, playerScript.hp/playerScript.initialHp);
         damageOverlayImage.color = currentOverlayRGBA;
 
     }
@@ -120,7 +120,6 @@ public class ManageDamage : MonoBehaviour
     void Start()
     {
         playerScript = GetComponent<scwipt>();
-        damageOverlayImage = uiDamageOverlay.GetComponent<Image>();
         initialHp = playerScript.initialHp;
 
         UpdateHP();
