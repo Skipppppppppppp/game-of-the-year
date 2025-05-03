@@ -191,6 +191,7 @@ MonoBehaviour:
   speedCoeffGround: 50
   speedCoeffAir: 4
   jumpForceCoeff: 1000
+  announcementText: {fileID: 0}
 --- !u!198 &5886083112816307690
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -5076,7 +5077,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hpBarScript: {fileID: 0}
-  uiDamageOverlay: {fileID: 0}
+  damageOverlayImage: {fileID: 0}
   phaseHPs:
   - 10
   - 100
@@ -5094,6 +5095,8 @@ MonoBehaviour:
   - 1000
   movingObjectsScript: {fileID: 0}
   renderOnClickScript: {fileID: 0}
+  volume: {fileID: 0}
+  applyFilmGrain: 0
 --- !u!1 &3087659455126530342
 GameObject:
   m_ObjectHideFlags: 0
@@ -5274,7 +5277,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0c8905a6cbd8d7428eb19fa9c2ad566, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canGrabThings: 0
 --- !u!1 &4349883992424543789
 GameObject:
   m_ObjectHideFlags: 0
@@ -5787,7 +5789,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1528616135972995180
 Transform:
   m_ObjectHideFlags: 0
