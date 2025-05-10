@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class OpenAndClose : MonoBehaviour
 {
@@ -14,14 +16,36 @@ public class OpenAndClose : MonoBehaviour
     private Vector2 initialScale;
     private BoxCollider2D collider;
     private GameObject colliderObj;
-    public float maxScaleX;
-    public float maxScaleY;
+    public Vector2 maxScales;
     public Axis axis;
     public bool isDirectionPositive;
     private Break breakScript;
+    public float openingIncrement = 10f;
+    private DoorLogic doorLogicScript;
+    private float scaleOnAxis;
+    private float maxScaleOnAxis;
+    private float openness = 0;
+    private float maxPosOnAxis;
 
     public DoorOpeningStatus ContinueOpening()
     {
+        if (scaleOnAxis >= maxScaleOnAxis)
+        {
+            return DoorOpeningStatus.Done;
+        }
+        ChangeScaleToPercent(
+            openness: openness + openingIncrement);
+
+        return DoorOpeningStatus.InProcess;
+    }
+
+    public DoorOpeningStatus ContinueOpening(Vector2 maxPosition)
+    {
+        if (scaleOnAxis >= maxScaleOnAxis)
+        {
+            return DoorOpeningStatus.Done;
+        }
+
 
         return DoorOpeningStatus.InProcess;
     }
@@ -31,10 +55,30 @@ public class OpenAndClose : MonoBehaviour
         return DoorOpeningStatus.InProcess;
     }
 
-    float FindScale(float initialScaleOnAxis, float maxScale, float distanceToMouse)
+    public (Vector2 NewPos, Vector2 NewScale) ChangeScaleToPercent(float openness)
     {
-        Vector2 currentScale = trans.localScale;
-        float neededScale = distanceToMouse / ComponentRef(ref initialScale);
+        (Vector2 NewPos, Vector2 NewScale) ret;
+        float initialPosOnAxis = ComponentRef(ref initialPos);
+        float t = Mathf.Abs(openness/100);
+
+        float newPosOnAxis = Mathf.Lerp(initialPosOnAxis, maxPosOnAxis, t);
+
+        if (openness < 0 && isDirectionPositive || openness > 0 && !isDirectionPositive)
+        {
+            ret = doorLogicScript.Rescale(initialPosOnAxis);
+        }
+        else
+        {
+            ret = doorLogicScript.Rescale(newPosOnAxis);
+        }
+
+        return ret;
+    }
+
+    public float FindScale(float initialScaleOnAxis, float maxScale, float initialPosOnAxis, float newPosOnAxis)
+    {
+        float neededScale = Mathf.Abs(newPosOnAxis - initialPosOnAxis)*2;
+
         neededScale = Mathf.Clamp(neededScale, initialScaleOnAxis, maxScale);
 
         if (Mathf.Abs(neededScale - initialScaleOnAxis) <= 0.1f)
@@ -54,7 +98,7 @@ public class OpenAndClose : MonoBehaviour
         return neededScale;
     }
 
-    float FindPosition(float scaleOnAxis, float initialCoord, float initialScaleOnAxis, bool positive)
+    public float FindPosition(float scaleOnAxis, float initialCoord, float initialScaleOnAxis, bool positive)
     {
         float newCoord;
 
@@ -68,7 +112,7 @@ public class OpenAndClose : MonoBehaviour
         return newCoord;
     }
 
-    private ref float ComponentRef(ref Vector2 v)
+    public ref float ComponentRef(ref Vector2 v)
     {
         if (axis == Axis.x)
         {
@@ -85,6 +129,17 @@ public class OpenAndClose : MonoBehaviour
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
+    {
+        trans = transform;
+        initialPos = trans.position;
+        initialScale = trans.localScale;
+        doorLogicScript = GetComponent<DoorLogic>();
+        maxScaleOnAxis = ComponentRef(ref maxScales);
+        maxPosOnAxis = ComponentRef(ref initialPos) + maxScaleOnAxis/2;
+        breakScript = GetComponent<Break>();
+    }
+
+    void FixedUpdate()
     {
         
     }

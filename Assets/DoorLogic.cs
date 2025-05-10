@@ -1,4 +1,6 @@
+using System.Text.RegularExpressions;
 using Unity.Collections;
+using Unity.VisualScripting;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
@@ -17,11 +19,11 @@ public class DoorLogic : MonoBehaviour
     private Vector2 initialScale;
     private BoxCollider2D collider;
     private GameObject colliderObj;
-    public float maxScaleX;
-    public float maxScaleY;
-    public Axis axis;
-    public bool isDirectionPositive;
+    private Vector2 maxScales;
+    private Axis axis;
+    private bool isDirectionPositive;
     private Break breakScript;
+    private OpenAndClose doorScript;
 
     #nullable enable annotations
     
@@ -46,10 +48,14 @@ public class DoorLogic : MonoBehaviour
         initialPos = trans.position;
         rb2d = GetComponent<Rigidbody2D>();
         layerMask |= 1 << UnityEngine.LayerMask.NameToLayer("Moveable Stuff");
+        doorScript = GetComponent<OpenAndClose>();
         collider = GetComponent<BoxCollider2D>();
         initialBoundsX = collider.bounds.extents.x;
         initialScale = transform.localScale;
         breakScript = this.GetComponent<Break>();
+        maxScales = doorScript.maxScales;
+        isDirectionPositive = doorScript.isDirectionPositive;
+        axis = doorScript.axis;
     }
 
     // Update is called once per frame
@@ -70,27 +76,39 @@ public class DoorLogic : MonoBehaviour
         prevMousePosition = mousePosition;
     }
 
-    (Vector2 NewPos, Vector2 NewScale) Rescale(Vector2 distancesFromObjToMouse)
+    public (Vector2 NewPos, Vector2 NewScale) Rescale(float requiredPosOnAxis)
     {
         Vector2 newScale = initialScale;
         Vector2 newPos = initialPos;
 
-        var s = FindScale(
-            initialScaleOnAxis: ComponentRef(ref initialScale),
-            maxScale: maxScaleX,
-            distanceToMouse: ComponentRef(ref distancesFromObjToMouse));
-        ComponentRef(ref newScale) = s;
+        var s = doorScript.FindScale(
+            initialScaleOnAxis: doorScript.ComponentRef(ref initialScale),
+            maxScale: doorScript.ComponentRef(ref maxScales),
+            initialPosOnAxis: doorScript.ComponentRef(ref initialPos),
+            newPosOnAxis: requiredPosOnAxis);
+
+        doorScript.ComponentRef(ref newScale) = s;
         
-        bool positive = distancesFromObjToMouse.x > 0 && isDirectionPositive;
-        var p = FindPosition(
-            ComponentRef(ref newScale),
-            ComponentRef(ref initialPos), 
-            ComponentRef(ref initialScale), 
+        bool positive = requiredPosOnAxis > doorScript.ComponentRef(ref initialPos) && isDirectionPositive;
+        var p = doorScript.FindPosition(
+            doorScript.ComponentRef(ref newScale),
+            doorScript.ComponentRef(ref initialPos), 
+            doorScript.ComponentRef(ref initialScale), 
             positive: positive);
         
-        ComponentRef(ref newPos) = p;
+        doorScript.ComponentRef(ref newPos) = p;
 
         return (newPos, newScale);
+    }
+
+    float FindPercentageFromDistanceToMouse(Vector2 distancesFromObjToMouse)
+    {
+        float distanceFromObjToMouse = doorScript.ComponentRef(ref distancesFromObjToMouse);
+
+        float maxScaleOnAxis = doorScript.ComponentRef(ref maxScales);
+
+        float percentage = Mathf.Clamp(distanceFromObjToMouse / maxScaleOnAxis * 100, -100, 100);
+        return percentage;
     }
 
     void FixedUpdate()
@@ -100,14 +118,11 @@ public class DoorLogic : MonoBehaviour
             return;
         }
 
-
         var distancesFromObjToMouse = MousePositionHelper.FindDistancesToMouse(initialPos);
-        if (!isDirectionPositive)
-        {
-            distancesFromObjToMouse = -distancesFromObjToMouse;
-        }
+        float doorOpennessPercentage = FindPercentageFromDistanceToMouse(distancesFromObjToMouse);
 
-        var n = Rescale(distancesFromObjToMouse);
+        var n = doorScript.ChangeScaleToPercent(doorOpennessPercentage);
+
         trans.localScale = n.NewScale;
         trans.position = n.NewPos;
 
