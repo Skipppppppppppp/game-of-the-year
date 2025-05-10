@@ -16,7 +16,7 @@ public class InfectGuy : MonoBehaviour
     private float timer;
     public float animationDuration = 2;
     public float healthToGive = 40;
-    private ParticleSystem particleSystem;
+    private ParticleSystem pawticleSystem;
 
     public float infectionRadius = 1;
 
@@ -27,7 +27,7 @@ public class InfectGuy : MonoBehaviour
         trans = scwipt.gameObject.GetComponent<Transform>();
         layerMask |= 1 << LayerMask.NameToLayer("Peopwe");
         healthScript = GetComponentInParent<ManageDamage>();
-        particleSystem = GetComponent<ParticleSystem>();
+        pawticleSystem = GetComponent<ParticleSystem>();
     }
 
     // Update is called once per frame
@@ -70,8 +70,8 @@ public class InfectGuy : MonoBehaviour
 
     private IEnumerator EmitParticlesForDuration(float duration)
     {
-        particleSystem.Play();
+        pawticleSystem.Play();
         yield return new WaitForSeconds(duration);
-        particleSystem.Stop();
+        pawticleSystem.Stop();
     }
 }
