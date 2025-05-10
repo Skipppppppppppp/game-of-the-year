@@ -53,6 +53,7 @@ public class GetOpenedByGuy : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D collider)
     {
+        Debug.Log(13123);
         if (AreGuysAround() == true)
         {
             return;
@@ -77,7 +78,6 @@ public class GetOpenedByGuy : MonoBehaviour
             {
                 openingState.Reset();
             }
-            doorScript.ContinueOpening();
         }
 
         if (openingState.IsBeingClosed == true)
@@ -86,9 +86,8 @@ public class GetOpenedByGuy : MonoBehaviour
             {
                 openingState.Reset();
             }
-                doorScript.ContinueClosing();
+        }
     }
-}
 
     // void Update()
     // {
@@ -131,7 +130,7 @@ public class GetOpenedByGuy : MonoBehaviour
     //         default:
     //             throw null!;
     //     }
-    // }
+}
 
 struct OpeningState
 {
