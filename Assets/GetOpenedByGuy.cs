@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -9,19 +10,67 @@ public class GetOpenedByGuy : MonoBehaviour
     public GameObject doorObj;
     private OpenAndClose doorScript;
     private int layerMask;
-    private OpeningState openingState;
+    public OpeningState openingState;
+
+    public Collider2D[] GetOverlappingColliders()
+    {
+        Vector2 scale = trans.lossyScale;
+        Collider2D[] cols = Physics2D.OverlapBoxAll(pos, scale, 0, layerMask);
+
+        if (cols.Length == 0)
+        {
+            return null;
+        }
+
+        return cols;
+    }
+
+    private WawkingDestinationSelection[] GetNearGuysWalkingScripts()
+    {
+        var guyCols = GetOverlappingColliders();
+
+        if (guyCols == null)
+        {
+            return null;
+        }
+        
+        var scripts = new WawkingDestinationSelection[guyCols.Length];
+
+        for (int i = 0; i < guyCols.Length; i++)
+        {
+            Collider2D guyCol = guyCols[i];
+
+            if (IsGuy(guyCol))
+            {
+                scripts[i] = guyCol.GetComponentInParent<WawkingDestinationSelection>();
+            }
+        }
+
+        return scripts;
+    }
+
+    private void SetWalkability(bool canWalk)
+    {
+        var scripts = GetNearGuysWalkingScripts();
+        foreach (WawkingDestinationSelection script in scripts)
+        {
+            if (script == null)
+            {
+                continue;
+            }
+            script.guyCanWalk = canWalk;
+        }
+    }
 
     private bool IsGuy(Collider2D collider)
     {
-        return collider.GetComponent<XPatrol>() != null; 
+        return collider.GetComponentInParent<WawkingDestinationSelection>() != null; 
     }
 
     bool AreGuysAround()
     {
-        Vector2 scale = trans.localScale;
-        Collider2D[] guyCols = Physics2D.OverlapBoxAll(pos, scale, 0, layerMask);
-
-        if (guyCols.Length == 0)
+        var guyCols = GetOverlappingColliders();
+        if (guyCols == null)
         {
             return false;
         }
@@ -48,12 +97,12 @@ public class GetOpenedByGuy : MonoBehaviour
             return;
         }
 
+        SetWalkability(false);
         openingState.SetOpening();
     }
 
     void OnTriggerExit2D(Collider2D collider)
     {
-        Debug.Log(13123);
         if (AreGuysAround() == true)
         {
             return;
@@ -66,16 +115,17 @@ public class GetOpenedByGuy : MonoBehaviour
     {
         pos = trans.position;
         doorScript = doorObj.GetComponent<OpenAndClose>();
-        layerMask = 1 >> LayerMask.NameToLayer("Peopwe");
+        layerMask = 1 << LayerMask.NameToLayer("Peopwe");
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (openingState.IsBeingOpened == true)
         {
             if (doorScript.ContinueOpening() == DoorOpeningStatus.Done)
             {
+                SetWalkability(true);
                 openingState.Reset();
             }
         }
@@ -130,9 +180,7 @@ public class GetOpenedByGuy : MonoBehaviour
     //         default:
     //             throw null!;
     //     }
-}
-
-struct OpeningState
+public struct OpeningState
 {
     public bool IsBeingOpened { get; private set; }
     public bool IsBeingClosed { get; private set; }
@@ -153,4 +201,5 @@ struct OpeningState
     {
         this = default;
     }
+}
 }

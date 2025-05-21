@@ -9,7 +9,7 @@ public class XPatrol : MonoBehaviour
     private DestinationSelection selectDestination;
     private Vector2 destination;
     private Rigidbody2D rb2d;
-    [Range(0.01f,10)] public float speed;
+    [Range(0.01f,100)] public float speed;
 
     void SelectDestination()
     {

@@ -6,7 +6,7 @@ using UnityEngine;
 
 public enum Axis{x, y}
 
-public class DoorLogic : MonoBehaviour
+public class DoorLogic : MonoBehaviour, IObjectSelectedHandler
 {
     private Transform trans;
     private Vector2 initialPos;
@@ -24,6 +24,7 @@ public class DoorLogic : MonoBehaviour
     private bool isDirectionPositive;
     private Break breakScript;
     private OpenAndClose doorScript;
+    private GetOpenedByGuy guyInteractionScript;
 
     #nullable enable annotations
     
@@ -56,27 +57,17 @@ public class DoorLogic : MonoBehaviour
         maxScales = doorScript.maxScales;
         isDirectionPositive = doorScript.isDirectionPositive;
         axis = doorScript.axis;
+        guyInteractionScript = GetComponentInChildren<GetOpenedByGuy>();
     }
 
     // Update is called once per frame
     void Update()
     {
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        if (Input.GetMouseButton(1))
-        {
-            if (RaycastForObject() == rb2d)
-            {
-                objectSelected = true;
-            }
-        }
-        if (Input.GetMouseButtonUp(1) && objectSelected == true)
-        {
-            objectSelected = false;
-        }
         prevMousePosition = mousePosition;
     }
 
-    public (Vector2 NewPos, Vector2 NewScale) Rescale(float requiredPosOnAxis)
+    public (Vector2 NewPos, Vector2 NewScale) FindScaleFromNewPos(float requiredPosOnAxis)
     {
         Vector2 newScale = initialScale;
         Vector2 newPos = initialPos;
@@ -101,6 +92,27 @@ public class DoorLogic : MonoBehaviour
         return (newPos, newScale);
     }
 
+    public void Rescale(float doorOpennessPercentage)
+    {
+        
+        var n = doorScript.ChangeScaleToPercent(doorOpennessPercentage);
+
+        trans.localScale = n.NewScale;
+        trans.position = n.NewPos;
+
+        if (collider.isTrigger == false && n.NewScale != initialScale)
+        {
+            collider.isTrigger = true;
+            return;
+        }
+
+        bool doorClosed = n.NewScale == initialScale;
+        if (collider.isTrigger == true && doorClosed)
+        {
+            collider.isTrigger = false;
+        }
+    }
+
     float FindPercentageFromDistanceToMouse(Vector2 distancesFromObjToMouse)
     {
         float distanceFromObjToMouse = doorScript.ComponentRef(ref distancesFromObjToMouse);
@@ -118,24 +130,21 @@ public class DoorLogic : MonoBehaviour
             return;
         }
 
+        guyInteractionScript.openingState.Reset();
+
         var distancesFromObjToMouse = MousePositionHelper.FindDistancesToMouse(initialPos);
         float doorOpennessPercentage = FindPercentageFromDistanceToMouse(distancesFromObjToMouse);
 
-        var n = doorScript.ChangeScaleToPercent(doorOpennessPercentage);
+        Rescale(doorOpennessPercentage);
+    }
 
-        trans.localScale = n.NewScale;
-        trans.position = n.NewPos;
+    public void ProcessBeingSelected()
+    {
+        objectSelected = true;
+    }
 
-        if (collider.isTrigger == false && n.NewScale != initialScale)
-        {
-            collider.isTrigger = true;
-            return;
-        }
-
-        bool doorClosed = n.NewScale == initialScale;
-        if (collider.isTrigger == true && doorClosed)
-        {
-            collider.isTrigger = false;
-        }
+    public void Deselected()
+    {
+        objectSelected = false;
     }
 }

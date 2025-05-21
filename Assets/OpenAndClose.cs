@@ -20,7 +20,7 @@ public class OpenAndClose : MonoBehaviour
     public Axis axis;
     public bool isDirectionPositive;
     private Break breakScript;
-    public float openingIncrement = 10f;
+    public float openingIncrement = 1f;
     private DoorLogic doorLogicScript;
     private float scaleOnAxis;
     private float maxScaleOnAxis;
@@ -33,8 +33,9 @@ public class OpenAndClose : MonoBehaviour
         {
             return DoorOpeningStatus.Done;
         }
-        ChangeScaleToPercent(
-            openness: openness + openingIncrement);
+
+        openness += openingIncrement;
+        doorLogicScript.Rescale(openness);
 
         return DoorOpeningStatus.InProcess;
     }
@@ -52,6 +53,15 @@ public class OpenAndClose : MonoBehaviour
 
     public DoorOpeningStatus ContinueClosing()
     {
+        float differenceBetweenScales = Mathf.Abs(scaleOnAxis - ComponentRef(ref initialScale));
+        if (differenceBetweenScales <= 0.1)
+        {
+            return DoorOpeningStatus.Done;
+        }
+
+        openness -= openingIncrement;
+        doorLogicScript.Rescale(openness);
+
         return DoorOpeningStatus.InProcess;
     }
 
@@ -60,16 +70,17 @@ public class OpenAndClose : MonoBehaviour
         (Vector2 NewPos, Vector2 NewScale) ret;
         float initialPosOnAxis = ComponentRef(ref initialPos);
         float t = Mathf.Abs(openness/100);
+        this.openness = openness;
 
         float newPosOnAxis = Mathf.Lerp(initialPosOnAxis, maxPosOnAxis, t);
 
         if (openness < 0 && isDirectionPositive || openness > 0 && !isDirectionPositive)
         {
-            ret = doorLogicScript.Rescale(initialPosOnAxis);
+            ret = doorLogicScript.FindScaleFromNewPos(initialPosOnAxis);
         }
         else
         {
-            ret = doorLogicScript.Rescale(newPosOnAxis);
+            ret = doorLogicScript.FindScaleFromNewPos(newPosOnAxis);
         }
 
         return ret;
@@ -137,11 +148,16 @@ public class OpenAndClose : MonoBehaviour
         maxScaleOnAxis = ComponentRef(ref maxScales);
         maxPosOnAxis = ComponentRef(ref initialPos) + maxScaleOnAxis/2;
         breakScript = GetComponent<Break>();
+        if (isDirectionPositive == false)
+        {
+            openingIncrement = -openingIncrement;
+        }
     }
 
     void FixedUpdate()
     {
-        
+        Vector2 scale = trans.localScale;
+        scaleOnAxis = ComponentRef(ref scale);
     }
 }
 

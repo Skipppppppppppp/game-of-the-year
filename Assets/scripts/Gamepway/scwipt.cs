@@ -33,27 +33,6 @@ public class scwipt : MonoBehaviour
     private Transform trans;
     private int portalLayerMask;
     private float pwayerZ;
-    public TextMeshProUGUI announcementText;
-
-    static void CheckForPortals(Vector2 pos, int portalLayerMask, TextMeshProUGUI textToChange, float currentZ, Transform pwayerTrans)
-    {
-        var portalCollider = Physics2D.OverlapCircle(pos, .1f, portalLayerMask);
-
-        if (portalCollider == null)
-        {
-            return;
-        }
-
-        Portal portalScript = portalCollider.GetComponent<Portal>();
-
-        textToChange.text = "Press F to enter";
-
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            pos = new Vector3 (portalScript.otherEnd.position.x, portalScript.otherEnd.position.y, currentZ);
-            pwayerTrans.position = pos;
-        }
-    }
 
     void Start()
     {
@@ -83,13 +62,6 @@ public class scwipt : MonoBehaviour
 
     void Update()
     {
-        if (announcementText.text != "")
-        {
-            announcementText.text = "";
-        }
-
-        CheckForPortals(trans.position, portalLayerMask, announcementText, pwayerZ, trans);
-
         if (Input.GetKey(KeyCode.E))
         {
             directionIndicator.SetActive(true);

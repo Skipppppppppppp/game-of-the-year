@@ -1,12 +1,11 @@
 using System;
-using Unity.VisualScripting;
 using UnityEngine;
 
 #nullable enable
 
 public sealed class MovingObjects : MonoBehaviour
 {
-    private int LayerMask;
+    private int layerMask;
     public GameObject player;
     public float minForInterp;
     public float maxForInterp;
@@ -20,29 +19,38 @@ public sealed class MovingObjects : MonoBehaviour
     private ManageDamage healthScript;
     private int edibleLayer;
     public float healthToGive = 15;
+    private int obstacleLayer;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        edibleLayer = 1 << UnityEngine.LayerMask.NameToLayer("Peopwe");
+        edibleLayer = 1 << LayerMask.NameToLayer("Peopwe");
         foreach (var x in new[]
         {
             "Peopwe",
             "Moveable Stuff",
         })
         {
-            var layer = UnityEngine.LayerMask.NameToLayer(x);
-            LayerMask |= 1 << layer;
+            var layer = LayerMask.NameToLayer(x);
+            layerMask |= 1 << layer;
         }
+        obstacleLayer = 1 << LayerMask.NameToLayer("Default");
         healthScript = player.GetComponent<ManageDamage>();
     }
 
     private Rigidbody2D? RaycastForObject()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit2D rayHit = Physics2D.GetRayIntersection(ray, float.PositiveInfinity, LayerMask);
+        RaycastHit2D rayHit = Physics2D.GetRayIntersection(ray, float.PositiveInfinity, layerMask);
         var trans = rayHit.transform;
         if (trans == null)
+        {
+            return null;
+        }
+
+        Vector2 mouseDistances = MousePositionHelper.FindDistancesToMouse(player.transform.position);
+        var obstacleHit = Physics2D.Raycast(player.transform.position, mouseDistances.normalized, mouseDistances.magnitude, obstacleLayer);
+        if (obstacleHit.transform != null)
         {
             return null;
         }
