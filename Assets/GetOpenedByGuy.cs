@@ -79,7 +79,10 @@ public class GetOpenedByGuy : MonoBehaviour
         {
             if (IsGuy(guyCol))
             {
-                return true;
+                if (!guyCol.GetComponentInParent<WawkingDestinationSelection>().guyInAir)
+                {
+                    return true;
+                }
             }
         }
         return false;

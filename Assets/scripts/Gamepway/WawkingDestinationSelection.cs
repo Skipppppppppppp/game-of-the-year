@@ -10,6 +10,7 @@ public class WawkingDestinationSelection : DestinationSelection
     public bool guyCanWalk;
     public override bool IsInitializedForDestinationSelection => guyCanWalk;
     public float guyBoxCastYOffset = 0.1f;
+    public bool guyInAir;
 
     void Start()
     {
@@ -108,13 +109,14 @@ public class WawkingDestinationSelection : DestinationSelection
 
         }
 
-
+        guyInAir = false;
         guyCanWalk = true;
         OnContextChanged();
     }
 
 void OnCollisionExit2D()
 {
+        guyInAir = true;
     guyCanWalk = false;
 }
 

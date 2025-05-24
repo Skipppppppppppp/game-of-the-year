@@ -5,6 +5,7 @@ public class InteractWithBG : MonoBehaviour
 {
     private Transform trans;
     public TextMeshProUGUI textToChange;
+    public string interactionAnnouncement = "Press [F] to interact";
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -37,7 +38,10 @@ public class InteractWithBG : MonoBehaviour
 
         if (interactionInterface is null)
         {
-            textToChange.text = "";
+            if (textToChange.text == interactionAnnouncement)
+            {
+                textToChange.text = "";
+            }
             return;
         }
 
@@ -48,7 +52,7 @@ public class InteractWithBG : MonoBehaviour
             interactionInterface.Interact(trans);
         }
 
-        textToChange.text = "Press F to interact";
+        textToChange.text = interactionAnnouncement;
     }
 }
 

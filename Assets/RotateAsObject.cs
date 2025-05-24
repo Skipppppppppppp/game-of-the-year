@@ -3,26 +3,36 @@ using UnityEngine;
 
 public class RotateAsObject : Rotation
 {
-    private Transform transform;
+    private Transform trans;
     public MovingObjects movingObjectScript;
+    public Transform defaultObjectTrans;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        transform = GetComponent<Transform>();
+        trans = GetComponent<Transform>();
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (movingObjectScript.movingObject == null || movingObjectScript == null)
+        if (movingObjectScript != null && movingObjectScript.movingObject != null)
         {
-            Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Rotate (mousePosition, transform);
+            var objectRb2d = movingObjectScript.movingObject;
+            Vector3 itemPosition = CenterOfMassFinder.FindObjectPosition(objectRb2d);
+            Rotate(itemPosition, trans);
             return;
         }
-        var objectRb2d = movingObjectScript.movingObject;
-        Vector3 itemPosition = CenterOfMassFinder.FindObjectPosition(objectRb2d);
-        Rotate(itemPosition, transform);
+
+        if (defaultObjectTrans != null)
+        {
+            Vector2 objectPos = defaultObjectTrans.position;
+            Rotate(objectPos, trans);
+            return;
+        }
+
+
+        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Rotate(mousePosition, trans);
     }
 }

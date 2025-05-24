@@ -36,18 +36,6 @@ public class WalkingSounds : MonoBehaviour
         timer = 0;
     }
 
-    private int pickUniqueNumber(int minInclude, int maxExclude, int prevNumber)
-    {
-        int ret = Random.Range(minInclude, maxExclude);
-
-        if (ret == prevNumber)
-        {
-            ret = pickUniqueNumber(minInclude, maxExclude, prevNumber);
-        }
-
-        return ret;
-    }
-
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -96,7 +84,7 @@ public class WalkingSounds : MonoBehaviour
                 continue;
             }
 
-            int soundIndex = pickUniqueNumber(0, s.sounds.Length, prevPlayedSoundIndex);
+            int soundIndex = RandomStuffHelper.PickUniqueNumber(0, s.sounds.Length, prevPlayedSoundIndex);
 
             AudioClip soundToPlay = s.sounds[soundIndex];
             

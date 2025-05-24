@@ -3,10 +3,10 @@ using UnityEngine.Analytics;
 
 public class StretchToMouse : MonoBehaviour
 {
-        private Transform transform;
-        private Transform pwayerTransform;
+        private Transform trans;
+        public Transform handTrans;
+        public Transform pwayerTrans;
         public MovingObjects movingObjectsScript;
-        private SpriteRenderer spriteRenderer;
 
     void ScaleTo(Transform trans, Vector2 originalPosition, Vector2 targetPosition)
     {
@@ -18,24 +18,15 @@ public class StretchToMouse : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        transform = this.gameObject.transform;
-        Rigidbody2D pwayerrb2d = GetComponentInParent<Rigidbody2D>();
-        pwayerTransform = pwayerrb2d.transform;
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        trans = transform;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        Vector2 pwayerPosition = pwayerTransform.position;
-        if (movingObjectsScript.movingObject == null)
-        {
-            Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            ScaleTo(transform, pwayerPosition, mousePosition);
-            return;
-        }
-        Rigidbody2D objectRb2d = movingObjectsScript.movingObject;
-        Vector2 objectCOM = CenterOfMassFinder.FindObjectPosition(objectRb2d);
-        ScaleTo(transform, pwayerPosition, objectCOM);
+        Vector2 pwayerPosition = pwayerTrans.position;
+        Vector2 otherObjectPos = handTrans.position;
+        
+        ScaleTo(trans, pwayerPosition, otherObjectPos);
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using Mono.Cecil.Cil;
 using UnityEngine;
 
 #nullable enable
@@ -20,6 +21,7 @@ public sealed class MovingObjects : MonoBehaviour
     private int edibleLayer;
     public float healthToGive = 15;
     private int obstacleLayer;
+    public float maxDistance = 12;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -38,24 +40,7 @@ public sealed class MovingObjects : MonoBehaviour
         healthScript = player.GetComponent<ManageDamage>();
     }
 
-    private Rigidbody2D? RaycastForObject()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit2D rayHit = Physics2D.GetRayIntersection(ray, float.PositiveInfinity, layerMask);
-        var trans = rayHit.transform;
-        if (trans == null)
-        {
-            return null;
-        }
 
-        Vector2 mouseDistances = MousePositionHelper.FindDistancesToMouse(player.transform.position);
-        var obstacleHit = Physics2D.Raycast(player.transform.position, mouseDistances.normalized, mouseDistances.magnitude, obstacleLayer);
-        if (obstacleHit.transform != null)
-        {
-            return null;
-        }
-        return rayHit.rigidbody;
-    }
 
     // Update is called once per frame
     void Update()
@@ -83,7 +68,11 @@ public sealed class MovingObjects : MonoBehaviour
 
         if (movingObject == null)
         {
-            var raycasted = RaycastForObject();
+            var raycasted = RaycastHelper.TrySelectObject(
+                playerPos: player.transform.position,
+                maxDistance: maxDistance,
+                layerMask: layerMask,
+                obstacleLayerMask: obstacleLayer);
             if (raycasted == null)
             {
                 return;
@@ -120,26 +109,45 @@ public sealed class MovingObjects : MonoBehaviour
         movingObject.linearDamping = rememberedInitialProperties!.LinearDamping * linearDampingScale;
         var rb2d = movingObject;
         Vector2 objectPosition = CenterOfMassFinder.FindObjectPosition(rb2d);
-        Vector2 distancesToMouse = MousePositionHelper.FindDistancesToMouse(objectPosition);
 
-        float distanceToObjectX = Mathf.Abs(player.transform.position.x - objectPosition.x);
-        float distanceToMouseX =  distancesToMouse.x;
+        Vector2 playerPosition2D = new Vector2(player.transform.position.x, player.transform.position.y);
 
-        float distanceToObjectY = Mathf.Abs(player.transform.position.y - objectPosition.y);
-        float distanceToMouseY =  distancesToMouse.y;
+        Vector2 distancesFromPlayerToMouse = MousePositionHelper.FindDistancesToMouse(player.transform.position);
+        Vector2 distancesFromObjToMouse = MousePositionHelper.FindDistancesToMouse(objectPosition);
+        Vector2 distancesToObject = playerPosition2D - objectPosition;
 
-        float totalDistanceToObject = distanceToObjectX + distanceToObjectY;
+        float absDistanceToObjectX = Mathf.Abs(distancesToObject.x);
+        float absDistanceToObjectY = Mathf.Abs(distancesToObject.y);
+
+        bool objectToTheRightOfPlayer = distancesToObject.x < 0;
+        bool objectAbovePlayer = distancesToObject.y < 0;
+
+        float totalDistanceToObject = absDistanceToObjectX + absDistanceToObjectY;
 
         bool isObjectMovingX = true;
         bool isObjectMovingY = true;
 
-        if (distanceToObjectX >= 12 && distanceToMouseX >= distanceToObjectX)
+        if (absDistanceToObjectX >= maxDistance)
         {
-            isObjectMovingX = false;
+            if (objectToTheRightOfPlayer && distancesFromPlayerToMouse.x > maxDistance)
+            {
+                isObjectMovingX = false;
+            }
+            if (!objectToTheRightOfPlayer && distancesFromPlayerToMouse.x < -maxDistance)
+            {
+                isObjectMovingX = false;
+            }
         }
-        if (distanceToObjectY >= 12 && distanceToMouseY >= distanceToObjectY)
+        if (absDistanceToObjectY >= maxDistance)
         {
-            isObjectMovingY = false;
+            if (objectAbovePlayer && distancesFromObjToMouse.y > maxDistance)
+            {
+                isObjectMovingY = false;
+            }
+            if (!objectAbovePlayer && distancesFromObjToMouse.y < -maxDistance)
+            {
+                isObjectMovingY = false;
+            }
         }
         if (isObjectMovingX)
         {
@@ -151,8 +159,8 @@ public sealed class MovingObjects : MonoBehaviour
                 return;
             }
             float maxForInterp = this.maxForInterp/rememberedInitialProperties.GravityScale;
-            float p = (distanceToMouseX - minForDistance) / (maxForDistance - minForDistance);
-            Vector2 forceForAddingX = new Vector2 (distanceToMouseX*Mathf.Lerp(minForInterp, maxForInterp, p),0);
+            float p = (distancesFromObjToMouse.x - minForDistance) / (maxForDistance - minForDistance);
+            Vector2 forceForAddingX = new Vector2 (distancesFromObjToMouse.x*Mathf.Lerp(minForInterp, maxForInterp, p*p),0);
             rb2d.AddForce(forceForAddingX);
         }
         else
@@ -162,8 +170,8 @@ public sealed class MovingObjects : MonoBehaviour
         if (isObjectMovingY)
         {
             float maxForInterp = this.maxForInterp/rememberedInitialProperties.GravityScale;
-            float p = (distanceToMouseY - minForDistance) / (maxForDistance - minForDistance);
-            Vector2 forceForAddingY = new Vector2 (0,distanceToMouseY*Mathf.Lerp(minForInterp, maxForInterp, p));
+            float p = (distancesFromObjToMouse.y - minForDistance) / (maxForDistance - minForDistance);
+            Vector2 forceForAddingY = new Vector2 (0,distancesFromObjToMouse.y*Mathf.Lerp(minForInterp, maxForInterp, p));
             rb2d.AddForce(forceForAddingY);
         }
         else
