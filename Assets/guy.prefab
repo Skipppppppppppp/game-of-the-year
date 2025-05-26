@@ -95,6 +95,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initialHP: 3
   hp: 3
+  sounds: []
+  deathSounds: []
+  isGuy: 1
 --- !u!114 &220707030774536075
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -122,6 +125,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   guyCanWalk: 0
   guyBoxCastYOffset: 0.1
+  guyInAir: 0
 --- !u!114 &-3006758915936569578
 MonoBehaviour:
   m_ObjectHideFlags: 0

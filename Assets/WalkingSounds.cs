@@ -84,12 +84,7 @@ public class WalkingSounds : MonoBehaviour
                 continue;
             }
 
-            int soundIndex = RandomStuffHelper.PickUniqueNumber(0, s.sounds.Length, prevPlayedSoundIndex);
-
-            AudioClip soundToPlay = s.sounds[soundIndex];
-            
-            audioSource.PlayOneShot(soundToPlay);
-            prevPlayedSoundIndex = soundIndex;
+            RandomStuffHelper.playRandomSound(s.sounds, audioSource, ref prevPlayedSoundIndex);
             timer = 0;
         }
     }

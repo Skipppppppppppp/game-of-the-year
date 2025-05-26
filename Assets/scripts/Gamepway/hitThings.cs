@@ -66,10 +66,7 @@ public class hitThings : MonoBehaviour
         hitTimer = 0;
         shouldAdvanceTimer = true;
 
-        int soundIndex = RandomStuffHelper.PickUniqueNumber(0, sounds.Length, prevSoundIndex);
-        prevSoundIndex = soundIndex;
-
-        audioSource.PlayOneShot(sounds[soundIndex]);
+        RandomStuffHelper.playRandomSound(sounds, audioSource, ref prevSoundIndex);
 
         Vector2 pos = trans.position;
 

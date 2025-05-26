@@ -1,12 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UIElements;
 
 public class CreateTriangle : MonoBehaviour
 {
-    public Material material;
-
     private class ComparePoints : IComparer<Vector2>
     {
         private readonly Vector2 center;
@@ -26,7 +25,7 @@ public class CreateTriangle : MonoBehaviour
         }
     }
     }
-    List<Vector2> SortAndRemoveRepeatingVertices(Vector2 center, List<Vector2> intersections)
+    public static List<Vector2> SortAndRemoveRepeatingVertices(Vector2 center, List<Vector2> intersections)
     {
         var compare = new ComparePoints(center);
         intersections.Sort(compare);
@@ -42,7 +41,7 @@ public class CreateTriangle : MonoBehaviour
         return newIntersections;
     }
 
-    public GameObject CreateMesh(List<Vector2> vertices, Vector2 center)
+    public static GameObject CreateMesh(List<Vector2> vertices, Vector2 center, Material material)
     {
         vertices = SortAndRemoveRepeatingVertices(center,vertices);
         var triangle = new GameObject("Triangle");

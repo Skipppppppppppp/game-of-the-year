@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 6329472718424509488}
   - component: {fileID: 2510815496314863722}
   - component: {fileID: 201757004612778362}
+  - component: {fileID: 630741771313387484}
   m_Layer: 3
   m_Name: door
   m_TagString: Untagged
@@ -93,8 +94,7 @@ MonoBehaviour:
   amountOfPoints: 5
   distanceBetweenPointCoeff: 0.12
   player: {fileID: 0}
-  speedForBreak: 8000
-  createTriangle: {fileID: 0}
+  speedForBreak: 100
   canBeBroken: 1
 --- !u!23 &1979215545226851616
 MeshRenderer:
@@ -211,6 +211,23 @@ MonoBehaviour:
   axis: 0
   isDirectionPositive: 0
   openingIncrement: 10
+--- !u!114 &630741771313387484
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 109909583357005461}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a50a0fe54d53d6b48ac722a180533a5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  initialHP: 1
+  hp: 1
+  sounds: []
+  deathSounds: []
+  isGuy: 0
 --- !u!1 &7535077683173452532
 GameObject:
   m_ObjectHideFlags: 0
