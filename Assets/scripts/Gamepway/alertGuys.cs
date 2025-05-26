@@ -1,3 +1,4 @@
+using Codice.Client.BaseCommands;
 using TMPro;
 using UnityEngine;
 
@@ -31,6 +32,11 @@ public class alertGuys : MonoBehaviour
         {
             var guyTrans = i.transform.parent;
 
+            if (guyTrans == null)
+            {
+                return;
+            }
+
             float distanceToGuy = (trans.position - guyTrans.position).magnitude;
 
             var guy = guyTrans.gameObject;
@@ -55,10 +61,16 @@ public class alertGuys : MonoBehaviour
                 guyWatchPlayerScript.playerInSight = false;
                 continue;
             }
-            
+
             guyWatchPlayerScript.awareOfPlayer = true;
             guyWatchPlayerScript.playerInSight = true;
             facePlayerScript = guy.GetComponentInChildren<FacePlayer>();
+
+            if (facePlayerScript == null)
+            {
+                return;
+            }
+
             facePlayerScript.pwayerTrans = trans;
 
             guyDamageScript = guy.GetComponent<WatchAndDamagePlayer>();
@@ -67,7 +79,8 @@ public class alertGuys : MonoBehaviour
             {
                 return;
             }
-            guyDamageScript.healthScript = GetComponent<ManageDamage>();
+
+            guyDamageScript.healthScript = GetComponent<ManageDamage>();            
         }
     }
 

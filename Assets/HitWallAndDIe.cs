@@ -3,7 +3,7 @@ using UnityEngine;
 public class HitWallAndDIe : MonoBehaviour
 {
     private Rigidbody2D rb2d;
-    private GuyManageDamage damageScript;
+    private IDamageHandler damageScript;
     private float prevVelocity = 0;
     public float velocityChangeNeededToDie = 20;
 
@@ -11,7 +11,7 @@ public class HitWallAndDIe : MonoBehaviour
     void Start()
     {
         rb2d = GetComponent<Rigidbody2D>();
-        damageScript = GetComponent<GuyManageDamage>();
+        damageScript = GetComponent<IDamageHandler>();
 
         if (damageScript == null)
         {
@@ -32,7 +32,8 @@ public class HitWallAndDIe : MonoBehaviour
         {
             return;
         }
-        float damageToGive = damageScript.initialHP;
+
+        float damageToGive = differenceBetweenVelocities / velocityChangeNeededToDie;
         damageScript.TakeDamage(damageToGive);
     }
 }

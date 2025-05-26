@@ -7,14 +7,14 @@ public class Break : MonoBehaviour, IObjectSelectedHandler
 {
     public int amountOfPoints;
     [Range(0,1)] public float distanceBetweenPointCoeff = 0.5f;
-    public Transform player;
+    private Transform transPlayer;
     private Vector2? prevMousePos;
     public float speedForBreak = 80;
     private Vector2[] points = Array.Empty<Vector2>();
     private List<Vector2>[] intersections = Array.Empty<List<Vector2>>();
-    public CreateTriangle createTriangle;
     Line[][] lineequations;
     public bool canBeBroken = true;
+    private MeshRenderer meshRenderer;
 
     private Vector2[] MakeRandomPoints(Mesh mesh, int amount)
     {
@@ -43,24 +43,24 @@ public class Break : MonoBehaviour, IObjectSelectedHandler
 
         var sizea = ComponentMult(size, this.transform.localScale);
 
-        var aspectRatio = sizea.y/sizea.x;
+        var aspectRatio = sizea.y / sizea.x;
         var t = Mathf.Sqrt(amount / aspectRatio);
         var col = Mathf.RoundToInt(t);
         var row = Mathf.RoundToInt(t * aspectRatio);
         var ret = new Vector2[col * row];
-        float stepX = size.x/(col+1);
-        float stepY = size.y/(row+1);
+        float stepX = size.x / (col + 1);
+        float stepY = size.y / (row + 1);
         float maxShiftDistanceX = distanceBetweenPointCoeff * stepX;
         float maxShiftDistanceY = distanceBetweenPointCoeff * stepY;
 
         for (int colIndex = 0; colIndex < col; colIndex++)
         {
-            float xPos = stepX * (colIndex+1);
+            float xPos = stepX * (colIndex + 1);
 
             for (int rowIndex = 0; rowIndex < row; rowIndex++)
             {
-                ref var v = ref ret[colIndex*row+rowIndex];
-                float yPos = stepY * (rowIndex+1);
+                ref var v = ref ret[colIndex * row + rowIndex];
+                float yPos = stepY * (rowIndex + 1);
 
                 float shiftX = Random.Range(-maxShiftDistanceX, maxShiftDistanceX);
                 float shiftY = Random.Range(-maxShiftDistanceY, maxShiftDistanceY);
@@ -77,28 +77,34 @@ public class Break : MonoBehaviour, IObjectSelectedHandler
     }
 
 
-    private static Vector2[] GetFixedPoints(Bounds bounds)
-    {
-        Vector2[] ret = new Vector2[]
-        {
-            new(1.0f/6, 1.0f/6),
-            new(1.0f/6, 5.0f/6),
-            new(5.0f/6, 1.0f/6),
-            new(5.0f/6, 5.0f/6),
-        };
-        foreach (ref var v in ret.AsSpan())
-        {
-            Vector2 size = bounds.size;
-            Vector2 leftTop = (Vector2)(bounds.center) - size / 2;
-            v *= size;
-            v += leftTop; 
-        }
-        return ret;
-    }
+    // private static Vector2[] GetFixedPoints(Bounds bounds)
+    // {
+    //     Vector2[] ret = new Vector2[]
+    //     {
+    //         new(1.0f/6, 1.0f/6),
+    //         new(1.0f/6, 5.0f/6),
+    //         new(5.0f/6, 1.0f/6),
+    //         new(5.0f/6, 5.0f/6),
+    //     };
+    //     foreach (ref var v in ret.AsSpan())
+    //     {
+    //         Vector2 size = bounds.size;
+    //         Vector2 leftTop = (Vector2)(bounds.center) - size / 2;
+    //         v *= size;
+    //         v += leftTop; 
+    //     }
+    //     return ret;
+    // }
 
     public void VeryFunMeshThings()
-    { 
+    {
+        var player = Physics2D.OverlapCircle(transform.position, 10, 1 << LayerMask.NameToLayer("Pwayer"));
+        transPlayer = player.transform;
+        
         var mesh = GetComponent<MeshFilter>().mesh;
+        meshRenderer = GetComponent<MeshRenderer>();
+
+        Material material = meshRenderer.material;
         
         Vector2[] points = MakeRandomPoints(mesh, amountOfPoints);
         // Vector2[] points = GetFixedPoints(mesh.bounds);
@@ -133,15 +139,26 @@ public class Break : MonoBehaviour, IObjectSelectedHandler
 
         ShardForce BaseForce()
         {
-            var prevMousePos2d = prevMousePos.Value;
+            Vector2 prevMousePos2d;
+            Vector2 mouseMotionVector;
             var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             var mousePosition2d = (Vector2)(mousePosition);
-            var mouseMotionVector = mousePosition2d - prevMousePos2d;
+            if (prevMousePos != null)
+            {
+                prevMousePos2d = prevMousePos.Value;
+                mouseMotionVector = mousePosition2d - prevMousePos2d;
+            }
+            else
+            {
+                prevMousePos2d = transPlayer.position;
+                mouseMotionVector = (mousePosition2d - prevMousePos2d) / -100;
+            }
             var mouseSpeed = mouseMotionVector.magnitude/Time.deltaTime;
             var mouseMotionDirection = mouseMotionVector.normalized;
             float clampedMouseSpeed = Mathf.Clamp(mouseSpeed, 0, 1000);
             clampedMouseSpeed *= 3;
             var ret = new ShardForce(mouseMotionDirection, clampedMouseSpeed);
+            Debug.Log(clampedMouseSpeed);
             return ret;
         }
 
@@ -153,7 +170,7 @@ public class Break : MonoBehaviour, IObjectSelectedHandler
         {
             Line[] linesForPoint = lineequations[i];
             intersections[i] = Voronoi.GetAreaVertices(points[i],linesForPoint,i);
-            var newMesh = createTriangle.CreateMesh(intersections[i], points[i]);
+            var newMesh = CreateTriangle.CreateMesh(intersections[i], points[i], material);
             var myTransform = this.transform;
             var meshTransform = newMesh.transform;
             myTransform.GetPositionAndRotation(out var position, out var rotation);
@@ -248,7 +265,7 @@ public class Break : MonoBehaviour, IObjectSelectedHandler
 
         bool ShouldBreakObject(Vector2 prevMousePos)
         {
-            float distance = Vector2.Distance(player.position, this.transform.position);
+            float distance = Vector2.Distance(transPlayer.position, this.transform.position);
             if (distance > 12.0f)
             {
                 return false;
