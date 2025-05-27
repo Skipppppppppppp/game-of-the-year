@@ -141,25 +141,31 @@ public class Break : MonoBehaviour, IObjectSelectedHandler
         {
             Vector2 prevMousePos2d;
             Vector2 mouseMotionVector;
+
             var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             var mousePosition2d = (Vector2)(mousePosition);
+
             if (prevMousePos != null)
             {
                 prevMousePos2d = prevMousePos.Value;
                 mouseMotionVector = mousePosition2d - prevMousePos2d;
+                var mouseSpeed = mouseMotionVector.magnitude / Time.deltaTime;
+                var mouseMotionDirection = mouseMotionVector.normalized;
+                float clampedMouseSpeed = Mathf.Clamp(mouseSpeed, 0, 1000);
+                clampedMouseSpeed *= 3;
+                var ret = new ShardForce(mouseMotionDirection, clampedMouseSpeed);
+                return ret;
             }
-            else
-            {
-                prevMousePos2d = transPlayer.position;
-                mouseMotionVector = (mousePosition2d - prevMousePos2d) / -100;
-            }
-            var mouseSpeed = mouseMotionVector.magnitude/Time.deltaTime;
-            var mouseMotionDirection = mouseMotionVector.normalized;
-            float clampedMouseSpeed = Mathf.Clamp(mouseSpeed, 0, 1000);
-            clampedMouseSpeed *= 3;
-            var ret = new ShardForce(mouseMotionDirection, clampedMouseSpeed);
-            Debug.Log(clampedMouseSpeed);
-            return ret;
+
+            prevMousePos2d = transPlayer.position;
+
+            Vector2 differenceBetweenPoints = mousePosition2d - prevMousePos2d;
+            float distanceBetwenMouseAndPlayer = differenceBetweenPoints.magnitude;
+            Vector2 motionVector = differenceBetweenPoints.normalized;
+
+            var force = new ShardForce(motionVector, distanceBetwenMouseAndPlayer * 100);
+
+            return force;
         }
 
         var force = BaseForce();

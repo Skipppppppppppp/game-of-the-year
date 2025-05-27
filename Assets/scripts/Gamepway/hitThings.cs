@@ -1,5 +1,6 @@
 using System.Threading;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class hitThings : MonoBehaviour
 {
@@ -70,20 +71,41 @@ public class hitThings : MonoBehaviour
 
         Vector2 pos = trans.position;
 
-        Rigidbody2D damageTakerRB2D = RaycastHelper.TryRaycastToMouse(
+        Rigidbody2D[] damageTakerRB2Ds = RaycastHelper.TryRaycastAllToMouse(
             playerPos: pos,
             maxDistance: maxDistance,
             layerMask: layerMask,
             obstacleLayerMask: obstacleLayerMask);
 
-        if (damageTakerRB2D == null)
+        if (damageTakerRB2Ds == null)
         {
             return;
         }
 
-        IDamageHandler damageTaker = damageTakerRB2D.GetComponentInParent<IDamageHandler>();
+        IDamageHandler damageTaker = null;
+        float prevDistanceToTaker = float.PositiveInfinity;
 
-        if (damageTaker == null)
+        foreach (Rigidbody2D rb2d in damageTakerRB2Ds)
+        {
+            IDamageHandler damageTakingScript = rb2d.GetComponentInParent<IDamageHandler>();
+
+            if (damageTakingScript == null)
+            {
+                continue;
+            }
+
+            Transform transTaker = rb2d.transform;
+            Vector2 takerPos = transTaker.position;
+            float distanceToPlayer = (pos - takerPos).magnitude;
+
+            if (damageTaker is null || distanceToPlayer < prevDistanceToTaker)
+            {
+                damageTaker = damageTakingScript;
+                prevDistanceToTaker = distanceToPlayer;
+            }
+        }
+
+        if (damageTaker is null)
         {
             return;
         }

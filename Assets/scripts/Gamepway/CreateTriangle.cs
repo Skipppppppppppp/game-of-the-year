@@ -78,6 +78,7 @@ public class CreateTriangle : MonoBehaviour
         mesh.vertices = Vertices();
         mesh.triangles = VerticeIndexes(); // if you complain about grammar you're gay
         meshRenderer.sharedMaterial = material;
+        mesh.RecalculateNormals();
         var rb2d = triangle.AddComponent<Rigidbody2D>();
         rb2d.excludeLayers = 1<<6;
         var polygonCollider = triangle.AddComponent<PolygonCollider2D>();

@@ -58,10 +58,11 @@ public class NonPlayerManageDamage : MonoBehaviour, IDamageHandler
         {
             halfGuy.layer = 3;
         }
-        
-        halfGuy.AddComponent<SpriteRenderer>();
+
         SpriteRenderer spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-        SpriteRenderer halfSpriteRenderer = halfGuy.GetComponent<SpriteRenderer>();
+        SpriteRenderer halfSpriteRenderer =
+        halfGuy.AddComponent<SpriteRenderer>();
+
         halfSpriteRenderer.sprite = spriteRenderer.sprite;
         halfSpriteRenderer.color = spriteRenderer.color; // TEMPORARY
 
@@ -71,7 +72,26 @@ public class NonPlayerManageDamage : MonoBehaviour, IDamageHandler
         Vector2 newScale = new Vector2(guyExtents.x * 2, guyExtents.y);
         halfGuy.transform.localScale = newScale;
 
-        halfGuy.AddComponent<Rigidbody2D>();
+        Rigidbody2D halfRB2D = halfGuy.AddComponent<Rigidbody2D>();
+        Rigidbody2D guyRB2D = GetComponent<Rigidbody2D>();
+
+        halfRB2D.linearVelocity = guyRB2D.linearVelocity;
+        halfRB2D.mass = guyRB2D.mass / 2;
+        halfRB2D.angularDamping = guyRB2D.angularDamping;
+        halfRB2D.excludeLayers = 1 << LayerMask.NameToLayer("Pwayer");
+
+        RememberInitialProperties rememberedPropertiesScript = GetComponent<RememberInitialProperties>();
+
+        if (rememberedPropertiesScript == null)
+        {
+            halfRB2D.linearDamping = guyRB2D.linearDamping;
+        }
+        else
+        {
+            RememberedProperties initialProps = rememberedPropertiesScript.Props;
+            halfRB2D.linearDamping = initialProps.LinearDamping;
+        }
+
         halfGuy.AddComponent<BoxCollider2D>();
     }
 
