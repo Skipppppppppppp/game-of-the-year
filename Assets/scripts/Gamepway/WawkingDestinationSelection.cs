@@ -29,7 +29,6 @@ public class WawkingDestinationSelection : DestinationSelection
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        Collider2D collider = collision.collider;
         var guyPosition = guyCollider.transform.position;
 
         // cast
@@ -42,11 +41,12 @@ public class WawkingDestinationSelection : DestinationSelection
         //     // 
         // }
 
-        if (collider.gameObject.layer != 0)
+        if (!RaycastHelper.OnGround(guyCollider))
         {
             return;
         }
 
+        Collider2D collider = collision.collider;
         if (collider is not BoxCollider2D boxCollider)
         {
             Debug.Log("guy trying to walk on wrong collider");
@@ -116,7 +116,12 @@ public class WawkingDestinationSelection : DestinationSelection
 
 void OnCollisionExit2D()
 {
-        guyInAir = true;
+    if (RaycastHelper.OnGround(guyCollider))
+    {
+        return;
+    }
+
+    guyInAir = true;
     guyCanWalk = false;
 }
 

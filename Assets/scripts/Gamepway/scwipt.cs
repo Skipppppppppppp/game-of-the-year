@@ -33,6 +33,7 @@ public class scwipt : MonoBehaviour
     private Transform trans;
     private int portalLayerMask;
     private float pwayerZ;
+    private BoxCollider2D playerCollider;
 
     void Start()
     {
@@ -43,10 +44,15 @@ public class scwipt : MonoBehaviour
         trans = GetComponent<Transform>();
         portalLayerMask |= 1 << LayerMask.NameToLayer("Portals");
         pwayerZ = trans.position.z;
+        playerCollider = GetComponentInChildren<BoxCollider2D>(false);
     }
 
     void OnCollisionStay2D(Collision2D collision)
     {
+        if (!RaycastHelper.OnGround(playerCollider))
+        {
+            return;
+        }
         rb2d.linearDamping = 4;
         playerOnGround = true;
         if (Input.GetKey(KeyCode.Space))
@@ -56,6 +62,10 @@ public class scwipt : MonoBehaviour
     }
     void OnCollisionExit2D(Collision2D collision)
     {
+        if (RaycastHelper.OnGround(playerCollider))
+        {
+            return;
+        }
         playerOnGround = false;
         rb2d.linearDamping = 1;
     }

@@ -58,7 +58,7 @@ public class RaycastHelper : MonoBehaviour
         return ret;
     }
 
-        public static Rigidbody2D[]? TryRaycastAllToMouse(Vector2 playerPos, float maxDistance, int layerMask, int obstacleLayerMask)
+    public static Rigidbody2D[]? TryRaycastAllToMouse(Vector2 playerPos, float maxDistance, int layerMask, int obstacleLayerMask)
     {
         Vector2 distancesToMouse = MousePositionHelper.FindDistancesToMouse(playerPos);
         float distanceToMouse = distancesToMouse.magnitude;
@@ -91,12 +91,21 @@ public class RaycastHelper : MonoBehaviour
         }
 
         var ret = hitBodies.ToArray();
-        
+
         if (ret.Length == 0)
         {
             return null;
         }
 
         return ret;
+    }
+
+    public static bool OnGround(BoxCollider2D collider)
+    {
+        Transform trans = collider.transform; FIX THIS STUFF
+        Vector2 pos = trans.position;
+
+        var floor = Physics2D.BoxCast(pos, collider.bounds.extents*2, 0, new Vector2(0, -1), 1, 1 << LayerMask.NameToLayer("Default"));
+        return (floor.transform != null);
     }
 }
