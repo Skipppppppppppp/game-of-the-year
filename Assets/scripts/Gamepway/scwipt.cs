@@ -33,7 +33,7 @@ public class scwipt : MonoBehaviour
     private Transform trans;
     private int portalLayerMask;
     private float pwayerZ;
-    private BoxCollider2D playerCollider;
+    public BoxCollider2D playerCollider;
 
     void Start()
     {
@@ -44,7 +44,6 @@ public class scwipt : MonoBehaviour
         trans = GetComponent<Transform>();
         portalLayerMask |= 1 << LayerMask.NameToLayer("Portals");
         pwayerZ = trans.position.z;
-        playerCollider = GetComponentInChildren<BoxCollider2D>(false);
     }
 
     void OnCollisionStay2D(Collision2D collision)

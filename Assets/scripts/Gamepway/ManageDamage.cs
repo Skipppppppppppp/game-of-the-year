@@ -114,6 +114,7 @@ public class ManageDamage : MonoBehaviour
             if (currentIteration == iteration)
             {
                 phaseObject.SetActive(true);
+                playerScript.playerCollider = phaseObject.GetComponent<BoxCollider2D>();
                 playerScript.speedCoeffAir = speedCoeffsAir[iteration];
                 playerScript.speedCoeffGround = speedCoeffsGround[iteration];
                 playerScript.jumpForceCoeff = jumpForceCoeffs[iteration];

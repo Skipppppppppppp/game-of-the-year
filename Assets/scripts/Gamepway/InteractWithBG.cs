@@ -6,16 +6,26 @@ public class InteractWithBG : MonoBehaviour
     private Transform trans;
     public TextMeshProUGUI textToChange;
     public string interactionAnnouncement = "Press [F] to interact";
-    
+    private bool isPlayer;
+    private float timeSinceInteraction = 0;
+    public float interactionCooldown = 1;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         trans = transform;
+        isPlayer = GetComponent<scwipt>() != null;
     }
 
     // Update is called once per frame
     void Update()
     {
+        timeSinceInteraction += Time.deltaTime;
+        if (timeSinceInteraction < interactionCooldown)
+        {
+            return;
+        }
+
         Vector2 pos = trans.position;
         IObjectInteractionsHandler interactionInterface = null;
 
@@ -23,7 +33,9 @@ public class InteractWithBG : MonoBehaviour
 
         if (cols.Length == 0)
         {
-            textToChange.text = "";
+            if (isPlayer)
+                textToChange.text = "";
+
             return;
         }
 
@@ -47,9 +59,21 @@ public class InteractWithBG : MonoBehaviour
 
         interactionInterface.PlayerNearObject();
 
+        if (isPlayer == false)
+        {
+            int chance = Random.Range(0, 2);
+            if (chance == 0)
+            {
+                interactionInterface.Interact(trans);
+                timeSinceInteraction = 0;
+            }
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.F))
         {
             interactionInterface.Interact(trans);
+            timeSinceInteraction = 0;
         }
 
         textToChange.text = interactionAnnouncement;
