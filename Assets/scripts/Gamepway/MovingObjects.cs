@@ -15,13 +15,14 @@ public sealed class MovingObjects : MonoBehaviour
     private const float maxForInterpCoeff = 1;
     public Rigidbody2D? movingObject;
     private RememberInitialProperties? rememberedInitialProperties;
-    [Range(0,20)] public float linearDampingScale;
+    [Range(0, 20)] public float linearDampingScale;
     public float distanceToEat = 1;
     private ManageDamage healthScript;
     private int edibleLayer;
     public float healthToGive = 15;
     private int obstacleLayer;
     public float maxDistance = 12;
+    public float distanceToLetGo = 15;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -40,7 +41,22 @@ public sealed class MovingObjects : MonoBehaviour
         healthScript = player.GetComponent<ManageDamage>();
     }
 
+    void LetGo()
+    {
+        var r = rememberedInitialProperties!;
+        var b = movingObject.GetComponent<IObjectSelectedHandler>();
+        if (b != null)
+        {
+            b.Deselected();
+        }
 
+        movingObject.gravityScale = r.GravityScale;
+        movingObject.linearDamping = r.LinearDamping;
+        Destroy(r);
+
+        movingObject = null;
+        return;
+    }
 
     // Update is called once per frame
     void Update()
@@ -51,18 +67,7 @@ public sealed class MovingObjects : MonoBehaviour
             {
                 return;
             }
-            var r = rememberedInitialProperties!;
-            var b = movingObject.GetComponent<IObjectSelectedHandler>();
-            if (b != null)
-            {
-                b.Deselected();
-            }
-
-            movingObject.gravityScale = r.GravityScale;
-            movingObject.linearDamping = r.LinearDamping;
-            Destroy(r);
-
-            movingObject = null;
+            LetGo();
             return;
         }
 
@@ -97,94 +102,86 @@ public sealed class MovingObjects : MonoBehaviour
         }
         var rb2d = movingObject;
         Vector2 objectPosition = CenterOfMassFinder.FindObjectPosition(rb2d);
-        Gizmos.DrawCube(objectPosition,new Vector3 (1,1,1));
+        Gizmos.DrawCube(objectPosition, new Vector3(1, 1, 1));
     }
 
     void FixedUpdate()
     {
         if (!Input.GetMouseButton(1) || movingObject == null)
-        {
             return;
-        }
+
         movingObject.linearDamping = rememberedInitialProperties!.LinearDamping * linearDampingScale;
+
         var rb2d = movingObject;
         Vector2 objectPosition = CenterOfMassFinder.FindObjectPosition(rb2d);
+        Vector2 playerPosition2D = player.transform.position;
+        Vector2 mouseToObj = MousePositionHelper.FindDistancesToMouse(objectPosition);
+        Vector2 mouseToPlayer = MousePositionHelper.FindDistancesToMouse(playerPosition2D);
+        Vector2 directionToObject = playerPosition2D - objectPosition;
 
-        Vector2 playerPosition2D = new Vector2(player.transform.position.x, player.transform.position.y);
+        float totalDistanceToObject = directionToObject.magnitude;
 
-        Vector2 distancesFromPlayerToMouse = MousePositionHelper.FindDistancesToMouse(player.transform.position);
-        Vector2 distancesFromObjToMouse = MousePositionHelper.FindDistancesToMouse(objectPosition);
-        Vector2 distancesToObject = playerPosition2D - objectPosition;
-
-        float absDistanceToObjectX = Mathf.Abs(distancesToObject.x);
-        float absDistanceToObjectY = Mathf.Abs(distancesToObject.y);
-
-        bool objectToTheRightOfPlayer = distancesToObject.x < 0;
-        bool objectAbovePlayer = distancesToObject.y < 0;
-
-        float totalDistanceToObject = absDistanceToObjectX + absDistanceToObjectY;
-
-        bool isObjectMovingX = true;
-        bool isObjectMovingY = true;
-
-        if (absDistanceToObjectX >= maxDistance)
+        if (totalDistanceToObject <= distanceToEat && 1 << movingObject.gameObject.layer == edibleLayer)
         {
-            if (objectToTheRightOfPlayer && distancesFromPlayerToMouse.x > maxDistance)
+            healthScript.AddHealth(healthToGive);
+            Destroy(movingObject.gameObject);
+            movingObject = null;
+            return;
+        }
+
+        if (Mathf.Abs(directionToObject.x) >= distanceToLetGo || directionToObject.y >= distanceToLetGo)
+        {
+            LetGo();
+            return;
+        }
+
+        Vector2 force = Vector2.zero;
+        Vector2[] axes = { Vector2.right, Vector2.up };
+
+        for (int i = 0; i < axes.Length; i++)
+        {
+            Vector2 axis = axes[i];
+            float direction = Vector2.Dot(directionToObject, axis);
+            float distanceToObjectAxis = Mathf.Abs(direction);
+
+            float distanceFromMouseAxis = Vector2.Dot(mouseToObj, axis);
+            float distanceFromPlayerMouseAxis = Vector2.Dot(mouseToPlayer, axis);
+
+            if (distanceToObjectAxis < maxDistance ||
+                (direction < 0 && distanceFromPlayerMouseAxis <= maxDistance) ||
+                (direction > 0 && distanceFromPlayerMouseAxis >= -maxDistance))
             {
-                isObjectMovingX = false;
+                float distanceFactor = Mathf.Clamp01((Mathf.Abs(distanceFromMouseAxis) - minForDistance) / (maxForDistance - minForDistance));
+                float interpolatedForce = Mathf.Lerp(minForInterp, maxForInterp / rememberedInitialProperties.GravityScale, distanceFactor * distanceFactor);
+                force += axis * distanceFromMouseAxis * interpolatedForce;
             }
-            if (!objectToTheRightOfPlayer && distancesFromPlayerToMouse.x < -maxDistance)
+            else
             {
-                isObjectMovingX = false;
+                if (distanceToObjectAxis >= distanceToLetGo)
+                {
+                    LetGo();
+                    return;
+                }
+
+                if (axis == Vector2.right)
+                    movingObject.linearVelocityX = 0f;
+                else
+                    movingObject.linearVelocityY = 0f;
+
+                if (distanceToObjectAxis - maxDistance >= 0.5)
+                {
+                    movingObject.AddForce(directionToObject * 50);
+                    return;
+                }
             }
-        }
-        if (absDistanceToObjectY >= maxDistance)
-        {
-            if (objectAbovePlayer && distancesFromObjToMouse.y > maxDistance)
-            {
-                isObjectMovingY = false;
-            }
-            if (!objectAbovePlayer && distancesFromObjToMouse.y < -maxDistance)
-            {
-                isObjectMovingY = false;
-            }
-        }
-        if (isObjectMovingX)
-        {
-            if (totalDistanceToObject <= distanceToEat && 1 << movingObject.gameObject.layer == edibleLayer)
-            {
-                healthScript.AddHealth(healthToGive);
-                Destroy(movingObject.gameObject);
-                movingObject = null;
-                return;
-            }
-            float maxForInterp = this.maxForInterp/rememberedInitialProperties.GravityScale;
-            float p = (distancesFromObjToMouse.x - minForDistance) / (maxForDistance - minForDistance);
-            Vector2 forceForAddingX = new Vector2 (distancesFromObjToMouse.x*Mathf.Lerp(minForInterp, maxForInterp, p*p),0);
-            rb2d.AddForce(forceForAddingX);
-        }
-        else
-        {
-            movingObject.linearVelocityX = 0f;
-        }
-        if (isObjectMovingY)
-        {
-            float maxForInterp = this.maxForInterp/rememberedInitialProperties.GravityScale;
-            float p = (distancesFromObjToMouse.y - minForDistance) / (maxForDistance - minForDistance);
-            Vector2 forceForAddingY = new Vector2 (0,distancesFromObjToMouse.y*Mathf.Lerp(minForInterp, maxForInterp, p));
-            rb2d.AddForce(forceForAddingY);
-        }
-        else
-        {
-            movingObject.linearVelocityY = 0f;
         }
 
-        var b = movingObject.GetComponent<IObjectSelectedHandler>();
-        if (b != null)
-        {
-            b.ProcessBeingSelected();
-        }
+        rb2d.AddForce(force);
+
+        var handler = movingObject.GetComponent<IObjectSelectedHandler>();
+        handler?.ProcessBeingSelected();
     }
+
 }
 
 public interface IObjectSelectedHandler

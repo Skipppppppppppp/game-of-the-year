@@ -1,7 +1,11 @@
 using UnityEngine;
 
-public class RandomStuffHelper : MonoBehaviour
+public static class RandomStuffHelper
 {
+    public static Vector2 ToVector2(this Vector3 v)
+    {
+        return v;
+    }
     public static int PickUniqueNumber(int minInclude, int maxExclude, int prevNumber)
     {
         int ret = Random.Range(minInclude, maxExclude);

@@ -14,7 +14,7 @@ public class RotateAsObject : Rotation
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
         if (movingObjectScript != null && movingObjectScript.movingObject != null)
         {

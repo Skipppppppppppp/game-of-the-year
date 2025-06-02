@@ -14,20 +14,20 @@ public class RenderOnClick : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-     if (Input.GetMouseButtonDown(1))
-     {
-        foreach (SpriteRenderer spriteRenderer in spriteRenderers)
+        if (Input.GetMouseButtonDown(1))
         {
-            spriteRenderer.enabled = true;
+            foreach (SpriteRenderer spriteRenderer in spriteRenderers)
+            {
+                spriteRenderer.enabled = true;
+            }
         }
-     }   
 
-     if (Input.GetMouseButtonUp(1))
-     {
-        foreach (SpriteRenderer spriteRenderer in spriteRenderers)
+        if (Input.GetMouseButtonUp(1))
         {
-            spriteRenderer.enabled = false;
+            foreach (SpriteRenderer spriteRenderer in spriteRenderers)
+            {
+                spriteRenderer.enabled = false;
+            }
         }
      }
-    }
 }

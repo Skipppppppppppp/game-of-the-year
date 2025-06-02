@@ -102,10 +102,10 @@ public class RaycastHelper : MonoBehaviour
 
     public static bool OnGround(BoxCollider2D collider)
     {
-        Transform trans = collider.transform; FIX THIS STUFF
+        Transform trans = collider.transform;
         Vector2 pos = trans.position;
 
-        var floor = Physics2D.BoxCast(pos, collider.bounds.extents*2, 0, new Vector2(0, -1), 1, 1 << LayerMask.NameToLayer("Default"));
-        return (floor.transform != null);
+        var floor = Physics2D.BoxCast(pos, collider.bounds.size, 0, new Vector2(0, -1), 0.1f, 1 << LayerMask.NameToLayer("Default"));
+        return floor.transform != null;
     }
 }

@@ -93,7 +93,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   amountOfPoints: 5
   distanceBetweenPointCoeff: 0.12
-  player: {fileID: 0}
   speedForBreak: 100
   canBeBroken: 1
 --- !u!23 &1979215545226851616
@@ -239,7 +238,7 @@ GameObject:
   - component: {fileID: 1182721746753096631}
   - component: {fileID: 7522818215344664061}
   - component: {fileID: 8447327030633645710}
-  m_Layer: 3
+  m_Layer: 9
   m_Name: Guy Opening Detection
   m_TagString: Untagged
   m_Icon: {fileID: 0}

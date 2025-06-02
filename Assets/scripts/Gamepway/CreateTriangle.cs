@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UIElements;
 
@@ -41,7 +43,7 @@ public class CreateTriangle : MonoBehaviour
         return newIntersections;
     }
 
-    public static GameObject CreateMesh(List<Vector2> vertices, Vector2 center, Material material)
+    public static GameObject CreateMesh(List<Vector2> vertices, Vector2 center, Material material, Vector2 size)
     {
         vertices = SortAndRemoveRepeatingVertices(center,vertices);
         var triangle = new GameObject("Triangle");
@@ -50,6 +52,34 @@ public class CreateTriangle : MonoBehaviour
         var meshRenderer = triangle.AddComponent<MeshRenderer>();
         var mesh = new Mesh();
         meshFilter.mesh = mesh;
+
+        
+        Vector2[] PointsToUVs(Vector2[] points, Vector2 centerPoint)
+        {
+            int amountOfPoints = points.Length + 1;
+            Vector2[] ret = new Vector2[amountOfPoints];
+            Vector2 offset = new(0.5f, 0.5f);
+
+            int uvIndex = 0;
+
+            float centerUVx = center.x / size.x;
+            float centerUVy = center.y / size.y;
+            ret[uvIndex] = new Vector2(centerUVx, centerUVy) + offset;
+            uvIndex++;
+
+            for (int i = 0; i < points.Length; i++)
+            {
+                Vector2 point = points[i];
+                float newX = point.x / size.x;
+                float newY = point.y / size.y;
+                ret[uvIndex] = new Vector2(newX, newY) + offset;
+                uvIndex++;
+            }
+
+
+            return ret;
+        }
+
         Vector3[] Vertices()
         {
             var ret = new Vector3[vertices.Count + 1];
@@ -75,8 +105,11 @@ public class CreateTriangle : MonoBehaviour
                 }
             return ret;
         }
+
         mesh.vertices = Vertices();
         mesh.triangles = VerticeIndexes(); // if you complain about grammar you're gay
+
+        mesh.SetUVs(0, PointsToUVs(vertices.ToArray(), center));
         meshRenderer.sharedMaterial = material;
         mesh.RecalculateNormals();
         var rb2d = triangle.AddComponent<Rigidbody2D>();

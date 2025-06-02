@@ -73,6 +73,7 @@ public class NonPlayerManageDamage : MonoBehaviour, IDamageHandler
         halfGuy.transform.localScale = newScale;
 
         Rigidbody2D halfRB2D = halfGuy.AddComponent<Rigidbody2D>();
+        halfRB2D.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
         Rigidbody2D guyRB2D = GetComponent<Rigidbody2D>();
 
         halfRB2D.linearVelocity = guyRB2D.linearVelocity;

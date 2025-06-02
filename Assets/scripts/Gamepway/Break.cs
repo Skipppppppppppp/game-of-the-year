@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Mono.Cecil.Cil;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -100,12 +101,12 @@ public class Break : MonoBehaviour, IObjectSelectedHandler
     {
         var player = Physics2D.OverlapCircle(transform.position, 10, 1 << LayerMask.NameToLayer("Pwayer"));
         transPlayer = player.transform;
-        
+
         var mesh = GetComponent<MeshFilter>().mesh;
         meshRenderer = GetComponent<MeshRenderer>();
 
         Material material = meshRenderer.material;
-        
+
         Vector2[] points = MakeRandomPoints(mesh, amountOfPoints);
         // Vector2[] points = GetFixedPoints(mesh.bounds);
 
@@ -133,7 +134,7 @@ public class Break : MonoBehaviour, IObjectSelectedHandler
             {
                 int index = k + points.Length;
                 lineequations[i][index] = boundLines[k];
-            }          
+            }
         }
 
 
@@ -171,27 +172,27 @@ public class Break : MonoBehaviour, IObjectSelectedHandler
         var force = BaseForce();
         var props = GetComponent<Rigidbody2D>().GetInitialProps();
 
-        List<Vector2>[] intersections = new List<Vector2>[points.Length]; 
+        List<Vector2>[] intersections = new List<Vector2>[points.Length];
         for (int i = 0; i < points.Length; i++)
         {
             Line[] linesForPoint = lineequations[i];
-            intersections[i] = Voronoi.GetAreaVertices(points[i],linesForPoint,i);
-            var newMesh = CreateTriangle.CreateMesh(intersections[i], points[i], material);
+            intersections[i] = Voronoi.GetAreaVertices(points[i], linesForPoint, i);
+            var newMesh = CreateTriangle.CreateMesh(intersections[i], points[i], material, mesh.bounds.size);
             var myTransform = this.transform;
             var meshTransform = newMesh.transform;
             myTransform.GetPositionAndRotation(out var position, out var rotation);
             meshTransform.SetPositionAndRotation(position, rotation);
             meshTransform.localScale = myTransform.localScale;
-            meshTransform.SetParent(myTransform.parent, worldPositionStays:true);
+            meshTransform.SetParent(myTransform.parent, worldPositionStays: true);
             var rb2d = newMesh.GetComponent<Rigidbody2D>();
             rb2d.linearDamping = props.LinearDamping;
             rb2d.gravityScale = props.GravityScale;
             rb2d.AddForce(force.Force);
-            
-            float randomForceX = Random.Range(100,500);
-            float randomForceY = Random.Range(100,500);
-            Vector2 randomForceVector = new Vector2 (randomForceX, randomForceY);
-            rb2d.AddForce(randomForceVector); 
+
+            float randomForceX = Random.Range(100, 500);
+            float randomForceY = Random.Range(100, 500);
+            Vector2 randomForceVector = new Vector2(randomForceX, randomForceY);
+            rb2d.AddForce(randomForceVector);
         }
         this.points = points;
         this.intersections = intersections;

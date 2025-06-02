@@ -17,15 +17,15 @@ public class XPatrol : MonoBehaviour
         var imageTransform = rb2d.transform.GetChild(0);
         if (destination.x <= transform.position.x && imageTransform.localScale.x > 0)
         {
-            imageTransform.localScale= new Vector2 (-imageTransform.localScale.x, imageTransform.localScale.y);
+            imageTransform.localScale = new Vector2(-imageTransform.localScale.x, imageTransform.localScale.y);
         }
         else
         if (destination.x > transform.position.x && imageTransform.localScale.x < 0)
         {
-            imageTransform.localScale= new Vector2 (-imageTransform.localScale.x, imageTransform.localScale.y);
+            imageTransform.localScale = new Vector2(-imageTransform.localScale.x, imageTransform.localScale.y);
         }
     }
-    
+
     void Start()
     {
         selectDestination = GetComponent<DestinationSelection>();
@@ -40,13 +40,13 @@ public class XPatrol : MonoBehaviour
         {
             if (!selectDestination.IsInitializedForDestinationSelection)
             {
-                yield return null;
+                yield return new WaitForFixedUpdate();
                 continue;
             }
             if (Mathf.Abs(destination.x - transform.position.x) <= 0.1f)
             {
                 SelectDestination();
-                float waitingTime = UnityEngine.Random.Range(3f,5f);
+                float waitingTime = UnityEngine.Random.Range(3f, 5f);
                 yield return new WaitForSeconds(waitingTime);
                 continue;
             }
@@ -58,7 +58,8 @@ public class XPatrol : MonoBehaviour
             {
                 rb2d.AddForce(Vector2.right * speed);
             }
-            yield return null;
+            yield return new WaitForFixedUpdate();
         }
     }
+
 }

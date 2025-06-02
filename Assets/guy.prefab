@@ -10,13 +10,13 @@ GameObject:
   m_Component:
   - component: {fileID: 2347400247005670450}
   - component: {fileID: 1019864397377113445}
-  - component: {fileID: 2983918245168138859}
   - component: {fileID: -5660752628656209727}
   - component: {fileID: 220707030774536075}
   - component: {fileID: 8466839500369814408}
   - component: {fileID: -3006758915936569578}
   - component: {fileID: 1395517023391969114}
   - component: {fileID: 5063824026945376801}
+  - component: {fileID: -3733892723420534354}
   m_Layer: 7
   m_Name: guy
   m_TagString: Enemy
@@ -68,19 +68,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
---- !u!114 &2983918245168138859
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 936127469518054326}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d4f911de4a951b438537054ecef5800, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  velocityChangeNeededToDie: 20
 --- !u!114 &-5660752628656209727
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -250,6 +237,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   velocityChangeNeededToDie: 20
+--- !u!114 &-3733892723420534354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 936127469518054326}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16378fb5688c98845a8ebcd718a3363e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1076884710391363694
 GameObject:
   m_ObjectHideFlags: 0
