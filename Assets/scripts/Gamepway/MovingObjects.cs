@@ -1,5 +1,4 @@
 using System;
-using Mono.Cecil.Cil;
 using UnityEngine;
 
 #nullable enable
@@ -23,6 +22,7 @@ public sealed class MovingObjects : MonoBehaviour
     private int obstacleLayer;
     public float maxDistance = 12;
     public float distanceToLetGo = 15;
+    public Transform? grabbedPointTrans;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -44,7 +44,7 @@ public sealed class MovingObjects : MonoBehaviour
     void LetGo()
     {
         var r = rememberedInitialProperties!;
-        var b = movingObject.GetComponent<IObjectSelectedHandler>();
+        var b = movingObject!.GetComponent<IObjectSelectedHandler>();
         if (b != null)
         {
             b.Deselected();
@@ -53,6 +53,16 @@ public sealed class MovingObjects : MonoBehaviour
         movingObject.gravityScale = r.GravityScale;
         movingObject.linearDamping = r.LinearDamping;
         Destroy(r);
+
+        Transform[] transChildren = movingObject.GetComponentsInChildren<Transform>();
+        foreach (Transform child in transChildren)
+        {
+            if (child.tag == "Grabbed Point")
+            {
+                Destroy(child.gameObject);
+                break;
+            }
+        }
 
         movingObject = null;
         return;
@@ -88,9 +98,19 @@ public sealed class MovingObjects : MonoBehaviour
             }
             movingObject = raycasted;
             var r = movingObject.gameObject.AddComponent<RememberInitialProperties>();
+
+            GameObject grabbedPoint = new GameObject("Grabbed Point");
+            grabbedPoint.tag = "Grabbed Point";
+            grabbedPointTrans = grabbedPoint.transform;
+            grabbedPointTrans.parent = movingObject.transform;
+
+            Vector2 objectCOM = CenterOfMassFinder.FindObjectPosition(movingObject);
+            Vector2 distanceFromMouseToCOM = MousePositionHelper.FindDistancesToMouse(objectCOM);
+
+            grabbedPointTrans.position = distanceFromMouseToCOM + objectCOM;
+
             rememberedInitialProperties = r;
             r.Props = raycasted.GetPropertiesForRemember();
-            movingObject.gravityScale = 0;
         }
     }
 
@@ -110,14 +130,15 @@ public sealed class MovingObjects : MonoBehaviour
         if (!Input.GetMouseButton(1) || movingObject == null)
             return;
 
+        Vector2 grabbedPointPos = grabbedPointTrans.position;
         movingObject.linearDamping = rememberedInitialProperties!.LinearDamping * linearDampingScale;
 
         var rb2d = movingObject;
         Vector2 objectPosition = CenterOfMassFinder.FindObjectPosition(rb2d);
         Vector2 playerPosition2D = player.transform.position;
-        Vector2 mouseToObj = MousePositionHelper.FindDistancesToMouse(objectPosition);
+        Vector2 mouseToObj = MousePositionHelper.FindDistancesToMouse(grabbedPointPos);
         Vector2 mouseToPlayer = MousePositionHelper.FindDistancesToMouse(playerPosition2D);
-        Vector2 directionToObject = playerPosition2D - objectPosition;
+        Vector2 directionToObject = playerPosition2D - grabbedPointPos;
 
         float totalDistanceToObject = directionToObject.magnitude;
 
@@ -176,8 +197,7 @@ public sealed class MovingObjects : MonoBehaviour
             }
         }
 
-        rb2d.AddForce(force);
-
+        rb2d.AddForceAtPosition(force, grabbedPointPos);
         var handler = movingObject.GetComponent<IObjectSelectedHandler>();
         handler?.ProcessBeingSelected();
     }

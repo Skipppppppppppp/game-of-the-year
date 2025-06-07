@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Enemy
   - Concrete
+  - Grabbed Point
   layers:
   - Default
   - TransparentFX

@@ -29,8 +29,10 @@ public class StayOnObject : MonoBehaviour
             trans.position = new Vector2(playerTrans.position.x + newXDistanceToMouse, playerTrans.position.y + newYDistanceToMouse);
             return;
         }
-        var objectRb2d = movingObjectScript.movingObject;
-        Vector3 itemPosition = CenterOfMassFinder.FindObjectPosition(objectRb2d);
-        trans.position = itemPosition;
+
+        Transform grabbedPointTrans = movingObjectScript.grabbedPointTrans;
+        Vector2 grabbedPoint = grabbedPointTrans.position;
+
+        trans.position = grabbedPoint;
     }
 }

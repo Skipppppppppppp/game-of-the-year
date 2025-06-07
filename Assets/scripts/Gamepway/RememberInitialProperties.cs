@@ -13,6 +13,7 @@ public class RememberInitialProperties : MonoBehaviour
 public struct RememberedProperties
 {
     public float LinearDamping;
+    public float AngularDamping;
     public float GravityScale;
 }
 
@@ -33,6 +34,7 @@ public static class RememberedPropertiesHelper
         return new()
         {
             LinearDamping = rb.linearDamping,
+            AngularDamping = rb.angularDamping,
             GravityScale = rb.gravityScale,
         };
     }

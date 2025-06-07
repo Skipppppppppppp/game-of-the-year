@@ -185,6 +185,7 @@ public class Break : MonoBehaviour, IObjectSelectedHandler
             meshTransform.localScale = myTransform.localScale;
             meshTransform.SetParent(myTransform.parent, worldPositionStays: true);
             var rb2d = newMesh.GetComponent<Rigidbody2D>();
+            rb2d.angularDamping = props.AngularDamping;
             rb2d.linearDamping = props.LinearDamping;
             rb2d.gravityScale = props.GravityScale;
             rb2d.AddForce(force.Force);

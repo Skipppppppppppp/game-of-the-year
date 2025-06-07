@@ -52,7 +52,6 @@ public class CreateTriangle : MonoBehaviour
         var meshRenderer = triangle.AddComponent<MeshRenderer>();
         var mesh = new Mesh();
         meshFilter.mesh = mesh;
-
         
         Vector2[] PointsToUVs(Vector2[] points, Vector2 centerPoint)
         {
@@ -111,11 +110,15 @@ public class CreateTriangle : MonoBehaviour
 
         mesh.SetUVs(0, PointsToUVs(vertices.ToArray(), center));
         meshRenderer.sharedMaterial = material;
-        mesh.RecalculateNormals();
+        // mesh.RecalculateNormals();
+
         var rb2d = triangle.AddComponent<Rigidbody2D>();
         rb2d.excludeLayers = 1<<6;
+        
+
         var polygonCollider = triangle.AddComponent<PolygonCollider2D>();
         polygonCollider.points = vertices.ToArray();
+
         return triangle;
     }
 }

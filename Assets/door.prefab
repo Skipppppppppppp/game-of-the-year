@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 2510815496314863722}
   - component: {fileID: 201757004612778362}
   - component: {fileID: 630741771313387484}
+  - component: {fileID: 434595867522128483}
   m_Layer: 3
   m_Name: door
   m_TagString: Untagged
@@ -227,6 +228,20 @@ MonoBehaviour:
   sounds: []
   deathSounds: []
   isGuy: 0
+--- !u!114 &434595867522128483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 109909583357005461}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16378fb5688c98845a8ebcd718a3363e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  velocityToDie: 40
+  offset: {x: 1, y: 1}
 --- !u!1 &7535077683173452532
 GameObject:
   m_ObjectHideFlags: 0
