@@ -46,7 +46,7 @@ public class CreateTriangle : MonoBehaviour
     public static GameObject CreateMesh(List<Vector2> vertices, Vector2 center, Material material, Vector2 size)
     {
         vertices = SortAndRemoveRepeatingVertices(center,vertices);
-        var triangle = new GameObject("Triangle");
+        var triangle = new GameObject("Triangle"); // those who know 💀💀
         triangle.layer = 3;
         var meshFilter = triangle.AddComponent<MeshFilter>();
         var meshRenderer = triangle.AddComponent<MeshRenderer>();
@@ -114,7 +114,7 @@ public class CreateTriangle : MonoBehaviour
 
         var rb2d = triangle.AddComponent<Rigidbody2D>();
         rb2d.excludeLayers = 1<<6;
-        
+
 
         var polygonCollider = triangle.AddComponent<PolygonCollider2D>();
         polygonCollider.points = vertices.ToArray();

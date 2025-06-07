@@ -110,6 +110,12 @@ public class GetOpenedByGuy : MonoBehaviour
         {
             return;
         }
+
+        var guyWalkingScript = collider.GetComponentInParent<WawkingDestinationSelection>();
+        if (guyWalkingScript.guyCanWalk == false)
+        {
+            return;
+        }
         openingState.SetClosing();
     }
 
