@@ -7,7 +7,7 @@ public class watchplayer : MonoBehaviour
     public bool awareOfPlayer = false;
     public bool playerInSight = false;
     protected bool previousAwarenessState = false;
-    protected WawkingDestinationSelection destinationSelectionScript;
+    public WawkingDestinationSelection destinationSelectionScript;
 
     public static event Action DealDamage;
 
@@ -25,9 +25,9 @@ public class watchplayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (awareOfPlayer == false)
+        if (previousAwarenessState == true)
         {
-            if (previousAwarenessState == true)
+            if (awareOfPlayer == false)
             {
                 destinationSelectionScript.guyCanWalk = true;
             }

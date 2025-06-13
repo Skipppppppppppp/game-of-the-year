@@ -17,6 +17,6 @@ public class watchMouse : Rotation
     void Update()
     {
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Rotate(mousePosition, transform);
+        RotateObjectToTarget(mousePosition, transform);
     }
 }

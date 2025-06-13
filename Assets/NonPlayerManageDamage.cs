@@ -79,7 +79,11 @@ public class NonPlayerManageDamage : MonoBehaviour, IDamageHandler
         halfRB2D.linearVelocity = guyRB2D.linearVelocity;
         halfRB2D.mass = guyRB2D.mass / 2;
         halfRB2D.angularDamping = guyRB2D.angularDamping;
-        halfRB2D.excludeLayers = 1 << LayerMask.NameToLayer("Pwayer");
+
+        if (topOrBottom == -1)
+        {
+            halfRB2D.excludeLayers = 1 << LayerMask.NameToLayer("Pwayer");
+        }
 
         RememberInitialProperties rememberedPropertiesScript = GetComponent<RememberInitialProperties>();
 

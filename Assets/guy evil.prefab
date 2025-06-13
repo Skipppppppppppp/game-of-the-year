@@ -101,6 +101,17 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1706679801849369836}
   m_SourcePrefab: {fileID: 100100000, guid: 045ff602a6dbff349ac5246977859b8e, type: 3}
+--- !u!114 &3873428669066998380 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8466839500369814408, guid: 045ff602a6dbff349ac5246977859b8e, type: 3}
+  m_PrefabInstance: {fileID: 4630104421949542884}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5529476454533788242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e80f3b1f1eee3444b35066b9025c1f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5529476454533788242 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 936127469518054326, guid: 045ff602a6dbff349ac5246977859b8e, type: 3}
@@ -120,8 +131,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   awareOfPlayer: 0
   playerInSight: 0
-  timeNeeded: 1
+  destinationSelectionScript: {fileID: 3873428669066998380}
+  reloadTime: 0
+  amountOfShots: 0
+  timeBetweenShots: 0
   gunshot: {fileID: 8300000, guid: f255edd0d564e9d4d9537d78eac80176, type: 3}
+  healthScript: {fileID: 0}
+  damage: 5
 --- !u!82 &1706679801849369836
 AudioSource:
   m_ObjectHideFlags: 0

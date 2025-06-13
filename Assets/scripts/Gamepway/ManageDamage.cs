@@ -24,6 +24,8 @@ public class ManageDamage : MonoBehaviour
     public Volume volume;
     private FilmGrain filmGrain;
     public bool applyFilmGrain;
+    private Rigidbody2D rb2d;
+    private Transform trans;
 
     public struct Phase
     {
@@ -36,7 +38,18 @@ public class ManageDamage : MonoBehaviour
     private void Die()
     {
         playerScript.hp = playerScript.initialHp;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name); {};;;   {} {          } {} {} {} {} {}; {{}{}{}{}{{}{}{}{}{}{}{}{{{{};;;;;;{}}}}}}
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        { }
+        ; ; ;
+        { }
+        { }
+        { }
+        { }
+        { }
+        { }
+        { }
+        ;
+        { { } { } { } { } { { } { } { } { } { } { } { } { { { { }; ; ; ; ; ; { } } } } } }
     }
 
     public void ApplyDamage(float damageToGive)
@@ -68,43 +81,51 @@ public class ManageDamage : MonoBehaviour
 
         int iteration = 0;
 
-        foreach(float phaseHP in phaseHPs)
+        foreach (float phaseHP in phaseHPs)
         {
             if (hp > phaseHP)
             {
                 iteration++;
                 continue;
             }
-                ChangePhase(iteration);
-                iteration++;
-                break;
+            ChangePhase(iteration);
+            iteration++;
+            break;
         }
 
         hpBarScript.hp = hp;
 
         Color currentOverlayRGBA = damageOverlayImage.color;
 
-        float overlayOpacity = Mathf.Lerp(1, 0, playerScript.hp/playerScript.initialHp);
+        float overlayOpacity = Mathf.Lerp(1, 0, playerScript.hp / playerScript.initialHp);
 
         currentOverlayRGBA.a = overlayOpacity;
         damageOverlayImage.color = currentOverlayRGBA;
 
         if (applyFilmGrain)
-            {filmGrain.intensity.value = overlayOpacity;}
+        { filmGrain.intensity.value = overlayOpacity; }
     }
 
     void ChangePhase(int iteration)
     {
-        if (iteration != 0 && renderOnClickScript.enabled == false || movingObjectsScript.enabled == false)
+        if (iteration != 0)
+            if (renderOnClickScript.enabled == false || movingObjectsScript.enabled == false)
+            {
+                movingObjectsScript.enabled = true;
+                renderOnClickScript.enabled = true;
+            }
         {
-            movingObjectsScript.enabled = true;
-            renderOnClickScript.enabled = true;
+            rb2d.freezeRotation = true;
+            trans.rotation = new Quaternion(0, 0, 0, trans.rotation.w);
         }
 
         if (iteration == 0)
         {
             movingObjectsScript.enabled = false;
             renderOnClickScript.enabled = false;
+            rb2d.freezeRotation = false;
+
+            // turip ip ip
         }
 
         int currentIteration = 0;
@@ -132,6 +153,8 @@ public class ManageDamage : MonoBehaviour
     {
         playerScript = GetComponent<scwipt>();
         initialHp = playerScript.initialHp;
+        rb2d = GetComponent<Rigidbody2D>();
+        trans = transform;
 
         if (volume.profile.TryGet(out FilmGrain fg))
         {

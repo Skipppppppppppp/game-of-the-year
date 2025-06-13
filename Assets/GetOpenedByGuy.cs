@@ -52,6 +52,9 @@ public class GetOpenedByGuy : MonoBehaviour
     private void SetWalkability(bool canWalk)
     {
         var scripts = GetNearGuysWalkingScripts();
+        if (scripts.Length == 0)
+            return;
+            
         foreach (WawkingDestinationSelection script in scripts)
         {
             if (script == null)
@@ -112,7 +115,8 @@ public class GetOpenedByGuy : MonoBehaviour
         }
 
         var guyWalkingScript = collider.GetComponentInParent<WawkingDestinationSelection>();
-        if (guyWalkingScript.guyCanWalk == false)
+
+        if (guyWalkingScript == null || guyWalkingScript.guyCanWalk == false)
         {
             return;
         }

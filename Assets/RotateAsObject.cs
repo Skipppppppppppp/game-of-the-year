@@ -20,19 +20,19 @@ public class RotateAsObject : Rotation
         {
             var objectRb2d = movingObjectScript.movingObject;
             Vector3 itemPosition = CenterOfMassFinder.FindObjectPosition(objectRb2d);
-            Rotate(itemPosition, trans);
+            RotateObjectToTarget(itemPosition, trans);
             return;
         }
 
         if (defaultObjectTrans != null)
         {
             Vector2 objectPos = defaultObjectTrans.position;
-            Rotate(objectPos, trans);
+            RotateObjectToTarget(objectPos, trans);
             return;
         }
 
 
         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Rotate(mousePosition, trans);
+        RotateObjectToTarget(mousePosition, trans);
     }
 }

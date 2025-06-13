@@ -102,6 +102,14 @@ public class scwipt : MonoBehaviour
     }
     void FixedUpdate()
     {
+        if (trans.rotation.z > 0.38f)
+        {
+            trans.rotation = new Quaternion(0, 0, 0.38f, trans.rotation.w);
+        }
+        if (trans.rotation.z < -0.38f)
+        {
+            trans.rotation = new Quaternion(0, 0, -0.38f, trans.rotation.w);
+        }
         if (Input.GetKey(KeyCode.E))
         {
             chargeUpLeft -= 1;
@@ -114,22 +122,22 @@ public class scwipt : MonoBehaviour
             }
             if (Input.GetKey(KeyCode.D))
             {
-                rb2d.AddForce(right * speedCoeffGround);
+                rb2d.AddForce(trans.right * speedCoeffGround);
             }
             if (Input.GetKey(KeyCode.A))
             {
-                rb2d.AddForce(left * speedCoeffGround);
+                rb2d.AddForce(trans.right * -speedCoeffGround);
             }
         }
         if (playerOnGround == false) // player physics when airborne
         {
             if (Input.GetKey(KeyCode.D))
             {
-                rb2d.AddForce(right * speedCoeffAir);
+                rb2d.AddForce(trans.right * speedCoeffAir);
             }
             if (Input.GetKey(KeyCode.A))
             {
-                rb2d.AddForce(left * speedCoeffAir);
+                rb2d.AddForce(trans.right * -speedCoeffAir);
             }
         }
         _tryingToJump = false;

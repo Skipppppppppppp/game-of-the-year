@@ -4,6 +4,7 @@ public class Portal : MonoBehaviour, IObjectInteractionsHandler
 {
     public Transform otherEndTrans;
     private Vector2 otherEndPos;
+    public bool instantTeleport = false;
 
     void Start()
     {
@@ -21,5 +22,16 @@ public class Portal : MonoBehaviour, IObjectInteractionsHandler
 
         Vector3 pos = new Vector3(otherEndPos.x, otherEndPos.y, currentZ);
         pwayerTrans.position = pos;
+    }
+
+    public bool ShouldInteract(Transform pwayerTrans)
+    {
+        if (instantTeleport)
+            return true;
+
+        if (Input.GetKeyDown(KeyCode.F))
+            return true;
+
+        return false;
     }
 }

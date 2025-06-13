@@ -55,7 +55,7 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 2
   m_LinearDamping: 2
-  m_AngularDamping: 1
+  m_AngularDamping: 10
   m_GravityScale: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -113,6 +113,7 @@ MonoBehaviour:
   guyCanWalk: 0
   guyBoxCastYOffset: 0.1
   guyInAir: 0
+  lastRememberedPlayerX: 0
 --- !u!114 &-3006758915936569578
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -127,6 +128,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   awareOfPlayer: 0
   playerInSight: 0
+  destinationSelectionScript: {fileID: 8466839500369814408}
 --- !u!82 &1395517023391969114
 AudioSource:
   m_ObjectHideFlags: 0
@@ -249,6 +251,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16378fb5688c98845a8ebcd718a3363e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  velocityToDie: 50
+  offset: {x: 1, y: 1}
 --- !u!1 &1076884710391363694
 GameObject:
   m_ObjectHideFlags: 0

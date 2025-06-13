@@ -36,7 +36,7 @@ public class DieOnCollision : MonoBehaviour
         foreach (Collider2D col in bodies)
         {
             Rigidbody2D rb2d = col.attachedRigidbody;
-            if (rb2d.linearVelocity.magnitude >= velocityToDie)
+            if (rb2d.linearVelocity.magnitude >= velocityToDie && rb2d.gameObject != gameObject)
             {
                 damageScript.Die();
             }

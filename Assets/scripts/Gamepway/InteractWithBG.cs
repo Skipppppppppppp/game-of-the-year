@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 
@@ -8,7 +9,8 @@ public class InteractWithBG : MonoBehaviour
     public string interactionAnnouncement = "Press [F] to interact";
     private bool isPlayer;
     private float timeSinceInteraction = 0;
-    public float interactionCooldown = 1;
+    public float interactionCooldown = 3;
+    public DarkenScreen darkeningScript;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -18,7 +20,7 @@ public class InteractWithBG : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    async void Update()
     {
         timeSinceInteraction += Time.deltaTime;
         if (timeSinceInteraction < interactionCooldown)
@@ -50,7 +52,7 @@ public class InteractWithBG : MonoBehaviour
 
         if (interactionInterface is null)
         {
-            if (textToChange.text == interactionAnnouncement)
+            if (textToChange.text == interactionAnnouncement && isPlayer)
             {
                 textToChange.text = "";
             }
@@ -70,13 +72,15 @@ public class InteractWithBG : MonoBehaviour
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.F))
+        textToChange.text = interactionAnnouncement;
+        if (interactionInterface.ShouldInteract(trans))
         {
-            interactionInterface.Interact(trans);
             timeSinceInteraction = 0;
+            await darkeningScript.StartChangingOpacity(1f, 1f);
+            interactionInterface.Interact(trans);
+            await darkeningScript.StartChangingOpacity(0f, 1f);
         }
 
-        textToChange.text = interactionAnnouncement;
     }
 }
 
@@ -84,4 +88,5 @@ public interface IObjectInteractionsHandler
 {
     void PlayerNearObject();
     void Interact(Transform pwayerTrans);
+    bool ShouldInteract(Transform pwayerTrans);
 }

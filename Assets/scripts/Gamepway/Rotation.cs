@@ -2,13 +2,7 @@ using UnityEngine;
 
 public abstract class Rotation : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    protected void Rotate(Vector3 targetPosition, Transform transform)
+    protected void RotateObjectToTarget(Vector3 targetPosition, Transform transform)
     {
         Vector2 direction = (targetPosition - transform.position).normalized;
         Quaternion currentRotation = transform.rotation;
@@ -20,9 +14,15 @@ public abstract class Rotation : MonoBehaviour
         transform.rotation = newRotation;
     }
 
-    // Update is called once per frame
-    void Update()
+    public static Vector2 RotateVector(Vector2 v, float degrees)
     {
-        
+        float radians = degrees * (float)Mathf.PI / 180f;
+        float cos = (float)Mathf.Cos(radians);
+        float sin = (float)Mathf.Sin(radians);
+
+        return new Vector2(
+            v.x * cos - v.y * sin,
+            v.x * sin + v.y * cos
+        );
     }
 }

@@ -18,7 +18,7 @@ public class FacePlayer : Rotation
         if (pwayerTrans != null)
         {
             Vector3 pwayerPosition = pwayerTrans.position;
-            Rotate(pwayerPosition, trans);
+            RotateObjectToTarget(pwayerPosition, trans);
         }
     }
 }

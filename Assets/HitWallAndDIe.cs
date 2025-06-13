@@ -25,9 +25,8 @@ public class HitWallAndDIe : MonoBehaviour
         float velocity = rb2d.linearVelocity.magnitude;
 
         float differenceBetweenVelocities = Mathf.Abs(velocity - prevVelocity);
-
         prevVelocity = velocity;
-
+        
         if (differenceBetweenVelocities < velocityChangeNeededToDie)
         {
             return;

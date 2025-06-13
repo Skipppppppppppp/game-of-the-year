@@ -64,6 +64,7 @@ public class alertGuys : MonoBehaviour
 
             guyWatchPlayerScript.awareOfPlayer = true;
             guyWatchPlayerScript.playerInSight = true;
+            guyWatchPlayerScript.destinationSelectionScript.lastRememberedPlayerX = trans.position.x;
             facePlayerScript = guy.GetComponentInChildren<FacePlayer>();
 
             if (facePlayerScript == null)

@@ -1,9 +1,14 @@
+using UnityEditor.Rendering;
 using UnityEngine;
 
 public class WatchAndDamagePlayer : watchplayer
 {
-    public float timeNeeded;
-    private float timer = 0;
+    public float reloadTime;
+    public int amountOfShots;
+    public float timeBetweenShots;
+    private int currentShot = 1;
+    private float reloadTimer = 0;
+    private float timeSinceLastShot = 0;
     private AudioSource audioSource;
     public AudioClip gunshot;
     private Rigidbody2D rb2d;
@@ -33,15 +38,12 @@ public class WatchAndDamagePlayer : watchplayer
     {
         if (guyCanShoot == false)
         {
-            timer = 0;
+            reloadTimer = 0;
             return;
         }
         if (awareOfPlayer == false)
         {
-            if (previousAwarenessState == true)
-            {
-                timer = 0;
-            }
+            reloadTimer = 0;
             return;
         }
 
@@ -50,13 +52,28 @@ public class WatchAndDamagePlayer : watchplayer
             return;
         }
 
-        if (timer < timeNeeded)
+        if (reloadTimer < reloadTime)
         {
-            timer += Time.deltaTime;
+            reloadTimer += Time.deltaTime;
             return;
         }
-    
-        timer = 0;
+
+        if (timeSinceLastShot < timeBetweenShots)
+        {
+            timeSinceLastShot += Time.deltaTime;
+            return;
+        }
+
+        timeSinceLastShot = 0;
+
+        if (currentShot > amountOfShots)
+        {
+            reloadTimer = 0;
+            currentShot = 1;
+            return;
+        }
+
+        currentShot += 1;
         audioSource.PlayOneShot(gunshot, 1f);
         healthScript.ApplyDamage(damage);
     }

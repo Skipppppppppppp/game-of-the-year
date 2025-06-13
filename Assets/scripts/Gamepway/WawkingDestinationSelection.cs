@@ -11,6 +11,7 @@ public class WawkingDestinationSelection : DestinationSelection
     public override bool IsInitializedForDestinationSelection => guyCanWalk;
     public float guyBoxCastYOffset = 0.1f;
     public bool guyInAir;
+    public float lastRememberedPlayerX;
 
     void Start()
     {
@@ -24,6 +25,16 @@ public class WawkingDestinationSelection : DestinationSelection
         float newMaxX = waxX;
         float newX = Random.Range(newMinX, newMaxX);
         Vector2 newDestination = new Vector2(newX, currentY);
+
+        float currentGuyX = transform.position.x;
+        float currentDistanceToPwayer = Mathf.Abs(currentGuyX - lastRememberedPlayerX);
+        float futureDistanceToPlayer = Mathf.Abs(newDestination.x - lastRememberedPlayerX);
+        if (futureDistanceToPlayer < currentDistanceToPwayer)
+        {
+
+            newDestination = SelectDestination(currentY);
+        }
+
         return newDestination;
     }
 
