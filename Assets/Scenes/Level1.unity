@@ -16876,6 +16876,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -5786612584371499087, guid: e9937973d8411f540938076e1cd8e931, type: 3}
+      propertyPath: grenade
+      value: 
+      objectReference: {fileID: 7513165654786495273, guid: 39648e2e7c0c3184192ab02dcf968df7, type: 3}
+    - target: {fileID: -5786612584371499087, guid: e9937973d8411f540938076e1cd8e931, type: 3}
       propertyPath: reloadTime
       value: 2
       objectReference: {fileID: 0}

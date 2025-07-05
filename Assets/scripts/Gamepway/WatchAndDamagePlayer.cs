@@ -4,10 +4,12 @@ using UnityEngine;
 public class WatchAndDamagePlayer : watchplayer
 {
     public float reloadTime;
+    public float grenadeTime = 3;
     public int amountOfShots;
     public float timeBetweenShots;
     private int currentShot = 1;
     private float reloadTimer = 0;
+    private float grenadeTimer = 0;
     private float timeSinceLastShot = 0;
     private AudioSource audioSource;
     public AudioClip gunshot;
@@ -15,6 +17,8 @@ public class WatchAndDamagePlayer : watchplayer
     private bool guyCanShoot;
     public ManageDamage healthScript;
     public float damage = 5;
+    public GameObject grenade;
+    public float grenadeForceCoeff = 1000;
 
     void OnCollisionEnter2D()
     {
@@ -36,12 +40,27 @@ public class WatchAndDamagePlayer : watchplayer
     // Update is called once per frame
     void Update()
     {
-        if (guyCanShoot == false)
+        if (awareOfPlayer == false)
         {
             reloadTimer = 0;
+            if (playerInSight != true)
+            {
+                grenadeTimer = 0;
+                return;
+            }
+
+            grenadeTimer += Time.deltaTime;
+            if (grenadeTimer >= grenadeTime)
+            {
+                grenadeTimer = 0;
+                Vector2 pos = transform.position;
+                GameObject thrownGrenade = Instantiate(grenade, position: pos, rotation: Quaternion.identity);
+                Rigidbody2D grenadeRb2d = thrownGrenade.GetComponent<Rigidbody2D>();
+                grenadeRb2d.AddForce(new Vector2((destinationSelectionScript.lastRememberedPlayerX - pos.x), 2).normalized * grenadeForceCoeff);
+            }
             return;
         }
-        if (awareOfPlayer == false)
+        if (guyCanShoot == false)
         {
             reloadTimer = 0;
             return;

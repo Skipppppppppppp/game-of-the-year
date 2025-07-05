@@ -35,11 +35,6 @@ public class watchplayer : MonoBehaviour
             return;
         }
 
-        if (destinationSelectionScript.guyCanWalk == true)
-        {
-            destinationSelectionScript.guyCanWalk = false;
-        }
-
         previousAwarenessState = awareOfPlayer;
     }
 }
