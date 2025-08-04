@@ -1761,6 +1761,10 @@ PrefabInstance:
       propertyPath: initialHp
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 1757453130579582787, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
+      propertyPath: portalLayerMask
+      value: 64
+      objectReference: {fileID: 0}
     - target: {fileID: 1770089786857723183, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
       propertyPath: movingObjectScript
       value: 
