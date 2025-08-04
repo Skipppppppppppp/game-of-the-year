@@ -139,7 +139,7 @@ MonoBehaviour:
   gunshot: {fileID: 8300000, guid: f255edd0d564e9d4d9537d78eac80176, type: 3}
   healthScript: {fileID: 0}
   damage: 5
-  grenade: {fileID: 7513165654786495273, guid: 39648e2e7c0c3184192ab02dcf968df7, type: 3}
+  grenade: {fileID: 168811798251575943, guid: 39648e2e7c0c3184192ab02dcf968df7, type: 3}
   grenadeForceCoeff: 1000
 --- !u!82 &1706679801849369836
 AudioSource:

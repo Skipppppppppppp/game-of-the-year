@@ -19,6 +19,7 @@ public class WatchAndDamagePlayer : watchplayer
     public float damage = 5;
     public GameObject grenade;
     public float grenadeForceCoeff = 1000;
+    private bool threwGrenade = false;
 
     void OnCollisionEnter2D()
     {
@@ -46,10 +47,12 @@ public class WatchAndDamagePlayer : watchplayer
             if (playerInSight != true)
             {
                 grenadeTimer = 0;
+                threwGrenade = false;
                 return;
             }
 
-            grenadeTimer += Time.deltaTime;
+            if (threwGrenade == false)
+                grenadeTimer += Time.deltaTime;
             if (grenadeTimer >= grenadeTime)
             {
                 grenadeTimer = 0;

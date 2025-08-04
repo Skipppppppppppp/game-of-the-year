@@ -20,22 +20,26 @@ public class WawkingDestinationSelection : DestinationSelection
 
     public override Vector2 SelectDestination(float currentY)
     {
-
-        float newMinX = winX;
-        float newMaxX = waxX;
-        float newX = Random.Range(newMinX, newMaxX);
-        Vector2 newDestination = new Vector2(newX, currentY);
-
-        float currentGuyX = transform.position.x;
-        float currentDistanceToPwayer = Mathf.Abs(currentGuyX - lastRememberedPlayerX);
-        float futureDistanceToPlayer = Mathf.Abs(newDestination.x - lastRememberedPlayerX);
-        if (futureDistanceToPlayer < currentDistanceToPwayer)
+        const int maxIterCount = 100;
+        for (int i = 0; i < maxIterCount; i++)
         {
+            float newMinX = winX;
+            float newMaxX = waxX;
+            float newX = Random.Range(newMinX, newMaxX);
+            Vector2 newDestination = new Vector2(newX, currentY);
 
-            newDestination = SelectDestination(currentY);
+            float currentGuyX = transform.position.x;
+            float currentDistanceToPwayer = Mathf.Abs(currentGuyX - lastRememberedPlayerX);
+            float futureDistanceToPlayer = Mathf.Abs(newDestination.x - lastRememberedPlayerX);
+            if (futureDistanceToPlayer < currentDistanceToPwayer)
+            {
+                continue;
+            }
+            return newDestination;
         }
 
-        return newDestination;
+        Debug.LogWarning("Iteration limit exceeded when generating random numbers??");
+        return default;
     }
 
     void OnCollisionEnter2D(Collision2D collision)

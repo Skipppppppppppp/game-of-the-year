@@ -1,14 +1,26 @@
 using System.Threading;
+using UnityEditor.Build;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class explodeAfterTime : MonoBehaviour
 {
+    private new ParticleSystem particleSystem;
+    public AudioClip sound;
+    private GameObject image;
     public float timer = 1;
-    private Vector2 pos;
+    public int damage = 15;
+    public float radius = 50;
+    private int layerMask;
+    private int obstacleLayerMask;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        particleSystem = GetComponent<ParticleSystem>();
+        image = transform.GetChild(0).gameObject;
+        layerMask = 1 << LayerMask.NameToLayer("Pwayer");
+        obstacleLayerMask = 1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Doors");
     }
 
     // Update is called once per frame
@@ -20,7 +32,40 @@ public class explodeAfterTime : MonoBehaviour
             return;
         }
 
-        pos = transform.position;
+        var pos = transform.position;
+        Destroy(image);
+        var m = particleSystem.main;
+        m.stopAction = ParticleSystemStopAction.Callback;
+        particleSystem.Play();
+
+        AudioSource.PlayClipAtPoint(sound, pos);
+
+        var thingsAround = Physics2D.OverlapCircleAll(pos, radius, layerMask);
+        foreach (var j in thingsAround)
+        {
+            Transform transParent = j.transform.parent;
+            ManageDamage healthScript = transParent.GetComponent<ManageDamage>();
+            if (healthScript == null)
+            {
+                continue;
+            }
+
+            Vector2 playerPos = transParent.position;
+            var toObjVector = playerPos - pos.ToVector2();
+            var wall = Physics2D.Raycast(pos, toObjVector.normalized, toObjVector.magnitude, obstacleLayerMask);
+
+            if (wall.collider == null)
+            {
+                healthScript.ApplyDamage(damage);
+            }
+
+        }
+
+        this.enabled = false;
+    }
+
+    void OnParticleSystemStopped()
+    {
         Destroy(this.gameObject);
     }
 }

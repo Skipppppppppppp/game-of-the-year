@@ -17,7 +17,7 @@ public class hitThings : MonoBehaviour
     public int bigHitNumber = 3;
     public float usualDamage = 1;
     public float bigDamage = 3;
-    private int prevSoundIndex = 10;
+    private ExcludedValues prevSoundIndex = ExcludedValues.None;
     private bool shouldAdvanceTimer = true;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

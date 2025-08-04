@@ -13,7 +13,7 @@ public class WalkingSounds : MonoBehaviour
     private float timer;
     public float timeBetweenSounds = 0.5f;
     public Surface[] surfaces;
-    private int prevPlayedSoundIndex = 0;
+    private ExcludedValues prevPlayedSoundIndex = ExcludedValues.None;
 
 [System.Serializable]
     public struct Surface
