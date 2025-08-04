@@ -9,7 +9,7 @@ public class WalkingSounds : MonoBehaviour
     private Vector2 pos;
     public float velocityToPlaySound = 0.5f;
     private bool onGround = false;
-    private int layerMask;
+    private LayerMask layerMask;
     private float timer;
     public float timeBetweenSounds = 0.5f;
     public Surface[] surfaces;
@@ -42,7 +42,7 @@ public class WalkingSounds : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         rb2d = GetComponent<Rigidbody2D>();
         trans = this.transform;
-        layerMask |= 1 << LayerMask.NameToLayer("Default");
+        layerMask |= LayerMask.Default;
     }
 
     // Update is called once per frame
@@ -61,7 +61,7 @@ public class WalkingSounds : MonoBehaviour
         }
 
         pos = trans.position;
-        RaycastHit2D rayHit = Physics2D.Raycast(pos, new Vector2 (0, -1), float.PositiveInfinity, layerMask);
+        RaycastHit2D rayHit = Physics2D.Raycast(pos, new Vector2 (0, -1), float.PositiveInfinity, (int) layerMask);
 
         if (rayHit.transform == null)
         {

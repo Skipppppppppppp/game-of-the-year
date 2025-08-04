@@ -31,7 +31,7 @@ public class DoorLogic : MonoBehaviour, IObjectSelectedHandler
     private Rigidbody2D? RaycastForObject()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit2D rayHit = Physics2D.GetRayIntersection(ray,float.PositiveInfinity,layerMask);
+        RaycastHit2D rayHit = Physics2D.GetRayIntersection(ray,float.PositiveInfinity, (int) layerMask);
         var trans = rayHit.transform;
         if (trans == null)
         {
@@ -48,7 +48,7 @@ public class DoorLogic : MonoBehaviour, IObjectSelectedHandler
         trans = transform;
         initialPos = trans.position;
         rb2d = GetComponent<Rigidbody2D>();
-        layerMask |= 1 << UnityEngine.LayerMask.NameToLayer("Moveable Stuff");
+        layerMask |= LayerMask.MoveableStuff;
         doorScript = GetComponent<OpenAndClose>();
         collider = GetComponent<BoxCollider2D>();
         initialBoundsX = collider.bounds.extents.x;

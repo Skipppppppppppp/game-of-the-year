@@ -128,7 +128,7 @@ public class GetOpenedByGuy : MonoBehaviour
     {
         pos = trans.position;
         doorScript = doorObj.GetComponent<OpenAndClose>();
-        layerMask = 1 << LayerMask.NameToLayer("Peopwe");
+        layerMask = (int) LayerMask.Peopwe;
     }
 
     // Update is called once per frame

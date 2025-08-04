@@ -9,8 +9,8 @@ public class alertGuys : MonoBehaviour
     [Range(1,20)] public float detectionRadius;
     [Range(1,10)] public float differenceBetweenRadii;
     private float totalRadius;
-    private int guyLayerMask;
-    private int wallLayerMask;
+    private LayerMask guyLayerMask;
+    private LayerMask wallLayerMask;
     private FacePlayer facePlayerScript;
     private WatchAndDamagePlayer guyDamageScript;
 
@@ -19,15 +19,15 @@ public class alertGuys : MonoBehaviour
     {
         rb2d = this.GetComponent<Rigidbody2D>();
         trans = rb2d.transform;
-        guyLayerMask |= 1 << LayerMask.NameToLayer("Peopwe");
-        wallLayerMask |= 1 << LayerMask.NameToLayer("Default");
+        guyLayerMask |= LayerMask.Peopwe;
+        wallLayerMask |= LayerMask.Default;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
         totalRadius = detectionRadius + differenceBetweenRadii;
-        var hits = Physics2D.OverlapCircleAll(trans.position, totalRadius, guyLayerMask);
+        var hits = Physics2D.OverlapCircleAll(trans.position, totalRadius, (int) guyLayerMask);
         foreach (Collider2D i in hits)
         {
             var guyTrans = i.transform.parent;
@@ -54,7 +54,7 @@ public class alertGuys : MonoBehaviour
             }
 
             Vector2 direction = (guyTrans.position - trans.position).normalized;
-            RaycastHit2D wall = Physics2D.Raycast(trans.position, direction, distanceToGuy, wallLayerMask);
+            RaycastHit2D wall = Physics2D.Raycast(trans.position, direction, distanceToGuy, (int) wallLayerMask);
 
             if (wall.collider != null)
             {

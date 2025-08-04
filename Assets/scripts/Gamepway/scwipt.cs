@@ -31,7 +31,7 @@ public class scwipt : MonoBehaviour
     public float speedCoeffAir = 4;
     public float jumpForceCoeff = 1000;
     private Transform trans;
-    private int portalLayerMask;
+    public LayerMask portalLayerMask;
     private float pwayerZ;
     public BoxCollider2D playerCollider;
 
@@ -42,7 +42,7 @@ public class scwipt : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         particleSystem = GetComponent<ParticleSystem>();
         trans = GetComponent<Transform>();
-        portalLayerMask |= 1 << LayerMask.NameToLayer("Portals");
+        portalLayerMask |= LayerMask.Portals;
         pwayerZ = trans.position.z;
     }
 

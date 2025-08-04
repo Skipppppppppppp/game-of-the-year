@@ -8,8 +8,8 @@ public class hitThings : MonoBehaviour
     public AudioClip bigAttackSound;
     private Transform trans;
     private AudioSource audioSource;
-    private int layerMask;
-    private int obstacleLayerMask;
+    private LayerMask layerMask;
+    private LayerMask obstacleLayerMask;
     public float maxDistance;
     private float hitTimer = 0;
     public float timeToResetHits = 1;
@@ -26,16 +26,8 @@ public class hitThings : MonoBehaviour
         trans = transform;
         audioSource = GetComponent<AudioSource>();
 
-        obstacleLayerMask = 1 << LayerMask.NameToLayer("Default");
-        foreach (var x in new[]
-        {
-            "Peopwe",
-            "Moveable Stuff",
-        })
-        {
-            var layer = LayerMask.NameToLayer(x);
-            layerMask |= 1 << layer;
-        }
+        obstacleLayerMask = LayerMask.Default;
+        layerMask = LayerMask.Peopwe | LayerMask.MoveableStuff;
     }
 
     // Update is called once per frame
@@ -74,8 +66,8 @@ public class hitThings : MonoBehaviour
         Rigidbody2D[] damageTakerRB2Ds = RaycastHelper.TryRaycastAllToMouse(
             playerPos: pos,
             maxDistance: maxDistance,
-            layerMask: layerMask,
-            obstacleLayerMask: obstacleLayerMask);
+            layerMask: (int) layerMask,
+            obstacleLayerMask: (int) obstacleLayerMask);
 
         if (damageTakerRB2Ds == null)
         {

@@ -8,7 +8,7 @@ public class DieOnCollision : MonoBehaviour
     public float velocityToDie = 50;
     public Vector2 offset = new Vector2(1f, 1f);
     Vector2 size;
-    int layerMask;
+    LayerMask layerMask;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -17,22 +17,14 @@ public class DieOnCollision : MonoBehaviour
         damageScript = GetComponent<NonPlayerManageDamage>();
         hitBox = GetComponentInChildren<BoxCollider2D>();
         size = hitBox.bounds.size.ToVector2() + offset;
-        foreach (var x in new[]
-        {
-            "Peopwe",
-            "Moveable Stuff",
-        })
-        {
-            var layer = LayerMask.NameToLayer(x);
-            layerMask |= 1 << layer;
-        }
+        layerMask = LayerMask.Peopwe | LayerMask.MoveableStuff;
     }
 
     // Update is called once per frame
     void Update()
     {
         Vector2 pos = trans.position;
-        var bodies = Physics2D.OverlapBoxAll(pos, size, 0, layerMask);
+        var bodies = Physics2D.OverlapBoxAll(pos, size, 0, (int) layerMask);
         foreach (Collider2D col in bodies)
         {
             Rigidbody2D rb2d = col.attachedRigidbody;

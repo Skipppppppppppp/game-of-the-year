@@ -12,7 +12,7 @@ public class InfectGuy : MonoBehaviour
     private Collider2D guyCollider;
     private ManageDamage healthScript;
     private float guyYExtents;
-    private int layerMask;
+    private LayerMask layerMask;
     private float timer;
     public float animationDuration = 2;
     public float healthToGive = 40;
@@ -25,7 +25,7 @@ public class InfectGuy : MonoBehaviour
     {
         var scwipt = GetComponentInParent<scwipt>();
         trans = scwipt.gameObject.GetComponent<Transform>();
-        layerMask |= 1 << LayerMask.NameToLayer("Peopwe");
+        layerMask |= LayerMask.Peopwe;
         healthScript = GetComponentInParent<ManageDamage>();
         pawticleSystem = GetComponent<ParticleSystem>();
     }
@@ -36,7 +36,7 @@ public class InfectGuy : MonoBehaviour
         if (timer == 0)
         {
             pos = trans.position;
-            guyCollider = Physics2D.OverlapCircle(pos, infectionRadius, layerMask);
+            guyCollider = Physics2D.OverlapCircle(pos, infectionRadius, (int) layerMask);
             if (guyCollider == null)
             {
                 timer = 0;

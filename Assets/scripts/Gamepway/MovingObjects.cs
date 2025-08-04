@@ -1,11 +1,12 @@
 using System;
+using TDCards.Editor;
 using UnityEngine;
 
 #nullable enable
 
 public sealed class MovingObjects : MonoBehaviour
 {
-    private int layerMask;
+    private LayerMask layerMask;
     public GameObject player;
     public float minForInterp;
     public float maxForInterp;
@@ -17,9 +18,9 @@ public sealed class MovingObjects : MonoBehaviour
     [Range(0, 20)] public float linearDampingScale;
     public float distanceToEat = 1;
     private ManageDamage healthScript;
-    private int edibleLayer;
+    private LayerMask edibleLayer;
     public float healthToGive = 15;
-    private int obstacleLayer;
+    private LayerMask obstacleLayer;
     public float maxDistance = 12;
     public float distanceToLetGo = 15;
     public Transform? grabbedPointTrans;
@@ -27,17 +28,9 @@ public sealed class MovingObjects : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        edibleLayer = 1 << LayerMask.NameToLayer("Peopwe");
-        foreach (var x in new[]
-        {
-            "Peopwe",
-            "Moveable Stuff",
-        })
-        {
-            var layer = LayerMask.NameToLayer(x);
-            layerMask |= 1 << layer;
-        }
-        obstacleLayer = 1 << LayerMask.NameToLayer("Default");
+        edibleLayer = LayerMask.Peopwe;
+        layerMask = LayerMask.Peopwe | LayerMask.MoveableStuff;
+        obstacleLayer = LayerMask.Default;
         healthScript = player.GetComponent<ManageDamage>();
     }
 
@@ -86,8 +79,8 @@ public sealed class MovingObjects : MonoBehaviour
             var raycasted = RaycastHelper.TrySelectObject(
                 playerPos: player.transform.position,
                 maxDistance: maxDistance,
-                layerMask: layerMask,
-                obstacleLayerMask: obstacleLayer);
+                layerMask: (int) layerMask,
+                obstacleLayerMask: (int) obstacleLayer);
             if (raycasted == null)
             {
                 return;
@@ -142,7 +135,8 @@ public sealed class MovingObjects : MonoBehaviour
 
         float totalDistanceToObject = directionToObject.magnitude;
 
-        if (totalDistanceToObject <= distanceToEat && 1 << movingObject.gameObject.layer == edibleLayer)
+
+        if (totalDistanceToObject <= distanceToEat && edibleLayer.Contains((Layer) movingObject.gameObject.layer))
         {
             healthScript.AddHealth(healthToGive);
             Destroy(movingObject.gameObject);

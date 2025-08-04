@@ -100,7 +100,7 @@ public class WawkingDestinationSelection : DestinationSelection
                 angle: 0,
                 direction: Vector2.right,
                 distance: distanceFromGuyToRightEdge,
-                layerMask: LayerMask.GetMask("Default"));
+                layerMask: (int) LayerMask.Default);
 
 
             var leftObstacle = Physics2D.BoxCast(
@@ -109,8 +109,8 @@ public class WawkingDestinationSelection : DestinationSelection
                 angle: 0,
                 direction: Vector2.left,
                 distance: distanceFromGuyToLeftEdge,
-                layerMask: LayerMask.GetMask("Default"));
-                
+                layerMask: (int) LayerMask.Default);
+
             if (rightObstacle.transform != null)
             {
                 float rightBorderX = rightObstacle.transform.position.x - rightObstacle.collider.bounds.extents.x;

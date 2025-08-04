@@ -82,7 +82,7 @@ public class NonPlayerManageDamage : MonoBehaviour, IDamageHandler
 
         if (topOrBottom == -1)
         {
-            halfRB2D.excludeLayers = 1 << LayerMask.NameToLayer("Pwayer");
+            halfRB2D.excludeLayers = (int) LayerMask.Pwayer;
         }
 
         RememberInitialProperties rememberedPropertiesScript = GetComponent<RememberInitialProperties>();

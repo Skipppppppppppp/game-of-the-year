@@ -99,7 +99,7 @@ public class Break : MonoBehaviour, IObjectSelectedHandler
 
     public void VeryFunMeshThings()
     {
-        var player = Physics2D.OverlapCircle(transform.position, 10, 1 << LayerMask.NameToLayer("Pwayer"));
+        var player = Physics2D.OverlapCircle(transform.position, 10, (int) LayerMask.Pwayer);
         transPlayer = player.transform;
 
         var mesh = GetComponent<MeshFilter>().mesh;

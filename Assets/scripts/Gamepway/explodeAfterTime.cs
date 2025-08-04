@@ -11,16 +11,15 @@ public class explodeAfterTime : MonoBehaviour
     public float timer = 1;
     public int damage = 15;
     public float radius = 50;
-    private int layerMask;
-    private int obstacleLayerMask;
+    private const LayerMask layerMask = LayerMask.Pwayer;
+    private LayerMask obstacleLayerMask;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         particleSystem = GetComponent<ParticleSystem>();
         image = transform.GetChild(0).gameObject;
-        layerMask = 1 << LayerMask.NameToLayer("Pwayer");
-        obstacleLayerMask = 1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Doors");
+        obstacleLayerMask = LayerMask.Default | LayerMask.Doors;
     }
 
     // Update is called once per frame
@@ -40,7 +39,7 @@ public class explodeAfterTime : MonoBehaviour
 
         AudioSource.PlayClipAtPoint(sound, pos);
 
-        var thingsAround = Physics2D.OverlapCircleAll(pos, radius, layerMask);
+        var thingsAround = Physics2D.OverlapCircleAll(pos, radius, (int) layerMask);
         foreach (var j in thingsAround)
         {
             Transform transParent = j.transform.parent;
@@ -52,7 +51,7 @@ public class explodeAfterTime : MonoBehaviour
 
             Vector2 playerPos = transParent.position;
             var toObjVector = playerPos - pos.ToVector2();
-            var wall = Physics2D.Raycast(pos, toObjVector.normalized, toObjVector.magnitude, obstacleLayerMask);
+            var wall = Physics2D.Raycast(pos, toObjVector.normalized, toObjVector.magnitude, (int) obstacleLayerMask);
 
             if (wall.collider == null)
             {
