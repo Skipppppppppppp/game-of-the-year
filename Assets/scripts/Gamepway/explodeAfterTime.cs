@@ -1,4 +1,5 @@
 using System.Threading;
+using UnityEditor;
 using UnityEditor.Build;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,9 +9,9 @@ public class explodeAfterTime : MonoBehaviour
     private new ParticleSystem particleSystem;
     public AudioClip sound;
     private GameObject image;
-    public float timer = 1;
-    public int damage = 15;
-    public float radius = 50;
+    public TimerUtility timer = new TimerUtility(1);
+    public int damage = 30;
+    public float radius = 5;
     private const LayerMask layerMask = LayerMask.Pwayer;
     private LayerMask obstacleLayerMask;
 
@@ -25,9 +26,8 @@ public class explodeAfterTime : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (timer > 0)
+        if (!timer.Update())
         {
-            timer -= Time.deltaTime;
             return;
         }
 
@@ -39,7 +39,7 @@ public class explodeAfterTime : MonoBehaviour
 
         AudioSource.PlayClipAtPoint(sound, pos);
 
-        var thingsAround = Physics2D.OverlapCircleAll(pos, radius, (int) layerMask);
+        var thingsAround = Physics2D.OverlapCircleAll(pos, radius, (int)layerMask);
         foreach (var j in thingsAround)
         {
             Transform transParent = j.transform.parent;
@@ -51,15 +51,16 @@ public class explodeAfterTime : MonoBehaviour
 
             Vector2 playerPos = transParent.position;
             var toObjVector = playerPos - pos.ToVector2();
-            var wall = Physics2D.Raycast(pos, toObjVector.normalized, toObjVector.magnitude, (int) obstacleLayerMask);
+            var wall = Physics2D.Raycast(pos, toObjVector.normalized, toObjVector.magnitude, (int)obstacleLayerMask);
 
             if (wall.collider == null)
             {
-                healthScript.ApplyDamage(damage);
+                float t = toObjVector.magnitude / radius;
+                float damageToGive = damage - Mathf.Lerp(0, damage, t);
+                healthScript.ApplyDamage(damageToGive);
             }
 
         }
-
         this.enabled = false;
     }
 

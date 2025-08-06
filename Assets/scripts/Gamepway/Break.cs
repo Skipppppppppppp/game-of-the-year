@@ -99,7 +99,7 @@ public class Break : MonoBehaviour, IObjectSelectedHandler
 
     public void VeryFunMeshThings()
     {
-        var player = Physics2D.OverlapCircle(transform.position, 10, (int) LayerMask.Pwayer);
+        var player = Physics2D.OverlapCircle(transform.position, 100, (int) LayerMask.Pwayer);
         transPlayer = player.transform;
 
         var mesh = GetComponent<MeshFilter>().mesh;
@@ -162,9 +162,10 @@ public class Break : MonoBehaviour, IObjectSelectedHandler
 
             Vector2 differenceBetweenPoints = mousePosition2d - prevMousePos2d;
             float distanceBetwenMouseAndPlayer = differenceBetweenPoints.magnitude;
+            float clampedDistanceBetwenMouseAndPlayer = Mathf.Clamp(distanceBetwenMouseAndPlayer, 0, 10);
             Vector2 motionVector = differenceBetweenPoints.normalized;
 
-            var force = new ShardForce(motionVector, distanceBetwenMouseAndPlayer * 100);
+            var force = new ShardForce(motionVector, clampedDistanceBetwenMouseAndPlayer * 100);
 
             return force;
         }

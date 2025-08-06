@@ -1,6 +1,35 @@
 using System;
 using UnityEngine;
 
+[Serializable]
+public struct TimerUtility
+{
+    public float Timeout;
+    private float _prevTriggerTime;
+
+    public TimerUtility(int timeout)
+    {
+        Timeout = timeout;
+        _prevTriggerTime = 0;
+    }
+
+    public bool Update()
+    {
+        if (_prevTriggerTime == 0)
+        {
+            _prevTriggerTime = Time.time;
+        }
+        
+        var currentTime = Time.time;
+        if (currentTime - _prevTriggerTime >= Timeout)
+        {
+            _prevTriggerTime = currentTime;
+            return true;
+        }
+        return false;
+    }
+}
+
 public readonly struct ExcludedValues
 {
     public readonly int Number;
