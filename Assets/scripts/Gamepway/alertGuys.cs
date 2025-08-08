@@ -20,7 +20,7 @@ public class alertGuys : MonoBehaviour
         rb2d = this.GetComponent<Rigidbody2D>();
         trans = rb2d.transform;
         guyLayerMask |= LayerMask.Peopwe;
-        wallLayerMask |= LayerMask.Default;
+        wallLayerMask |= LayerMask.Default | LayerMask.Doors;
     }
 
     // Update is called once per frame
@@ -47,20 +47,32 @@ public class alertGuys : MonoBehaviour
                 return;
             }
 
+            Vector2 direction = (guyTrans.position - trans.position).normalized;
+            RaycastHit2D[] walls = Physics2D.RaycastAll(trans.position, direction, distanceToGuy, (int) wallLayerMask);
+
+            bool fuckYou = false;
+
+            foreach (RaycastHit2D w in walls)
+            {
+                if (w.collider != null)
+                {
+                    if (w.collider.isTrigger == false)
+                    {
+                        guyWatchPlayerScript.playerInSight = false;
+                        fuckYou = true;
+                        break;
+                    }
+                }
+            }
+
             if (distanceToGuy > detectionRadius)
             {
                 guyWatchPlayerScript.awareOfPlayer = false;
                 continue;
             }
 
-            Vector2 direction = (guyTrans.position - trans.position).normalized;
-            RaycastHit2D wall = Physics2D.Raycast(trans.position, direction, distanceToGuy, (int) wallLayerMask);
-
-            if (wall.collider != null)
-            {
-                guyWatchPlayerScript.playerInSight = false;
+            if (fuckYou)
                 continue;
-            }
 
             guyWatchPlayerScript.awareOfPlayer = true;
             guyWatchPlayerScript.playerInSight = true;
