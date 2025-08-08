@@ -17,6 +17,8 @@ public class hitThings : MonoBehaviour
     public int bigHitNumber = 3;
     public float usualDamage = 1;
     public float bigDamage = 3;
+    public float baseballZoneHeight;
+    public float baseballCoeff = 2000;
     private ExcludedValues prevSoundIndex = ExcludedValues.None;
     private bool shouldAdvanceTimer = true;
 
@@ -62,6 +64,24 @@ public class hitThings : MonoBehaviour
         RandomStuffHelper.playRandomSound(sounds, audioSource, ref prevSoundIndex);
 
         Vector2 pos = trans.position;
+
+        Rigidbody2D[] knockedBackRB2Ds = RaycastHelper.RotatedOverlapBox(
+            playerPos: pos,
+            boxWidth: maxDistance,
+            boxHeight: baseballZoneHeight,
+            layerMask: (int) layerMask,
+            obstacleLayerMask: (int) obstacleLayerMask);
+
+        foreach (var g in knockedBackRB2Ds)
+        {
+            Vector2 distanceToMouse = MousePositionHelper.FindDistancesToMouse(pos);
+            Vector2 forceToAdd = distanceToMouse.normalized * baseballCoeff;
+
+            if (g.GetComponent<explodeAfterTime>() == null)
+                forceToAdd = forceToAdd / 8;
+            g.AddForce(forceToAdd);
+            print(g.gameObject);
+        }
 
         Rigidbody2D[] damageTakerRB2Ds = RaycastHelper.TryRaycastAllToMouse(
             playerPos: pos,

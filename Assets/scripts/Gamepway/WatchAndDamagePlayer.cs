@@ -56,6 +56,7 @@ public class WatchAndDamagePlayer : watchplayer
             if (grenadeTimer >= grenadeTime)
             {
                 grenadeTimer = 0;
+                threwGrenade = true;
                 Vector2 pos = transform.position;
                 GameObject thrownGrenade = Instantiate(grenade, position: pos, rotation: Quaternion.identity);
                 Rigidbody2D grenadeRb2d = thrownGrenade.GetComponent<Rigidbody2D>();
@@ -63,16 +64,18 @@ public class WatchAndDamagePlayer : watchplayer
             }
             return;
         }
+
+        if (threwGrenade == true)
+            threwGrenade = false;
+
         if (guyCanShoot == false)
-        {
-            reloadTimer = 0;
-            return;
-        }
+            {
+                reloadTimer = 0;
+                return;
+            }
 
         if (!playerInSight)
-        {
             return;
-        }
 
         if (reloadTimer < reloadTime)
         {

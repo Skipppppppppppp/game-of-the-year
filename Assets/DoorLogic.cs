@@ -40,8 +40,6 @@ public class DoorLogic : MonoBehaviour, IObjectSelectedHandler
         return rayHit.rigidbody;
     }
 
-
-
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -50,7 +48,12 @@ public class DoorLogic : MonoBehaviour, IObjectSelectedHandler
         rb2d = GetComponent<Rigidbody2D>();
         layerMask |= LayerMask.MoveableStuff;
         doorScript = GetComponent<OpenAndClose>();
-        collider = GetComponent<BoxCollider2D>();
+        BoxCollider2D[] colliders = GetComponentsInChildren<BoxCollider2D>();
+        foreach (var c in colliders)
+        {
+            if (c.isTrigger == false)
+                collider = c;
+        }
         initialBoundsX = collider.bounds.extents.x;
         initialScale = transform.localScale;
         breakScript = this.GetComponent<Break>();
@@ -93,8 +96,7 @@ public class DoorLogic : MonoBehaviour, IObjectSelectedHandler
     }
 
     public void Rescale(float doorOpennessPercentage)
-    {
-        
+    {   
         var n = doorScript.ChangeScaleToPercent(doorOpennessPercentage);
 
         trans.localScale = n.NewScale;
