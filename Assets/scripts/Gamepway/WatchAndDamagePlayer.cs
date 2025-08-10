@@ -100,6 +100,6 @@ public class WatchAndDamagePlayer : watchplayer
 
         currentShot += 1;
         audioSource.PlayOneShot(gunshot, 1f);
-        healthScript.ApplyDamage(damage);
+        healthScript.TakeDamage(damage);
     }
 }

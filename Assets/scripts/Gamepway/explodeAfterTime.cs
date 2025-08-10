@@ -12,7 +12,7 @@ public class explodeAfterTime : MonoBehaviour
     public TimerUtility timer = new TimerUtility(1);
     public int damage = 30;
     public float radius = 5;
-    private const LayerMask layerMask = LayerMask.Pwayer;
+    private const LayerMask layerMask = LayerMask.Pwayer | LayerMask.Peopwe;
     private LayerMask obstacleLayerMask;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -39,25 +39,25 @@ public class explodeAfterTime : MonoBehaviour
 
         AudioSource.PlayClipAtPoint(sound, pos);
 
-        var thingsAround = Physics2D.OverlapCircleAll(pos, radius, (int)layerMask);
+        var thingsAround = Physics2D.OverlapCircleAll(pos, radius, (int) layerMask);
         foreach (var j in thingsAround)
         {
             Transform transParent = j.transform.parent;
-            ManageDamage healthScript = transParent.GetComponent<ManageDamage>();
-            if (healthScript == null)
+            IDamageHandler damageHandler = transParent.GetComponent<IDamageHandler>();
+            if (damageHandler == null)
             {
                 continue;
             }
 
-            Vector2 playerPos = transParent.position;
-            var toObjVector = playerPos - pos.ToVector2();
+            Vector2 victimPos = transParent.position;
+            var toObjVector = victimPos - pos.ToVector2();
             var wall = Physics2D.Raycast(pos, toObjVector.normalized, toObjVector.magnitude, (int)obstacleLayerMask);
 
             if (wall.collider == null)
             {
                 float t = toObjVector.magnitude / radius;
                 float damageToGive = damage - Mathf.Lerp(0, damage, t);
-                healthScript.ApplyDamage(damageToGive);
+                damageHandler.TakeDamage(damageToGive);
             }
 
         }

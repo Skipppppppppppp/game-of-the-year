@@ -4905,7 +4905,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 168811798251575943}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3d168ec9a0f63a40bc3dcdce6a9de27, type: 3}
+  m_Script: {fileID: 11500000, guid: a56040710c930c64bafa482a754c4bc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   sound: {fileID: 8300000, guid: de2c0f07e793ef9408a6052a280546a8, type: 3}
@@ -5022,7 +5022,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 1.25
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 1
@@ -5032,7 +5032,7 @@ Rigidbody2D:
     m_Bits: 512
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 72
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1

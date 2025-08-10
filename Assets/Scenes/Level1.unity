@@ -1740,7 +1740,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -425955916463401063, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
       propertyPath: detectionRadius
-      value: 20
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: -425955916463401063, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
       propertyPath: differenceBetweenRadii

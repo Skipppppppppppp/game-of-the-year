@@ -80,7 +80,6 @@ public class hitThings : MonoBehaviour
             if (g.GetComponent<explodeAfterTime>() == null)
                 forceToAdd = forceToAdd / 8;
             g.AddForce(forceToAdd);
-            print(g.gameObject);
         }
 
         Rigidbody2D[] damageTakerRB2Ds = RaycastHelper.TryRaycastAllToMouse(
@@ -103,6 +102,7 @@ public class hitThings : MonoBehaviour
 
             if (damageTakingScript == null)
             {
+                Debug.Log(123);
                 continue;
             }
 

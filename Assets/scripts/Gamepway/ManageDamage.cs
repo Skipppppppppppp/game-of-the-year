@@ -7,7 +7,7 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using System;
 
-public class ManageDamage : MonoBehaviour
+public class ManageDamage : MonoBehaviour, IDamageHandler
 {
     private scwipt playerScript;
     public hp_bar hpBarScript;
@@ -52,7 +52,7 @@ public class ManageDamage : MonoBehaviour
         { { } { } { } { } { { } { } { } { } { } { } { } { { { { }; ; ; ; ; ; { } } } } } }
     }
 
-    public void ApplyDamage(float damageToGive)
+    public void TakeDamage(float damageToGive)
     {
         playerScript.hp -= damageToGive;
         UpdateHP();
