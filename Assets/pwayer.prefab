@@ -181,18 +181,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 149a4428c276a454689469aeb080e2d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spear: {fileID: 3920877153841637317, guid: 16db475b1e5231b439cb0756eed1ae0e, type: 3}
   directionIndicator: {fileID: 4632163018630108068}
   sound1: {fileID: 8300000, guid: 0281939f02fd695459cafafd4290a39f, type: 3}
   sound2: {fileID: 8300000, guid: 27bd91bca8a601b4ab718800c96b9004, type: 3}
   critSound: {fileID: 8300000, guid: 1f7def3c1386aa84c9ca47b7bc92d03d, type: 3}
-  destroyableLayer:
-    serializedVersion: 2
-    m_Bits: 8
+  destroyableLayer: 0
   initialHp: 100
   hp: 100
   speedCoeffGround: 50
   speedCoeffAir: 4
   jumpForceCoeff: 1000
+  portalLayerMask: 0
   playerCollider: {fileID: 0}
 --- !u!198 &5886083112816307690
 ParticleSystem:
@@ -5158,6 +5158,8 @@ MonoBehaviour:
   bigHitNumber: 3
   usualDamage: 1
   bigDamage: 3
+  baseballZoneHeight: 0
+  baseballCoeff: 2000
 --- !u!1 &3087659455126530342
 GameObject:
   m_ObjectHideFlags: 0

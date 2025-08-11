@@ -1913,7 +1913,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 177420437408471312, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1143503169}
   m_SourcePrefab: {fileID: 100100000, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
 --- !u!1 &289495215
 GameObject:
@@ -9995,6 +9998,24 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 87253921141670963, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
   m_PrefabInstance: {fileID: 269513335}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1143503169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1143503150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 235fb0e1f9478b04b8d7a7fd0c5841e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spear: {fileID: 3920877153841637317, guid: 16db475b1e5231b439cb0756eed1ae0e, type: 3}
+  spearForceCoeff: 2000
+  spearRecallCoeff: 20
+  maxDistanceForInterp: 20
+  spearCD:
+    Timeout: 0.5
 --- !u!1 &1156250267
 GameObject:
   m_ObjectHideFlags: 0

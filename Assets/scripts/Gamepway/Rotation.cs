@@ -1,18 +1,22 @@
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 public abstract class Rotation : MonoBehaviour
 {
-    protected void RotateObjectToTarget(Vector3 targetPosition, Transform transform)
+    public static void RotateObjectToTarget(Vector3 targetPosition, Transform transform)
     {
-        Vector2 direction = (targetPosition - transform.position).normalized;
-        Quaternion currentRotation = transform.rotation;
-        float angle = -Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg;
-        Quaternion targetRotation = Quaternion.Euler(0, 0, angle);
-        // Quaternion newRotation = Quaternion.Lerp(currentRotation, targetRotation, 0.1f);
-        // Quaternion newRotation = Quaternion.RotateTowards(currentRotation, targetRotation, 720f * Time.deltaTime);
-        Quaternion newRotation = targetRotation;
+        Quaternion newRotation = GetRotationToTarget(targetPosition, transform);
         transform.rotation = newRotation;
     }
+
+    public static Quaternion GetRotationToTarget(Vector3 targetPosition, Transform transform)
+    {
+        Vector2 direction = (targetPosition - transform.position).normalized;
+        float angle = -Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg;
+        Quaternion targetRotation = Quaternion.Euler(0, 0, angle);
+        return targetRotation;
+    }
+
 
     public static Vector2 RotateVector(Vector2 v, float degrees)
     {

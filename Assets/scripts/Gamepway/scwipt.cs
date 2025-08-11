@@ -6,6 +6,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UIElements;
 using UnityEngine.UI;
+using Unity.VisualScripting.IonicZip;
 
 public class scwipt : MonoBehaviour
 {
@@ -74,8 +75,8 @@ public class scwipt : MonoBehaviour
         if (Input.GetKey(KeyCode.E))
         {
             directionIndicator.SetActive(true);
-            var scaleProgress = ((float) chargeUpLeft) / maxCharges;
-            var f = 1-Mathf.Clamp01(scaleProgress);
+            var scaleProgress = ((float)chargeUpLeft) / maxCharges;
+            var f = 1 - Mathf.Clamp01(scaleProgress);
             directionIndicator.transform.localScale = new Vector3(f, f, 1);
         }
         if (chargeUpLeft > 0 && Input.GetKeyUp(KeyCode.E))
@@ -87,7 +88,7 @@ public class scwipt : MonoBehaviour
         {
             chargeUpLeft = maxCharges;
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 direction = (mousePosition - transform.position).normalized;
+            Vector2 direction = (mousePosition - trans.position).normalized;
             rb2d.linearVelocity = direction * 60;
             if (playerOnGround == true)
             {
