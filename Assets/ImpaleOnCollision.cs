@@ -7,12 +7,13 @@ public class ImpaleOnCollision : MonoBehaviour
     public bool? hitWall = null;
     public GameObject victim;
     private Rigidbody2D victimRB2D;
+    private Transform transVictim;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        spearTrans = transform.parent.transform;
-        rb2d = GetComponentInParent<Rigidbody2D>();
+        spearTrans = transform;
+        rb2d = GetComponent<Rigidbody2D>();
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -30,17 +31,27 @@ public class ImpaleOnCollision : MonoBehaviour
             return;
         }
         rb2d.excludeLayers = ~0;
-        rb2d.includeLayers |= (int)Layer.Default;
-        spearTrans.position = victim.transform.position;
+        rb2d.includeLayers |= (int) Layer.Default;
+        transVictim = victim.transform;
         hitWall = false;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (victimRB2D != null)
-        {
-            victimRB2D.linearVelocity = rb2d.linearVelocity;
-        }
+        if (victimRB2D == null)
+            return;
+
+        if (victim.layer == (int)Layer.Default)
+            return;
+
+        if (victim.layer == (int)Layer.MoveableStuff && rb2d.linearVelocity.magnitude > 1)
+            {
+                var damageScript = victim.GetComponent<IDamageHandler>();
+                damageScript.TakeDamage(10000);
+            }
+        Vector2 victimPos = transVictim.position;
+        victimRB2D.linearVelocity = rb2d.linearVelocity;
+        transform.position = victimPos;
     }
 }

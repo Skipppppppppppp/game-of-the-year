@@ -1738,6 +1738,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -425955916463401063, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
+      propertyPath: detectionRadius
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: -425955916463401063, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
+      propertyPath: differenceBetweenRadii
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 87253921141670963, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 313.99
@@ -1806,6 +1814,18 @@ PrefabInstance:
       propertyPath: movingObjectScript
       value: 
       objectReference: {fileID: 869177185}
+    - target: {fileID: 3003248230101763179, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
+      propertyPath: spearCD.Timeout
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3003248230101763179, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
+      propertyPath: minCoeffForIntetp
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3003248230101763179, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
+      propertyPath: minDistanceForInterp
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 6732104299314823078, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
       propertyPath: textToChange
       value: 

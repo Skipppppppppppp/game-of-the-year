@@ -15,8 +15,9 @@ GameObject:
   - component: {fileID: 8466839500369814408}
   - component: {fileID: -3006758915936569578}
   - component: {fileID: 1395517023391969114}
-  - component: {fileID: 5063824026945376801}
   - component: {fileID: -3733892723420534354}
+  - component: {fileID: 6449411735153932166}
+  - component: {fileID: 1532611383352435444}
   m_Layer: 7
   m_Name: guy
   m_TagString: Enemy
@@ -32,7 +33,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 936127469518054326}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 6.03, y: -2.84, z: 0.046646878}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -97,7 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a97ecdec8431e9643998c93dbc38e029, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 2
+  speed: 59
 --- !u!114 &8466839500369814408
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -226,19 +227,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &5063824026945376801
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 936127469518054326}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d4f911de4a951b438537054ecef5800, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  velocityChangeNeededToDie: 20
 --- !u!114 &-3733892723420534354
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -253,6 +241,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   velocityToDie: 50
   offset: {x: 1, y: 1}
+--- !u!114 &6449411735153932166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 936127469518054326}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20c685ba08ca8b74991fb043202749d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textToChange: {fileID: 0}
+  interactionAnnouncement: Press [F] to interact
+  interactionCooldown: 1
+  darkeningScript: {fileID: 0}
+--- !u!114 &1532611383352435444
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 936127469518054326}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d4f911de4a951b438537054ecef5800, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  velocityChangeNeededToDie: 20
 --- !u!1 &1076884710391363694
 GameObject:
   m_ObjectHideFlags: 0

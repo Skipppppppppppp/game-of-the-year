@@ -99,8 +99,13 @@ public class Break : MonoBehaviour, IObjectSelectedHandler
 
     public void VeryFunMeshThings()
     {
-        var player = Physics2D.OverlapCircle(transform.position, 100, (int) LayerMask.Pwayer);
-        transPlayer = player.transform;
+        var players = Physics2D.OverlapCircleAll(transform.position, 100, (int) LayerMask.Pwayer);
+        foreach (var p in players)
+        {
+            if (p.GetComponentInParent<scwipt>() == null)
+                continue;
+            transPlayer = p.transform;
+        }
 
         var mesh = GetComponent<MeshFilter>().mesh;
         meshRenderer = GetComponent<MeshRenderer>();
@@ -158,14 +163,24 @@ public class Break : MonoBehaviour, IObjectSelectedHandler
                 return ret;
             }
 
-            prevMousePos2d = transPlayer.position;
+            Vector2 playerPos = transPlayer.position;
+            float distance = Vector2.Distance(playerPos, transform.position);
+            Vector2 differenceBetweenPoints;
 
-            Vector2 differenceBetweenPoints = mousePosition2d - prevMousePos2d;
-            float distanceBetwenMouseAndPlayer = differenceBetweenPoints.magnitude;
-            float clampedDistanceBetwenMouseAndPlayer = Mathf.Clamp(distanceBetwenMouseAndPlayer, 0, 10);
+            if (distance <= 5 && !Input.GetKeyDown(KeyCode.Q))
+            {
+                differenceBetweenPoints = mousePosition2d - playerPos;
+            }
+            else
+            {
+                differenceBetweenPoints = playerPos - transform.position.ToVector2();
+            }
+
+            float distanceBetweenPoints = differenceBetweenPoints.magnitude;
+            float clampedDistanceBetwenPoints = Mathf.Clamp(distanceBetweenPoints, 0, 10);
             Vector2 motionVector = differenceBetweenPoints.normalized;
 
-            var force = new ShardForce(motionVector, clampedDistanceBetwenMouseAndPlayer * 100);
+            var force = new ShardForce(motionVector, clampedDistanceBetwenPoints * 100);
 
             return force;
         }
@@ -274,7 +289,7 @@ public class Break : MonoBehaviour, IObjectSelectedHandler
 
         bool ShouldBreakObject(Vector2 prevMousePos)
         {
-            float distance = Vector2.Distance(transPlayer.position, this.transform.position);
+            float distance = Vector2.Distance(transPlayer.position, transform.position);
             if (distance > 12.0f)
             {
                 return false;

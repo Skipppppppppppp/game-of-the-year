@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3987621453724616122}
   - component: {fileID: 5759476663875436917}
+  - component: {fileID: -4464988355863867910}
   m_Layer: 6
   m_Name: spear
   m_TagString: Untagged
@@ -61,6 +62,19 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 0
+--- !u!114 &-4464988355863867910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3920877153841637317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bdad0bc09867764b8891a66358d425d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  victim: {fileID: 0}
 --- !u!1 &3975182002389458139
 GameObject:
   m_ObjectHideFlags: 0
@@ -159,7 +173,6 @@ GameObject:
   - component: {fileID: 611672792006547578}
   - component: {fileID: 1777602324390601549}
   - component: {fileID: 4170629107144201181}
-  - component: {fileID: 5367701817269320796}
   m_Layer: 6
   m_Name: base
   m_TagString: Untagged
@@ -283,16 +296,3 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &5367701817269320796
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4800982227332434013}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4bdad0bc09867764b8891a66358d425d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  victim: {fileID: 0}

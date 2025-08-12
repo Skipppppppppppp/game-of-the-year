@@ -52,9 +52,12 @@ public class InteractWithBG : MonoBehaviour
 
         if (interactionInterface is null)
         {
-            if (textToChange.text == interactionAnnouncement && isPlayer)
+            if (isPlayer)
             {
-                textToChange.text = "";
+                if (textToChange.text == interactionAnnouncement)
+                {
+                    textToChange.text = "";
+                }
             }
             return;
         }
@@ -63,6 +66,12 @@ public class InteractWithBG : MonoBehaviour
 
         if (isPlayer == false)
         {
+            watchplayer watchPlayerScript = GetComponent<watchplayer>();
+            if (watchPlayerScript != null)
+            {
+                if (watchPlayerScript.awareOfPlayer)
+                    return;
+            }
             int chance = Random.Range(0, 2);
             if (chance == 0)
             {

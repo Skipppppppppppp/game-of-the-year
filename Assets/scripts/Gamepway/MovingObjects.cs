@@ -92,6 +92,12 @@ public sealed class MovingObjects : MonoBehaviour
             movingObject = raycasted;
             var r = movingObject.gameObject.AddComponent<RememberInitialProperties>();
 
+            WawkingDestinationSelection wawkingScript = movingObject.GetComponent<WawkingDestinationSelection>();
+            if (wawkingScript != null)
+            {
+                wawkingScript.guyCanWalk = false;
+            }
+
             GameObject grabbedPoint = new GameObject("Grabbed Point");
             grabbedPoint.tag = "Grabbed Point";
             grabbedPointTrans = grabbedPoint.transform;

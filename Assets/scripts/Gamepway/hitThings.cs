@@ -103,7 +103,6 @@ public class hitThings : MonoBehaviour
 
             if (damageTakingScript == null)
             {
-                Debug.Log(123);
                 continue;
             }
 

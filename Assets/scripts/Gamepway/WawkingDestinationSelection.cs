@@ -12,9 +12,12 @@ public class WawkingDestinationSelection : DestinationSelection
     public float guyBoxCastYOffset = 0.1f;
     public bool guyInAir;
     public float lastRememberedPlayerX;
+    private Rigidbody2D rb2d;
+    private bool prevOnGroundState = false;
 
     void Start()
     {
+        rb2d = GetComponent<Rigidbody2D>();
         guyCollider = GetComponentInChildren<BoxCollider2D>();
     }
 
@@ -42,7 +45,7 @@ public class WawkingDestinationSelection : DestinationSelection
         return default;
     }
 
-    void OnCollisionEnter2D(Collision2D collision)
+    void OnCollisionStay2D(Collision2D collision)
     {
         var guyPosition = guyCollider.transform.position;
 
@@ -60,6 +63,11 @@ public class WawkingDestinationSelection : DestinationSelection
         {
             return;
         }
+
+        prevOnGroundState = true;
+
+        if (prevOnGroundState == true)
+            return;
 
         Collider2D collider = collision.collider;
         if (collider is not BoxCollider2D boxCollider)
@@ -129,13 +137,14 @@ public class WawkingDestinationSelection : DestinationSelection
         OnContextChanged();
     }
 
-void OnCollisionExit2D()
+void OnCollisionExit2D(Collision2D collision)
 {
-    if (RaycastHelper.OnGround(guyCollider))
+    if (rb2d.linearVelocityY == 0)
     {
         return;
     }
 
+    prevOnGroundState = false;
     guyInAir = true;
     guyCanWalk = false;
 }

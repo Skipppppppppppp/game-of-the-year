@@ -35,7 +35,7 @@ public class SpearLogic : MonoBehaviour
         {
             Vector2 distanceToPlayer = transform.position - spearTrans.position;
 
-            if (distanceToPlayer.magnitude <= 1)
+            if (distanceToPlayer.magnitude <= 1.5)
             {
                 Destroy(spearTrans.gameObject);
                 ResetCooldown();
