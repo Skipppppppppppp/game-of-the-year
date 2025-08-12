@@ -117,8 +117,6 @@ public class RaycastHelper : MonoBehaviour
             angle: angle,
             layerMask: layerMask
         );
-        Debug.DrawLine(boxCenter - Vector2.right * boxWidth / 2f, boxCenter + Vector2.right * boxWidth / 2f, Color.green);
-Debug.DrawLine(boxCenter - Vector2.up * boxHeight / 2f, boxCenter + Vector2.up * boxHeight / 2f, Color.blue);
 
         List<Rigidbody2D> validRigidbodies = new List<Rigidbody2D>();
 
@@ -138,7 +136,7 @@ Debug.DrawLine(boxCenter - Vector2.up * boxHeight / 2f, boxCenter + Vector2.up *
     }
 
 
-    private static bool PathObstructed(Vector2 firstPos, Vector2 secondPos, int obstacleLayerMask)
+    public static bool PathObstructed(Vector2 firstPos, Vector2 secondPos, int obstacleLayerMask)
     {
         Vector2 direction = (secondPos - firstPos).normalized;
         float distanceToObject = (secondPos - firstPos).magnitude;

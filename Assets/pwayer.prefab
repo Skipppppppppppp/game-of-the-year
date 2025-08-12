@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: 212166316340329941}
   - component: {fileID: 6732104299314823078}
   - component: {fileID: 3122744590359530754}
+  - component: {fileID: 3003248230101763179}
   m_Layer: 6
   m_Name: pwayer
   m_TagString: Untagged
@@ -71,7 +72,7 @@ Rigidbody2D:
   m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 1
-  m_Constraints: 4
+  m_Constraints: 0
 --- !u!82 &2417500581718208166
 AudioSource:
   m_ObjectHideFlags: 0
@@ -85,7 +86,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.283
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -181,7 +182,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 149a4428c276a454689469aeb080e2d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spear: {fileID: 3920877153841637317, guid: 16db475b1e5231b439cb0756eed1ae0e, type: 3}
   directionIndicator: {fileID: 4632163018630108068}
   sound1: {fileID: 8300000, guid: 0281939f02fd695459cafafd4290a39f, type: 3}
   sound2: {fileID: 8300000, guid: 27bd91bca8a601b4ab718800c96b9004, type: 3}
@@ -192,7 +192,7 @@ MonoBehaviour:
   speedCoeffGround: 50
   speedCoeffAir: 4
   jumpForceCoeff: 1000
-  portalLayerMask: 0
+  portalLayerMask: 64
   playerCollider: {fileID: 0}
 --- !u!198 &5886083112816307690
 ParticleSystem:
@@ -5064,8 +5064,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5c9b25613aa2084f8c4a478fde97030, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detectionRadius: 1
-  differenceBetweenRadii: 10
+  detectionRadius: 9
+  differenceBetweenRadii: 2
 --- !u!114 &705169052020359960
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5090,7 +5090,7 @@ MonoBehaviour:
   - 8
   - 8
   speedCoeffsGround:
-  - 50
+  - 40
   - 50
   jumpForceCoeffs:
   - 750
@@ -5098,7 +5098,7 @@ MonoBehaviour:
   movingObjectsScript: {fileID: 0}
   renderOnClickScript: {fileID: 726225036630104844}
   volume: {fileID: 0}
-  applyFilmGrain: 1
+  applyFilmGrain: 0
 --- !u!114 &212166316340329941
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5137,7 +5137,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textToChange: {fileID: 0}
   interactionAnnouncement: Press [F] to interact
-  interactionCooldown: 1
+  interactionCooldown: 1.5
   darkeningScript: {fileID: 0}
 --- !u!114 &3122744590359530754
 MonoBehaviour:
@@ -5151,15 +5151,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a083e2291e99b5488becc797f55a69e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sounds: []
-  bigAttackSound: {fileID: 0}
+  sounds:
+  - {fileID: 8300000, guid: 0281939f02fd695459cafafd4290a39f, type: 3}
+  - {fileID: 8300000, guid: 27bd91bca8a601b4ab718800c96b9004, type: 3}
+  bigAttackSound: {fileID: 8300000, guid: 1f7def3c1386aa84c9ca47b7bc92d03d, type: 3}
   maxDistance: 5
   timeToResetHits: 1
   bigHitNumber: 3
   usualDamage: 1
   bigDamage: 3
-  baseballZoneHeight: 0
-  baseballCoeff: 2000
+  baseballZoneHeight: 3
+  baseballCoeff: 3000
+--- !u!114 &3003248230101763179
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 177420437408471312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 235fb0e1f9478b04b8d7a7fd0c5841e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pullForceCoeff: 500
+  spear: {fileID: 3920877153841637317, guid: 16db475b1e5231b439cb0756eed1ae0e, type: 3}
+  spearForceCoeff: 2000
+  spearRecallCoeff: 10
+  spearCD:
+    Timeout: 1
+  maxDistanceForInterp: 30
+  minDistanceForInterp: 5
+  maxCoeffForInterp: 100
+  minCoeffForIntetp: 10
 --- !u!1 &3087659455126530342
 GameObject:
   m_ObjectHideFlags: 0
@@ -5403,7 +5427,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 1, z: 1}
+  m_LocalScale: {x: 2.5, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5765806979355141899}
@@ -5452,12 +5476,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 4060961561395053933, guid: 7a9a97e1dff4ffb478110b6272f79490, type: 3}
+  m_Sprite: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 2
-  m_Size: {x: 0.38, y: 1}
+  m_Size: {x: 0.4, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1

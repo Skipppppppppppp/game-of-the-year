@@ -60,8 +60,9 @@ public class hitThings : MonoBehaviour
 
         hitTimer = 0;
         shouldAdvanceTimer = true;
-
-        RandomStuffHelper.playRandomSound(sounds, audioSource, ref prevSoundIndex);
+        
+        if (hitNumber < bigHitNumber)
+            RandomStuffHelper.playRandomSound(sounds, audioSource, ref prevSoundIndex);
 
         Vector2 pos = trans.position;
 

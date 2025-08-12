@@ -19,7 +19,7 @@ public struct TimerUtility
         {
             _prevTriggerTime = Time.time;
         }
-        
+
         var currentTime = Time.time;
         if (currentTime - _prevTriggerTime >= Timeout)
         {
@@ -27,6 +27,11 @@ public struct TimerUtility
             return true;
         }
         return false;
+    }
+
+    public void Reset()
+    {
+        _prevTriggerTime = Time.time;
     }
 }
 

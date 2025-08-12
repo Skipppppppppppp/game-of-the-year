@@ -49,11 +49,11 @@ Rigidbody2D:
   m_Mass: 0.4
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 264
@@ -295,3 +295,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bdad0bc09867764b8891a66358d425d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  victim: {fileID: 0}
