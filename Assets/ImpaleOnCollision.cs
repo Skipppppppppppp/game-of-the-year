@@ -8,6 +8,7 @@ public class ImpaleOnCollision : MonoBehaviour
     public GameObject victim;
     private Rigidbody2D victimRB2D;
     private Transform transVictim;
+    public MovingObjects movingObjectsScript;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -45,11 +46,9 @@ public class ImpaleOnCollision : MonoBehaviour
         if (victim.layer == (int)Layer.Default)
             return;
 
-        if (victim.layer == (int)Layer.MoveableStuff && rb2d.linearVelocity.magnitude > 1)
-            {
-                var damageScript = victim.GetComponent<IDamageHandler>();
-                damageScript.TakeDamage(10000);
-            }
+        if (movingObjectsScript.movingObject == victimRB2D)
+            return;
+
         Vector2 victimPos = transVictim.position;
         victimRB2D.linearVelocity = rb2d.linearVelocity;
         transform.position = victimPos;

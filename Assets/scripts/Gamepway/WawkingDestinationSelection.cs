@@ -10,10 +10,9 @@ public class WawkingDestinationSelection : DestinationSelection
     public bool guyCanWalk;
     public override bool IsInitializedForDestinationSelection => guyCanWalk;
     public float guyBoxCastYOffset = 0.1f;
-    public bool guyInAir;
+    public bool guyInAir = true;
     public float lastRememberedPlayerX;
     private Rigidbody2D rb2d;
-    private bool prevOnGroundState = false;
 
     void Start()
     {
@@ -64,9 +63,8 @@ public class WawkingDestinationSelection : DestinationSelection
             return;
         }
 
-        prevOnGroundState = true;
 
-        if (prevOnGroundState == true)
+        if (guyInAir == false)
             return;
 
         Collider2D collider = collision.collider;
@@ -144,7 +142,6 @@ void OnCollisionExit2D(Collision2D collision)
         return;
     }
 
-    prevOnGroundState = false;
     guyInAir = true;
     guyCanWalk = false;
 }

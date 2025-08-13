@@ -1815,16 +1815,28 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 869177185}
     - target: {fileID: 3003248230101763179, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
+      propertyPath: pullForceCoeff
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 3003248230101763179, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
       propertyPath: spearCD.Timeout
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3003248230101763179, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
+      propertyPath: maxCoeffForInterp
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 3003248230101763179, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
       propertyPath: minCoeffForIntetp
       value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 3003248230101763179, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
+      propertyPath: movingObjectsScript
+      value: 
+      objectReference: {fileID: 869177185}
+    - target: {fileID: 3003248230101763179, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
       propertyPath: minDistanceForInterp
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6732104299314823078, guid: a16b66ef0fba53b4aaed0c0d19b4167c, type: 3}
       propertyPath: textToChange
@@ -8823,13 +8835,7 @@ PrefabInstance:
     - {fileID: 5063824026945376801, guid: 045ff602a6dbff349ac5246977859b8e, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 936127469518054326, guid: 045ff602a6dbff349ac5246977859b8e, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2061159986}
-    - targetCorrespondingSourceObject: {fileID: 936127469518054326, guid: 045ff602a6dbff349ac5246977859b8e, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2061159995}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 045ff602a6dbff349ac5246977859b8e, type: 3}
 --- !u!1 &1010408485
 GameObject:
@@ -16770,40 +16776,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1 &2061159976 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 936127469518054326, guid: 045ff602a6dbff349ac5246977859b8e, type: 3}
-  m_PrefabInstance: {fileID: 1010255251}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &2061159986
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2061159976}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 20c685ba08ca8b74991fb043202749d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  textToChange: {fileID: 1541399505}
-  interactionAnnouncement: Press [F] to interact
-  interactionCooldown: 1
-  darkeningScript: {fileID: 0}
---- !u!114 &2061159995
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2061159976}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d4f911de4a951b438537054ecef5800, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  velocityChangeNeededToDie: 20
 --- !u!1001 &2067225580
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16847,6 +16819,10 @@ PrefabInstance:
     - target: {fileID: 5529476454533788242, guid: e9937973d8411f540938076e1cd8e931, type: 3}
       propertyPath: m_Name
       value: guy evil
+      objectReference: {fileID: 0}
+    - target: {fileID: 5649244790248676481, guid: e9937973d8411f540938076e1cd8e931, type: 3}
+      propertyPath: m_Mass
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 6976862415240265174, guid: e9937973d8411f540938076e1cd8e931, type: 3}
       propertyPath: m_LocalPosition.x
