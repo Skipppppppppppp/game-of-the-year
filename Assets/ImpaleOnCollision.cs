@@ -3,17 +3,18 @@ using UnityEngine;
 public class ImpaleOnCollision : MonoBehaviour
 {
     private Rigidbody2D rb2d;
-    private Transform spearTrans;
+    private Transform trans;
     public bool? hitWall = null;
     public GameObject victim;
     private Rigidbody2D victimRB2D;
     private Transform transVictim;
     public MovingObjects movingObjectsScript;
+    private Vector2 offset;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        spearTrans = transform;
+        trans = transform;
         rb2d = GetComponent<Rigidbody2D>();
     }
 
@@ -31,9 +32,13 @@ public class ImpaleOnCollision : MonoBehaviour
             hitWall = true;
             return;
         }
+
         rb2d.excludeLayers = ~0;
         rb2d.includeLayers |= (int) Layer.Default;
         transVictim = victim.transform;
+
+        offset = trans.position - transVictim.position;
+
         hitWall = false;
     }
 
@@ -51,6 +56,6 @@ public class ImpaleOnCollision : MonoBehaviour
 
         Vector2 victimPos = transVictim.position;
         victimRB2D.linearVelocity = rb2d.linearVelocity;
-        transform.position = victimPos;
+        transform.position = victimPos + offset;
     }
 }

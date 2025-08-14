@@ -28,9 +28,13 @@ public class scwipt : MonoBehaviour
     private bool _tryingToJump;
     public float initialHp = 100;
     public float hp;
-    public float speedCoeffGround = 50;
-    public float speedCoeffAir = 4;
-    public float jumpForceCoeff = 1000;
+    public float speedCoeffGround;
+    public float speedCoeffAir;
+    public float jumpForceCoeff;
+    public float dampingCoeffGround;
+    public float dampingCoeffAir;
+    public float dashCoeffGround;
+    public float dashCoeffAir;
     private Transform trans;
     public LayerMask portalLayerMask;
     private float pwayerZ;
@@ -53,11 +57,17 @@ public class scwipt : MonoBehaviour
         {
             return;
         }
-        rb2d.linearDamping = 4;
+
+        if (rb2d.linearVelocity.magnitude <= 30)
+            rb2d.linearDamping = dampingCoeffGround;
+        else
+            rb2d.linearDamping = dampingCoeffAir;
+
         playerOnGround = true;
-        if (Input.GetKey(KeyCode.Space))
+
+        if (_tryingToJump)
         {
-            rb2d.linearDamping = 1;
+            rb2d.linearDamping = dampingCoeffAir;
         }
     }
     void OnCollisionExit2D(Collision2D collision)
@@ -67,7 +77,7 @@ public class scwipt : MonoBehaviour
             return;
         }
         playerOnGround = false;
-        rb2d.linearDamping = 1;
+        rb2d.linearDamping = dampingCoeffAir;
     }
 
     void Update()
@@ -89,10 +99,14 @@ public class scwipt : MonoBehaviour
             chargeUpLeft = maxCharges;
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2 direction = (mousePosition - trans.position).normalized;
-            rb2d.linearVelocity = direction * 60;
             if (playerOnGround == true)
             {
+                rb2d.AddForce(direction * dashCoeffGround);
                 StartCoroutine(EmitParticlesForDuration(0.1f));
+            }
+            else
+            {
+                rb2d.AddForce(direction * dashCoeffAir);
             }
             directionIndicator.SetActive(false); 
         }
@@ -123,22 +137,22 @@ public class scwipt : MonoBehaviour
             }
             if (Input.GetKey(KeyCode.D))
             {
-                rb2d.AddForce(trans.right * speedCoeffGround);
+                rb2d.AddForce(right * speedCoeffGround);
             }
             if (Input.GetKey(KeyCode.A))
             {
-                rb2d.AddForce(trans.right * -speedCoeffGround);
+                rb2d.AddForce(right * -speedCoeffGround);
             }
         }
         if (playerOnGround == false) // player physics when airborne
         {
             if (Input.GetKey(KeyCode.D))
             {
-                rb2d.AddForce(trans.right * speedCoeffAir);
+                rb2d.AddForce(right * speedCoeffAir);
             }
             if (Input.GetKey(KeyCode.A))
             {
-                rb2d.AddForce(trans.right * -speedCoeffAir);
+                rb2d.AddForce(right * -speedCoeffAir);
             }
         }
         _tryingToJump = false;

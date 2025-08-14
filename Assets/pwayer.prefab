@@ -189,9 +189,13 @@ MonoBehaviour:
   destroyableLayer: 0
   initialHp: 100
   hp: 100
-  speedCoeffGround: 50
+  speedCoeffGround: 150
   speedCoeffAir: 4
   jumpForceCoeff: 1000
+  dampingCoeffGround: 16
+  dampingCoeffAir: 1
+  dashCoeffGround: 3500
+  dashCoeffAir: 2500
   portalLayerMask: 64
   playerCollider: {fileID: 0}
 --- !u!198 &5886083112816307690
@@ -5064,8 +5068,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5c9b25613aa2084f8c4a478fde97030, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detectionRadius: 9
-  differenceBetweenRadii: 2
+  detectionRadius: 20
+  differenceBetweenRadii: 10
 --- !u!114 &705169052020359960
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5090,11 +5094,11 @@ MonoBehaviour:
   - 8
   - 8
   speedCoeffsGround:
-  - 40
-  - 50
+  - 100
+  - 150
   jumpForceCoeffs:
-  - 750
-  - 1000
+  - 1100
+  - 1250
   movingObjectsScript: {fileID: 0}
   renderOnClickScript: {fileID: 726225036630104844}
   volume: {fileID: 0}
@@ -5174,16 +5178,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 235fb0e1f9478b04b8d7a7fd0c5841e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pullForceCoeff: 500
+  pullForceCoeff: 1000
   spear: {fileID: 3920877153841637317, guid: 16db475b1e5231b439cb0756eed1ae0e, type: 3}
   spearForceCoeff: 2000
   spearRecallCoeff: 10
   spearCD:
-    Timeout: 1
-  maxDistanceForInterp: 30
-  minDistanceForInterp: 5
-  maxCoeffForInterp: 100
-  minCoeffForIntetp: 10
+    Timeout: 0.5
+  movingObjectsScript: {fileID: 0}
 --- !u!1 &3087659455126530342
 GameObject:
   m_ObjectHideFlags: 0

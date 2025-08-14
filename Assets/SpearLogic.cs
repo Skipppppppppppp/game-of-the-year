@@ -21,6 +21,21 @@ public class SpearLogic : MonoBehaviour
         cdOver = false;
     }
 
+    private void StartPulling()
+    {
+        recallingSpear = true;
+
+        HurtVictim();
+
+        spearRB2D.constraints = RigidbodyConstraints2D.None;
+        spearRB2D.includeLayers = (int) LayerMask.Default;
+        if (spearRB2D.excludeLayers == ~0)
+            spearRB2D.excludeLayers = 0;
+
+        Vector2 directionToPlayer = (transform.position - spearTrans.position).normalized;
+        spearRB2D.AddForce(directionToPlayer * pullForceCoeff);
+    }
+
     private void HurtVictim()
     {
         GameObject victim = spearScript.victim;
@@ -39,31 +54,31 @@ public class SpearLogic : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (recallingSpear)
+        if (recallingSpear == false)
+            return;
+
+        Vector2 distanceToPlayer = transform.position - spearTrans.position;
+
+        if (distanceToPlayer.magnitude <= 1.5)
         {
-            Vector2 distanceToPlayer = transform.position - spearTrans.position;
+            Destroy(spearTrans.gameObject);
+            ResetCooldown();
 
-            if (distanceToPlayer.magnitude <= 1.5)
-            {
-                Destroy(spearTrans.gameObject);
-                ResetCooldown();
+            recallingSpear = false;
+            spearRB2D = null;
+            spearTrans = null;
+            spearScript = null;
+            return;
+        }
 
-                recallingSpear = false;
-                spearRB2D = null;
-                spearTrans = null;
-                spearScript = null;
-                return;
-            }
-
-            Rotation.RotateObjectToTarget(transform.position, spearTrans);
-            if (spearRB2D.linearVelocity.magnitude <= 10)
-            {
-                // float t = Mathf.Clamp((distanceToPlayer.magnitude - minDistanceForInterp) / maxDistanceForInterp, 0, 1);
-                // float spearRecallInterp = Mathf.Lerp(minCoeffForIntetp, maxCoeffForInterp, t);
-                Vector2 direction = distanceToPlayer.normalized;
-                spearRB2D.AddForce(direction * spearRecallCoeff);
-                // spearRB2D.linearVelocity = direction * spearRecallInterp;
-            }
+        Rotation.RotateObjectToTarget(transform.position, spearTrans);
+        if (spearRB2D.linearVelocity.magnitude <= 10)
+        {
+            // float t = Mathf.Clamp((distanceToPlayer.magnitude - minDistanceForInterp) / maxDistanceForInterp, 0, 1);
+            // float spearRecallInterp = Mathf.Lerp(minCoeffForIntetp, maxCoeffForInterp, t);
+            Vector2 direction = distanceToPlayer.normalized;
+            spearRB2D.AddForce(direction * spearRecallCoeff);
+            // spearRB2D.linearVelocity = direction * spearRecallInterp;
         }
     }
 
@@ -73,17 +88,16 @@ public class SpearLogic : MonoBehaviour
         if (spearCD.Update() && cdOver == false)
             cdOver = true;
 
-        if (spearTrans != null && RaycastHelper.PathObstructed(transform.position, spearTrans.position, (int)LayerMask.Default))
+
+        if (spearTrans != null && recallingSpear == false && spearScript.hitWall != null)
         {
-            recallingSpear = true;
-
-            spearRB2D.excludeLayers = ~0;
-            spearRB2D.constraints = RigidbodyConstraints2D.None;
-            spearRB2D.gravityScale = 0;
-
-            HurtVictim();
-            ResetCooldown();
-            return;
+            if (spearScript.victim == null || RaycastHelper.PathObstructed(transform.position, spearTrans.position, (int)LayerMask.Default | (int)LayerMask.Doors))
+            {
+                StartPulling();
+                spearRB2D.excludeLayers = ~0;
+                spearRB2D.gravityScale = 0;
+                return;
+            }
         }
 
         if (!cdOver)
@@ -93,6 +107,13 @@ public class SpearLogic : MonoBehaviour
             return;
 
         ResetCooldown();
+
+        if (recallingSpear == true)
+        {
+            Vector2 directionToPlayer = (transform.position - spearTrans.position).normalized;
+            spearRB2D.AddForce(directionToPlayer * pullForceCoeff);
+            return;
+        }
 
         if (spearTrans == null)
         {
@@ -110,17 +131,6 @@ public class SpearLogic : MonoBehaviour
             return;
         }
 
-        recallingSpear = true;
-
-        HurtVictim();
-
-        spearRB2D.constraints = RigidbodyConstraints2D.None;
-        spearRB2D.includeLayers = (int) LayerMask.Default;
-        if (spearRB2D.excludeLayers == ~0)
-            spearRB2D.excludeLayers = 0;
-
-        Vector2 directionToPlayer = (transform.position - spearTrans.position).normalized;
-
-        spearRB2D.AddForce(directionToPlayer * pullForceCoeff);
+        StartPulling();
     }
 }

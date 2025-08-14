@@ -140,9 +140,22 @@ public class RaycastHelper : MonoBehaviour
     {
         Vector2 direction = (secondPos - firstPos).normalized;
         float distanceToObject = (secondPos - firstPos).magnitude;
-        RaycastHit2D obstacle = Physics2D.Raycast(firstPos, direction, distanceToObject, obstacleLayerMask);
+        RaycastHit2D[] obstacles = Physics2D.RaycastAll(firstPos, direction, distanceToObject, obstacleLayerMask);
 
-        return obstacle.transform != null;
+        if (obstacles.Length == 0)
+            return false;
+
+        foreach (RaycastHit2D o in obstacles)
+        {
+            Collider2D col = o.collider;
+
+            if (col.isTrigger)
+                continue;
+
+            return true;
+        }
+        
+        return false;
     }
 
     public static bool OnGround(BoxCollider2D collider)
