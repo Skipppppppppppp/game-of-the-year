@@ -72,10 +72,11 @@ public class scwipt : MonoBehaviour
     }
     void OnCollisionExit2D(Collision2D collision)
     {
-        if (RaycastHelper.OnGround(playerCollider))
-        {
-            return;
-        }
+        // if (RaycastHelper.OnGround(playerCollider))
+        // {
+        //     return;
+        // }
+
         playerOnGround = false;
         rb2d.linearDamping = dampingCoeffAir;
     }

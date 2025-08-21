@@ -24,6 +24,7 @@ public class SpearLogic : MonoBehaviour
     private void StartPulling()
     {
         recallingSpear = true;
+        Destroy(GetComponent<DistanceJoint2D>());
 
         HurtVictim();
 
@@ -82,6 +83,26 @@ public class SpearLogic : MonoBehaviour
         }
     }
 
+    void DangleIfShould()
+    {
+        if (spearTrans.position.y < transform.position.y)
+            return;
+
+        if (spearScript.hitWall == false)
+            return;
+
+        if (GetComponent<DistanceJoint2D>() != null)
+            return;
+        
+        Dangle danglingScript = GetComponent<Dangle>();
+        float initialDistance = Mathf.Abs(transform.position.y - spearTrans.position.y);
+
+        danglingScript.anchor = spearTrans;
+        danglingScript.hangDistance = initialDistance;
+
+        danglingScript.StartDangling();
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -91,6 +112,8 @@ public class SpearLogic : MonoBehaviour
 
         if (spearTrans != null && recallingSpear == false && spearScript.hitWall != null)
         {
+            DangleIfShould();
+            
             if (spearScript.victim == null || RaycastHelper.PathObstructed(transform.position, spearTrans.position, (int)LayerMask.Default | (int)LayerMask.Doors))
             {
                 StartPulling();
